@@ -14,5 +14,12 @@
 
 package com.google.sps.servlets;
 
-public class YoutubeServlet {
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+
+/**
+ * Servlet that fetch from Youtube Server.
+ */
+@WebServlet("/userLogIn")
+public class YoutubeServlet extends HttpServlet {
 }
