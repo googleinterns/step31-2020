@@ -13,16 +13,12 @@
 // limitations under the License.
 
 function getYouTubeComments() { 
-  const dataContainer = document.getElementById('data-container');
   const urlInput = document.getElementById('url-entry');
   var URL = cleanseUrl(urlInput.value);
   fetch("/YouTubeComments?url="+URL)
     .then(response => response.json()).then((comments) =>{
-      // Generate comments
-      dataContainer.innerText = "Howdy world";
-
       for(i = 0; i < comments.items.length; i++) {
-        dataContainer.appendChild(createYouTubeCommentElement(comments.items[i]));
+       //Todo: process comments
       }
     });
 }
