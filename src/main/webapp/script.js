@@ -14,8 +14,8 @@
 
 function getYouTubeComments() { 
   const urlInput = document.getElementById('url-entry');
-  var URL = cleanseUrl(urlInput.value);
-  fetch("/YouTubeComments?url="+URL)
+  var url = cleanseUrl(urlInput.value);
+  fetch("/YouTubeComments?url="+url)
     .then(response => response.json()).then((comments) =>{
       for(i = 0; i < comments.items.length; i++) {
        //Todo: process comments
