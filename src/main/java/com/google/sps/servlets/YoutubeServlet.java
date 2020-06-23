@@ -20,8 +20,8 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 
-import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
+import com.google.api.services.youtube.YouTube;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -39,7 +39,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/YouTubeComments")
 public class YoutubeServlet extends HttpServlet {
   private static final String DEVELOPER_KEY = "OUR_API_KEY"; //TODO: obtain actual API Key
-
   private static final String APPLICATION_NAME = "SAY";
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
@@ -47,7 +46,6 @@ public class YoutubeServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response)
     throws IOException {
     try {
-      System.err.println("Hello world!");
       YouTube youtubeService = getService();
       String url = request.getParameter("url");
       // Define and execute the API request
