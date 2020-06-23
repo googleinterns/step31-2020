@@ -32,6 +32,7 @@ public class CommentAnalysis {
   }
 
   public float sentiAnalysis() throws IOException {
+    System.out.println(comment.getCommentMsg());
     Document doc = Document.newBuilder().setContent(comment.getCommentMsg())
                        .setType(Document.Type.PLAIN_TEXT).build();
     LanguageServiceClient languageService = LanguageServiceClient.create();
