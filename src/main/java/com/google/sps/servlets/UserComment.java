@@ -23,7 +23,7 @@ public class UserComment {
   private String commentMsg;
   private DateTime publishDate;
 
-  public UserComment(CommentThread commentThread) {
+  UserComment(CommentThread commentThread) {
     Comment topLevelComment =  commentThread.getSnippet().getTopLevelComment();
     this.commentId = topLevelComment.getId();
     this.commentMsg = topLevelComment.getSnippet().getTextDisplay();

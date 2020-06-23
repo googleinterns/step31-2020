@@ -14,25 +14,32 @@
 
 package com.google.sps.servlets;
 
-
+import com.google.api.services.youtube.model.CommentThread;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
 import java.io.IOException;
-import com.google.api.services.youtube.model.CommentThread;
 
+// This class encapsulates the each element in json comment array into separate user comment object
+// and do sentiment analysis on each of them
 public class CommentAnalysis {
-  // This class encapsulates the each element in json comment array into separate user comment object
-  // and do sentiment analysis on each of them
-
   UserComment comment;
 
-  public CommentAnalysis(CommentThread originalComment){
+  public CommentAnalysis(CommentThread originalComment) {
     comment = new UserComment(originalComment);
   }
 
+  /**
+   * Perform sentiment analysis of comment.
+   * @return sentiment score
+   * @throws IOException if the sentiment analysis API is not working, throw the IOExeption
+   */
   public float sentiAnalysis() throws IOException {
+    // TODO: Since the sentiment analysis API is not working here,
+    //  just add a check to see if succesfully receive the comments.
     System.out.println(comment.getCommentMsg());
+
+    // Start Sentiment Analysis Service.
     Document doc = Document.newBuilder().setContent(comment.getCommentMsg())
                        .setType(Document.Type.PLAIN_TEXT).build();
     LanguageServiceClient languageService = LanguageServiceClient.create();

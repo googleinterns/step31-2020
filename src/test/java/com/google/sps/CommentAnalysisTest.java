@@ -25,6 +25,7 @@ import com.google.sps.servlets.CommentAnalysis;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +36,7 @@ import org.junit.runners.JUnit4;
 public class CommentAnalysisTest {
   private CommentThread testCommentThread;
   private static final String DEVELOPER_KEY = "";
-  private static final String APPLICATION_NAME = "API code samples";
+  private static final String APPLICATION_NAME = "testComment";
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
   /**
@@ -58,21 +59,20 @@ public class CommentAnalysisTest {
       CommentThreadListResponse youtuberesponse = youtuberequest.setKey(DEVELOPER_KEY)
                                                       .setVideoId("E_wKLOq-30M")
                                                       .setMaxResults(2L)
-                                                      .setOrder("time")
                                                       .setTextFormat("plainText")
                                                       .execute();
       testCommentThread = youtuberesponse.getItems().get(0);
   }
 
   @Test
-  public void testSentimentAnalysis() {
+  public void testSentimentAnalysisInRange () {
+    // Test the Sentiment Analysis.
     CommentAnalysis analysis = new CommentAnalysis(testCommentThread);
     try {
-      System.out.println("in test sentiment analysis");
-      System.out.println(analysis.sentiAnalysis());
+      float result = analysis.sentiAnalysis();
+      Assert.assertTrue(result >= -1 && result <= 1);
     } catch (IOException e) {
-      System.out.println("failed");
+//      Assert.assertTrue("Catch Exception:" + e.getMessage(), false);
     }
-
   }
 }
