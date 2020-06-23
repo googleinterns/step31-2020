@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet that fetch from Youtube Server.
  */
-@WebServlet("/userLogIn")
+@WebServlet("/YouTubeComments")
 public class YoutubeServlet extends HttpServlet {
   private static final String DEVELOPER_KEY = "OUR_API_KEY"; //TODO: obtain actual API Key
 
