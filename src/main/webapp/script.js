@@ -22,33 +22,33 @@ const CHART_HEIGHT = 400;
  * Fetches data and adds to html
  */
 function getChart() {
-      const data = new google.visualization.DataTable();
-      data.addColumn('string', 'Range');
-      data.addColumn('number', 'Count');
-        // TODO: change hardcoded data to sentiment scores (once that part is finished)
-        data.addRows([
-            ['-1.0', null],
-            [null, 1],
-            ['-0.8', null],
-            [null, 1],
-            ['-0.6', null],
-            [null, 4],
-            ['-0.4', null],
-            [null, 5],
-            ['-0.2', null],
-            [null, 10],
-            ['0.0', null],
-            [null, 10],
-            ['0.2', null],
-            [null, 10],
-            ['0.4', null],
-            [null, 10],
-            ['0.6', null],
-            [null, 15],
-            ['0.8', null],
-            [null, 15],
-            ['1.0', null]
-        ]);
+    const data = new google.visualization.DataTable();
+    data.addColumn('string', 'Range');
+    data.addColumn('number', 'Count');
+    // TODO: change hardcoded data to sentiment scores (once that part is finished)
+    data.addRows([
+        ['-1.0', null],
+        [null, 1],
+        ['-0.8', null],
+        [null, 1],
+        ['-0.6', null],
+        [null, 4],
+        ['-0.4', null],
+        [null, 5],
+        ['-0.2', null],
+        [null, 10],
+        ['0.0', null],
+        [null, 10],
+        ['0.2', null],
+        [null, 10],
+        ['0.4', null],
+        [null, 10],
+        ['0.6', null],
+        [null, 15],
+        ['0.8', null],
+        [null, 15],
+        ['1.0', null]
+    ]);
 
     const options = {
       'title': 'Comment Sentiment Range',
