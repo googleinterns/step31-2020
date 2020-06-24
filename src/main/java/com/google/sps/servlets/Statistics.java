@@ -25,4 +25,12 @@ public class Statistics {
     this.aggregateValues = aggregateValues;
     this.averageScore = averageScore;
   }
+
+  public List<Double> getAggregateValues() {
+    return aggregateValues;
+  }
+
+  public Double getAverageScore() {
+    return averageScore;
+  }
 } 
