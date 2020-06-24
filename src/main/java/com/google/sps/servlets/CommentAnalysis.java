@@ -23,7 +23,7 @@ import java.io.IOException;
 // This class encapsulates the each element in json comment array into separate user comment object
 // and do sentiment analysis on each of them
 public class CommentAnalysis {
-  UserComment comment;
+  private UserComment comment;
 
   public CommentAnalysis(CommentThread originalComment) {
     comment = new UserComment(originalComment);
@@ -40,6 +40,7 @@ public class CommentAnalysis {
     System.out.println(comment.getCommentMsg());
 
     // Start Sentiment Analysis Service.
+    // TODO: Test the language service client once deployed and merged with Front End
     Document doc = Document.newBuilder().setContent(comment.getCommentMsg())
                        .setType(Document.Type.PLAIN_TEXT).build();
     LanguageServiceClient languageService = LanguageServiceClient.create();

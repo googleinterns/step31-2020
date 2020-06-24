@@ -35,8 +35,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class CommentAnalysisTest {
   private CommentThread testCommentThread;
-  private static final String DEVELOPER_KEY = "";
   private static final String APPLICATION_NAME = "testComment";
+  private static final String DEVELOPER_KEY = "";
+  private static final String TEST_VIDEO_ID = "E_wKLOq-30M";
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
   /**
@@ -57,7 +58,7 @@ public class CommentAnalysisTest {
       YouTube youtubeService = getService();
       YouTube.CommentThreads.List youtuberequest = youtubeService.commentThreads().list("snippet");
       CommentThreadListResponse youtuberesponse = youtuberequest.setKey(DEVELOPER_KEY)
-                                                      .setVideoId("E_wKLOq-30M")
+                                                      .setVideoId(TEST_VIDEO_ID)
                                                       .setMaxResults(2L)
                                                       .setTextFormat("plainText")
                                                       .execute();
@@ -66,13 +67,13 @@ public class CommentAnalysisTest {
 
   @Test
   public void testSentimentAnalysisInRange () {
-    // Test the Sentiment Analysis.
+    // Test the Sentiment Analysis Score within range -1 to 1.
     CommentAnalysis analysis = new CommentAnalysis(testCommentThread);
     try {
       float result = analysis.sentiAnalysis();
       Assert.assertTrue(result >= -1 && result <= 1);
     } catch (IOException e) {
-//      Assert.assertTrue("Catch Exception:" + e.getMessage(), false);
+      Assert.assertTrue("Catch Exception:" + e.getMessage(), false);
     }
   }
 }
