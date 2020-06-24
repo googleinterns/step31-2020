@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Statistics {
-  // aggregated score for a list of comments  
-  // contains number of scores in range -1 to 1 with 0.2 intervals
+  // Aggregated score for a list of comments  
+  // Contains sentiment scores in the range [-1, 1] with 0.2 intervals.
   private List<Double> aggregateValues;
   private double averageScore;
 
