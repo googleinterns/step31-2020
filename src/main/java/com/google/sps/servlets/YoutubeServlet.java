@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -63,7 +64,7 @@ public class YoutubeServlet extends HttpServlet {
           .setOrder(ORDER_PARAMETER)
           .setMaxResults(COMMENT_LIMIT)
           .execute();
-      Statistics statistics = new Statistics(new List<Double>(),0);
+      Statistics statistics = new Statistics(new ArrayList<Double>(),0);
       String json = new Gson.toJson(statistics);
       response.getWriter().println(json);
     } catch (GeneralSecurityException | GoogleJsonResponseException e) { 
