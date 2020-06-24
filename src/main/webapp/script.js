@@ -28,7 +28,7 @@ function cleanseUrl(url) {
   videoId = (videoId.length > 1) ? videoId[1].split("&")[0] : videoId[0];
 
   // Remove parameter name to isolate video Id.
-  videoId=videoId.replace("v=", "");
+  videoId = videoId.replace("v=", "");
   
   return videoId;
 }

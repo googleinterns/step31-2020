@@ -60,8 +60,8 @@ public class YoutubeServlet extends HttpServlet {
           .execute();
       response.getWriter().println(commentResponse);
     } catch (GeneralSecurityException | GoogleJsonResponseException e) { 
-        System.err.println("Error in retrieving YouTube Comments!");
-        System.err.println(e.getMessage());
+      System.err.println("Error in retrieving YouTube Comments!");
+      System.err.println(e.getMessage());
     }
   }
 
