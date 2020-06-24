@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.servlets;
+package com.google.sps.servlets.util;
 
 import com.google.api.client.util.DateTime;
 import com.google.api.services.youtube.model.Comment;
@@ -22,6 +22,9 @@ public class UserComment {
   private String commentId;
   private String commentMsg;
   private DateTime publishDate;
+  private Double sentimentScore;
+
+
 
   UserComment(CommentThread commentThread) {
     Comment topLevelComment =  commentThread.getSnippet().getTopLevelComment();
@@ -52,6 +55,14 @@ public class UserComment {
 
   public void setPublishDate(DateTime publishDate) {
     this.publishDate = publishDate;
+  }
+
+  public Double getSentimentScore() {
+    return sentimentScore;
+  }
+
+  public void setSentimentScore(Double sentimentScore) {
+    this.sentimentScore = sentimentScore;
   }
 
 }

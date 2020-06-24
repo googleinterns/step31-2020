@@ -12,21 +12,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.servlets;
+package com.google.sps.servlets.util;
 
 import com.google.api.services.youtube.model.CommentThread;
+import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
 import java.io.IOException;
+import java.util.ArrayList;
 
 // This class encapsulates the each element in json comment array into separate user comment object
 // and do sentiment analysis on each of them
 public class CommentAnalysis {
-  private UserComment comment;
+  CommentThreadListResponse youtuberesponse;
+  private LanguageServiceClient languageService;
 
-  public CommentAnalysis(CommentThread originalComment) {
-    comment = new UserComment(originalComment);
+  public CommentAnalysis(CommentThreadListResponse youtuberesponse) throws IOException {
+    this.youtuberesponse = youtuberesponse;
+    this.languageService = LanguageServiceClient.create();
+  }
+
+  public Statistics computeOverallStats() {
+    ArrayList<Double> aggregatedValues = new ArrayList<>();
+    for (CommentThread commentThread: youtuberesponse.getItems()) {
+      UserComment userComment = new UserComment(commentThread);
+      try {
+        aggregatedValues.add(this.sentiAnalysisScore(userComment));
+      } catch (IOException e) {
+        aggregatedValues.add(0.0);
+      }
+    }
+    double avgScore = aggregatedValues.stream().mapToDouble(i -> i).average().orElse(0);
+    return new Statistics(aggregatedValues, avgScore);
   }
 
   /**
@@ -34,7 +52,8 @@ public class CommentAnalysis {
    * @return sentiment score
    * @throws IOException if the sentiment analysis API is not working, throw the IOExeption
    */
-  public float sentiAnalysis() throws IOException {
+  public double sentiAnalysisScore(UserComment comment) throws IOException {
+
     // TODO: Since the sentiment analysis API is not working here,
     //  just add a check to see if succesfully receive the comments.
     System.out.println(comment.getCommentMsg());
@@ -43,10 +62,13 @@ public class CommentAnalysis {
     // TODO: Test the language service client once deployed and merged with Front End
     Document doc = Document.newBuilder().setContent(comment.getCommentMsg())
                        .setType(Document.Type.PLAIN_TEXT).build();
-    LanguageServiceClient languageService = LanguageServiceClient.create();
     Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
-    float score = sentiment.getScore();
-    languageService.close();
+    double score = (double) sentiment.getScore();
+    comment.setSentimentScore(score);
     return score;
+  }
+
+  public void closeLangauge() {
+    languageService.close();
   }
 }
