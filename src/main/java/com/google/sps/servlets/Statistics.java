@@ -20,10 +20,10 @@ import java.util.List;
 public class Statistics {
   // aggregated score for a list of comments  
   // contains number of scores in range -1 to 1 with 0.2 intervals
-  private List<double> aggregateValues;
+  private List<Double> aggregateValues;
   private double averageScore;
 
-  public Statistics(List<double> aggregateValues, double averageScore) {
+  public Statistics(List<Double> aggregateValues, double averageScore) {
     this.aggregateValues = aggregateValues;
     this.averageScore = averageScore;
   }
