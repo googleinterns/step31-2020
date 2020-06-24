@@ -11,3 +11,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+package com.google.sps.servlets;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+
+/**
+ * Servlet that fetch from Youtube Server.
+ */
+@WebServlet("/userLogIn")
+public class YoutubeServlet extends HttpServlet {
+}
