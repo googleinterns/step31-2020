@@ -18,19 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Statistics {
+  // aggregated score for a list of comments  
   private List<Double> aggregateValues;
   private Double averageScore;
 
   public Statistics(List<Double> aggregateValues, double averageScore) {
     this.aggregateValues = aggregateValues;
     this.averageScore = averageScore;
-  }
-
-  public List<Double> getAggregateValues() {
-    return aggregateValues;
-  }
-
-  public Double getAverageScore() {
-    return averageScore;
   }
 } 
