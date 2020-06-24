@@ -16,8 +16,8 @@ function getYouTubeComments() {
   const urlInput = document.getElementById('url-entry');
   var url = cleanseUrl(urlInput.value);
   fetch("/YouTubeComments?url="+url)
-    .then(response => response.json()).then((comments) =>{
-      return comments;
+      .then(response => response.json()).then((comments) =>{
+        return comments;
     });
 }
 
@@ -28,8 +28,7 @@ function cleanseUrl(url) {
   videoId = (videoId.length > 1) ? videoId[1].split("&")[0] : videoId[0];
 
   // Remove parameter name to isolate video Id.
-  if(videoId.includes("v=")) { 
-    videoId=videoId.replace("v=","");
-  }
+  videoId=videoId.replace("v=", "");
+  
   return videoId;
 }

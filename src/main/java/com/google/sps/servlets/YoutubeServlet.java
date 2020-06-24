@@ -19,32 +19,34 @@ import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-
 import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.api.services.youtube.YouTube;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Collection;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet that fetch from Youtube Server.
+ * Servlet that fetches from Youtube Server.
  */
 @WebServlet("/YouTubeComments")
 public class YoutubeServlet extends HttpServlet {
-  private static final String DEVELOPER_KEY = "OUR_API_KEY"; //TODO: obtain actual API Key
+  // TODO: obtain actual API Key
+  private static final String DEVELOPER_KEY = "OUR_API_KEY"; 
   private static final String APPLICATION_NAME = "SAY";
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
+  /**
+   * Applies parameters to the YouTube API, then extracts comments.
+   * URL is the only true variable; for this application we will always want
+   * order to be relevance and max results to be 100, the API's arbitrary limit
+   */
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws IOException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
       YouTube youtubeService = getService();
       String url = request.getParameter("url");
@@ -57,7 +59,7 @@ public class YoutubeServlet extends HttpServlet {
           .setMaxResults(100L)
           .execute();
       response.getWriter().println(commentResponse);
-    } catch(GeneralSecurityException | GoogleJsonResponseException e) { 
+    } catch (GeneralSecurityException | GoogleJsonResponseException e) { 
         System.err.println("Error in retrieving YouTube Comments!");
         System.err.println(e.getMessage());
     }
