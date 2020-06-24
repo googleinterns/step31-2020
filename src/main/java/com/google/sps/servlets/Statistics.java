@@ -15,13 +15,14 @@
 package com.google.sps.servlets.utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Statistics {
-  private List<Double> values;
-  private Double average;
+  private List<Double> aggregateValues;
+  private Double averageScore;
 
-  public Statistics() {
-      this.values = new List<Double>();
-      average = 0;
+  public Statistics(List<Double> aggregateValues, double averageScore) {
+    this.aggregateValues = aggregateValues;
+    this.averageScore = averageScore;
   }
 } 
