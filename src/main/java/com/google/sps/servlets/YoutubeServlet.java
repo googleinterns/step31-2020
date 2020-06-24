@@ -21,6 +21,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.api.services.youtube.YouTube;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
@@ -62,7 +63,9 @@ public class YoutubeServlet extends HttpServlet {
           .setOrder(ORDER_PARAMETER)
           .setMaxResults(COMMENT_LIMIT)
           .execute();
-      response.getWriter().println(commentResponse);
+      Statistics statistics = new Statistics();
+      String json = new Gson.toJson(statistics);
+      response.getWriter().println(json);
     } catch (GeneralSecurityException | GoogleJsonResponseException e) { 
       System.err.println("Error in retrieving YouTube Comments!");
       System.err.println(e.getMessage());
