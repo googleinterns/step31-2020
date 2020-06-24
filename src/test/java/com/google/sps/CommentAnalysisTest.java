@@ -20,7 +20,8 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
-import com.google.sps.servlets.util.CommentAnalysis;
+import com.google.sps.servlets.utils.CommentAnalysis;
+import com.google.sps.servlets.utils.Statistics;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -35,7 +36,7 @@ import org.junit.runners.JUnit4;
 public class CommentAnalysisTest {
   private CommentThreadListResponse youtuberesponse;
   private static final String APPLICATION_NAME = "testComment";
-  private static final String DEVELOPER_KEY = "";
+  private static final String DEVELOPER_KEY = "AIzaSyDLE0TsAmPxbF_D_t3J4-aqBuFKs4chMgM";
   private static final String TEST_VIDEO_ID = "E_wKLOq-30M";
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
@@ -70,7 +71,7 @@ public class CommentAnalysisTest {
     try {
       CommentAnalysis analysis = new CommentAnalysis(youtuberesponse);
       Statistics result = analysis.computeOverallStats();
-      Assert.assertTrue(result >= -1 && result <= 1);
+      Assert.assertTrue(result.getAverageScore() >= -1 && result.getAverageScore() <= 1);
     } catch (IOException e) {
       Assert.assertTrue("Catch Exception:" + e.getMessage(), false);
     }

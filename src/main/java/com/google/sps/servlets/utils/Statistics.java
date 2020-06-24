@@ -12,3 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+package com.google.sps.servlets.utils;
+
+import java.util.List;
+
+public class Statistics {
+  // Aggregated score for a list of comments  
+  // Contains sentiment scores in the range [-1, 1] with 0.2 intervals.
+  private List<Double> aggregateValues;
+  private double averageScore;
+
+  public double getAverageScore() {
+    return averageScore;
+  }
+
+  public List<Double> getAggregateValues() {
+    return aggregateValues;
+  }
+
+  public Statistics(List<Double> aggregateValues, double averageScore) {
+    this.aggregateValues = aggregateValues;
+    this.averageScore = averageScore;
+  }
+} 
