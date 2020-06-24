@@ -35,6 +35,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/YouTubeComments")
 public class YoutubeServlet extends HttpServlet {
+  private static final String URL_PARAMETER = "url";
+  private static final String SNIPPET_PARAMETER = "snippet,replies";
+  private static final String ORDER_PARAMETER = "relevance";
+  private static final Long COMMENT_LIMIT = 100L;
   // TODO: obtain actual API Key
   private static final String DEVELOPER_KEY = "OUR_API_KEY"; 
   private static final String APPLICATION_NAME = "SAY";
@@ -49,14 +53,14 @@ public class YoutubeServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
       YouTube youtubeService = getService();
-      String url = request.getParameter("url");
+      String url = request.getParameter(URL_PARAMETER);
       // Define and execute the API request
       YouTube.CommentThreads.List commentRequest = youtubeService.commentThreads()
-          .list("snippet,replies");
+          .list(SNIPPET_PARAMETER);
       CommentThreadListResponse commentResponse = commentRequest.setKey(DEVELOPER_KEY)
           .setVideoId(url)
-          .setOrder("relevance")
-          .setMaxResults(100L)
+          .setOrder(ORDER_PARAMETER)
+          .setMaxResults(COMMENT_LIMIT)
           .execute();
       response.getWriter().println(commentResponse);
     } catch (GeneralSecurityException | GoogleJsonResponseException e) { 
