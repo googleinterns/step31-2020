@@ -63,7 +63,7 @@ public class YoutubeServlet extends HttpServlet {
           .setOrder(ORDER_PARAMETER)
           .setMaxResults(COMMENT_LIMIT)
           .execute();
-      Statistics statistics = new Statistics();
+      Statistics statistics = new Statistics(new List<Double>(),0);
       String json = new Gson.toJson(statistics);
       response.getWriter().println(json);
     } catch (GeneralSecurityException | GoogleJsonResponseException e) { 
