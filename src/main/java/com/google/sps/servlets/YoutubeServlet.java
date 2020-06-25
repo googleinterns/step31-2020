@@ -38,7 +38,7 @@ public class YoutubeServlet extends HttpServlet {
   private static final Long COMMENT_LIMIT = 100L;
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   private static final String URL_PARAMETER = "url";
-  // Parameters required by the API to retrieve the correct information
+  // Parameters required by YouTube API to retrieve the comment threads
   private static final String SNIPPET_PARAMETERS = "snippet,replies";
   private static final String ORDER_PARAMETER = "relevance";
   // TODO: obtain actual API Key
