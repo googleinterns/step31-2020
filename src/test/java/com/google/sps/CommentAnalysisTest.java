@@ -56,19 +56,15 @@ public class CommentAnalysisTest {
   public static YouTube getService() throws GeneralSecurityException, IOException {
     final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
-               .setApplicationName(APPLICATION_NAME)
-               .build();
+               .setApplicationName(APPLICATION_NAME).build();
   }
 
   @Before
   public void setUp() throws GeneralSecurityException, IOException{
     YouTube youtubeService = getService();
     YouTube.CommentThreads.List youtuberequest = youtubeService.commentThreads().list(SNIPPET);
-    youtuberesponse = youtuberequest.setKey(DEVELOPER_KEY)
-                                      .setVideoId(TEST_VIDEO_ID)
-                                      .setMaxResults(2L)
-                                      .setTextFormat("plainText")
-                                      .execute();
+    youtuberesponse = youtuberequest.setKey(DEVELOPER_KEY).setVideoId(TEST_VIDEO_ID)
+                                      .setMaxResults(2L).setTextFormat("plainText").execute();
     analysis = new CommentAnalysis(youtuberesponse);
   }
 
