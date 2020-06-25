@@ -21,24 +21,22 @@ import java.util.Map;
 
 public class Statistics {
   // Aggregated score for a list of comments  
-  // Contains number of sentiment scores in the range [-1, 1] with 0.2 intervals.
-  private List<Double> sentimentScores;
   private Map<Range, Integer> aggregateValues;
   private double averageScore;
 
   public Statistics(List<Double> sentimentScores) {
     this.sentimentScores = sentimentScores;
-    getAggregateScores();
-    getAverageScore();
+    getAggregateScores(sentimentScores);
+    getAverageScore(sentimentScores);
   }
 
-  private void getAggregateScores() {
+  private void setAggregateScores(List<Double> sentimentScores) {
     // TODO: Add sorting code (Xin)
     aggregateValues = new HashMap<>();
     map.put(new Range(-1.0, 1), 1);
   }
 
-  private void getAverageScore() {
+  private void setAverageScore(List<Double> sentimentScores) {
     // TODO: Add average score method (Xin)
     averageScore = 0;  
   }
