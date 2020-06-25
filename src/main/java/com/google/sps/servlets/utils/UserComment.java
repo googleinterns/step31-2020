@@ -24,8 +24,6 @@ public class UserComment {
   private DateTime publishDate;
   private Double sentimentScore;
 
-
-
   UserComment(CommentThread commentThread) {
     Comment topLevelComment =  commentThread.getSnippet().getTopLevelComment();
     this.commentId = topLevelComment.getId();
@@ -37,24 +35,12 @@ public class UserComment {
     return commentId;
   }
 
-  public void setCommentId(String commentId) {
-    this.commentId = commentId;
-  }
-
   public String getCommentMsg() {
     return commentMsg;
   }
 
-  public void setCommentMsg(String commentMsg) {
-    this.commentMsg = commentMsg;
-  }
-
   public DateTime getPublishDate() {
     return publishDate;
-  }
-
-  public void setPublishDate(DateTime publishDate) {
-    this.publishDate = publishDate;
   }
 
   public Double getSentimentScore() {
