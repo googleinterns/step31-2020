@@ -70,7 +70,6 @@ public class YoutubeServlet extends HttpServlet {
     } catch (Exception e) { 
       throw new ServletException("Unable to fetch YouTube Comments", e);
       e.printStackTrace(System.err);
-      // System.err.println(e.getMessage());
     }
   }
 
