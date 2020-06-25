@@ -18,7 +18,7 @@ public class Range {
   private double inclusiveStart;
   private double exclusiveEnd;
 
-  public Statistics(double inclusiveStart, double exclusiveEnd) {
+  public Range(double inclusiveStart, double exclusiveEnd) {
     this.inclusiveStart = inclusiveStart;
     this.exclusiveEnd = exclusiveEnd;
   }

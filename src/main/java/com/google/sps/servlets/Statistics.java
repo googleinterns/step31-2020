@@ -15,28 +15,31 @@
 package com.google.sps.servlets;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Statistics {
   // Aggregated score for a list of comments  
   // Contains number of sentiment scores in the range [-1, 1] with 0.2 intervals.
   private List<Double> sentimentScores;
-  private List<Integer> aggregateValues;
+  private Map<Range, Integer> aggregateValues;
   private double averageScore;
 
-  public Statistics(List<double> sentimentScores) {
+  public Statistics(List<Double> sentimentScores) {
     this.sentimentScores = sentimentScores;
-    this.aggregateValues = getAggregateScores();
-    this.averageScore = getAverageScore();
+    getAggregateScores();
+    getAverageScore();
   }
 
-  private List<Integer> getAggregateScores() {
+  private void getAggregateScores() {
     // TODO: Add sorting code (Xin)
-    return new ArrayList<Integer>();
+    aggregateValues = new HashMap<>();
+    map.put(new Range(-1.0, 1), 1);
   }
 
-  private double getAverageScore() {
+  private void getAverageScore() {
     // TODO: Add average score method (Xin)
-    return 0;  
+    averageScore = 0;  
   }
 } 
