@@ -23,6 +23,7 @@ import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.api.services.youtube.YouTube;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.lang.Exception.ServletException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
@@ -66,8 +67,10 @@ public class YoutubeServlet extends HttpServlet {
       String json = new Gson().toJson(statistics);
       response.setContentType("application/json");
       response.getWriter().println(json);
-    } catch (GeneralSecurityException | GoogleJsonResponseException e) { 
-      System.err.println(e.getMessage());
+    } catch (Exception e) { 
+      throw new ServletException("Unable to fetch YouTube Comments", e);
+      e.printStackTrace(System.err);
+      // System.err.println(e.getMessage());
     }
   }
 
@@ -78,7 +81,7 @@ public class YoutubeServlet extends HttpServlet {
    * @throws GeneralSecurityException, IOException
    * 
    */
-  public static YouTube getService() throws GeneralSecurityException, IOException {
+  private static YouTube getService() throws GeneralSecurityException, IOException {
     final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
         .setApplicationName(APPLICATION_NAME)
