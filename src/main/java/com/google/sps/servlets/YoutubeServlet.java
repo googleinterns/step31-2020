@@ -68,8 +68,8 @@ public class YoutubeServlet extends HttpServlet {
       response.setContentType("application/json");
       response.getWriter().println(json);
     } catch (Exception e) { 
-      throw new ServletException("Unable to fetch YouTube Comments", e);
       e.printStackTrace(System.err);
+      throw new ServletException("Unable to fetch YouTube Comments Through Servlet.", e);
     }
   }
 
