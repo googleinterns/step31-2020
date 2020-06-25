@@ -46,10 +46,10 @@ public class CommentAnalysis {
     ArrayList<Double> scoreValues = new ArrayList<>();
     for (CommentThread commentThread: youtuberesponse.getItems()) {
       UserComment userComment = new UserComment(commentThread);
-      scoreValues.add(this.sentiAnalysisScore(userComment));
+      scoreValues.add(sentiAnalysisScore(userComment));
     }
     double avgScore = scoreValues.stream().mapToDouble(i -> i).average().orElse(0);
-    return new Statistics(this.categorizeInterval(scoreValues), avgScore);
+    return new Statistics(categorizeInterval(scoreValues), avgScore);
   }
 
   /**
