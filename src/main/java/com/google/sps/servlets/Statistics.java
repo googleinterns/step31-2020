@@ -20,11 +20,23 @@ import java.util.List;
 public class Statistics {
   // Aggregated score for a list of comments  
   // Contains number of sentiment scores in the range [-1, 1] with 0.2 intervals.
+  private List<Double> sentimentScores;
   private List<Integer> aggregateValues;
   private double averageScore;
 
-  public Statistics(List<Integer> aggregateValues, double averageScore) {
-    this.aggregateValues = aggregateValues;
-    this.averageScore = averageScore;
+  public Statistics(List<double> sentimentScores) {
+    this.sentimentScores = sentimentScores;
+    this.aggregateValues = getAggregateScores();
+    this.averageScore = getAverageScore();
+  }
+
+  private List<Integer> getAggregateScores() {
+    // TODO: Add sorting code (Xin)
+    return new ArrayList<Integer>();
+  }
+
+  private double getAverageScore() {
+    // TODO: Add average score method (Xin)
+    return 0;  
   }
 } 
