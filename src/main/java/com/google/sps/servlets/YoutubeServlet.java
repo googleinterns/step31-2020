@@ -35,14 +35,14 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/YouTubeComments")
 public class YoutubeServlet extends HttpServlet {
+  private static final Long COMMENT_LIMIT = 100L;
+  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   private static final String URL_PARAMETER = "url";
   private static final String SNIPPET_PARAMETER = "snippet,replies";
   private static final String ORDER_PARAMETER = "relevance";
-  private static final Long COMMENT_LIMIT = 100L;
   // TODO: obtain actual API Key
   private static final String DEVELOPER_KEY = "OUR_API_KEY"; 
   private static final String APPLICATION_NAME = "SAY";
-  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
   /**
    * Applies parameters to the YouTube API, then extracts comments.
@@ -62,7 +62,7 @@ public class YoutubeServlet extends HttpServlet {
           .setOrder(ORDER_PARAMETER)
           .setMaxResults(COMMENT_LIMIT)
           .execute();
-      Statistics statistics = new Statistics(new ArrayList<Double>(),0);
+      Statistics statistics = new Statistics(new ArrayList<Double>(), 0);
       String json = new Gson().toJson(statistics);
       response.setContentType("application/json");
       response.getWriter().println(json);
