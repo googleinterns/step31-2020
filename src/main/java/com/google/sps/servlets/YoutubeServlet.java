@@ -55,7 +55,6 @@ public class YoutubeServlet extends HttpServlet {
     try {
       YouTube youtubeService = getService();
       String url = request.getParameter(URL_PARAMETER);
-      // Define and execute the API request
       YouTube.CommentThreads.List commentRequest = youtubeService.commentThreads()
           .list(SNIPPET_PARAMETERS);
       CommentThreadListResponse commentResponse = commentRequest.setKey(DEVELOPER_KEY)
