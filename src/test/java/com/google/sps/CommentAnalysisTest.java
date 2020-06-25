@@ -42,9 +42,12 @@ public class CommentAnalysisTest {
   private CommentAnalysis analysis;
   private static final String APPLICATION_NAME = "testComment";
   private static final String DEVELOPER_KEY = "AIzaSyDLE0TsAmPxbF_D_t3J4-aqBuFKs4chMgM";
+  private static final String PLAINTEXT = "plainText";
+  private static final String SNIPPET = "snippet";
   private static final String TEST_VIDEO_ID = "E_wKLOq-30M";
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-  private static final String SNIPPET = "snippet";
+
+
 
 
   /**
@@ -64,7 +67,7 @@ public class CommentAnalysisTest {
     YouTube youtubeService = getService();
     YouTube.CommentThreads.List youtuberequest = youtubeService.commentThreads().list(SNIPPET);
     youtuberesponse = youtuberequest.setKey(DEVELOPER_KEY).setVideoId(TEST_VIDEO_ID)
-                                      .setMaxResults(2L).setTextFormat("plainText").execute();
+                                      .setMaxResults(2L).setTextFormat(PLAINTEXT).execute();
     analysis = new CommentAnalysis(youtuberesponse);
   }
 
