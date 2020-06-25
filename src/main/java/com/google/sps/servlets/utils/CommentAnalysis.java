@@ -92,7 +92,7 @@ public class CommentAnalysis {
     return aggregatedValues;
   }
 
-  public void closeLangauge() {
+  public void closeLanguage() {
     languageService.close();
   }
 }
