@@ -22,10 +22,6 @@ const CHART_HEIGHT = 400;
  * Fetches data and adds to html
  */
 function getChart() {
-    fetch('./userLogIn').then(response => response.text()).then((quote) => {
-        console.log("connect backend and front end");
-        console.log(quote);
-    });
     const data = new google.visualization.DataTable();
     data.addColumn('string', 'Range');
     data.addColumn('number', 'Count');
