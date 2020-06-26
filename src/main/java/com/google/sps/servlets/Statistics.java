@@ -30,7 +30,7 @@ public class Statistics {
   }
 
   private void setAggregateScores(List<Double> sentimentScores) {
-    // TODO(Xin): Add sorting code (Xin)
+    // TODO(Xin): Add sorting code
     aggregateValues = new HashMap<>();
     aggregateValues.put(new Range(-1.0, 1), 1);
   }
