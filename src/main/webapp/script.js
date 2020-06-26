@@ -20,7 +20,7 @@ const CHART_HEIGHT = 400;
 
 function getYouTubeComments() { 
   const urlInput = document.getElementById('url-entry');
-  var url = cleanseUrl(urlInput.value);
+  const url = cleanseUrl(urlInput.value);
   fetch("/YouTubeComments?url="+url)
       .then(response => response.json()).then((comments) =>{
         return comments;
