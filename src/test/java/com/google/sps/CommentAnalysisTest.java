@@ -70,19 +70,19 @@ public class CommentAnalysisTest {
 
   @Before
   public void setUp() throws GeneralSecurityException, IOException{
-//    YouTube youtubeService = getService();
-//    YouTube.CommentThreads.List youtuberequest = youtubeService.commentThreads().list(SNIPPET);
-//    youtuberesponse = youtuberequest.setKey(DEVELOPER_KEY).setVideoId(TEST_VIDEO_ID)
-//                                      .setMaxResults(2L).setTextFormat(PLAINTEXT).execute();
-//    analysis = new CommentAnalysis(youtuberesponse);
+    YouTube youtubeService = getService();
+    YouTube.CommentThreads.List youtuberequest = youtubeService.commentThreads().list(SNIPPET);
+    youtuberesponse = youtuberequest.setKey(DEVELOPER_KEY).setVideoId(TEST_VIDEO_ID)
+                                      .setMaxResults(2L).setTextFormat(PLAINTEXT).execute();
+    analysis = new CommentAnalysis(youtuberesponse);
   }
 
-//  @Test
-//  public void testSentimentAnalysisInRange() {
-//    // Test the Sentiment Analysis Score within range -1 to 1.
-//    Statistics result = analysis.computeOverallStats();
-//    Assert.assertTrue(result.getAverageScore() >= -1 && result.getAverageScore() <= 1);
-//  }
+  @Test
+  public void testSentimentAnalysisInRange() {
+    // Test the Sentiment Analysis Score within range -1 to 1.
+    Statistics result = analysis.computeOverallStats();
+    Assert.assertTrue(result.getAverageScore() >= -1 && result.getAverageScore() <= 1);
+  }
 
   @Test
   public void testCategorizationEdgeCases() {
