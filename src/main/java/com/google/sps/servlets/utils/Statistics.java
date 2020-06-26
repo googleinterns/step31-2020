@@ -14,24 +14,29 @@
 
 package com.google.sps.servlets.utils;
 
+import com.google.sps.servlets.Range;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Statistics {
-  // Aggregated score for a list of comments  
-  // Contains sentiment scores in the range [-1, 1] with 0.2 intervals.
-  private List<Integer> aggregateValues;
+  // Aggregated score for a list of comments
+  private Map<Range, Integer> aggregateValues;
   private double averageScore;
 
-  public double getAverageScore() {
-    return averageScore;
+  public Statistics(List<Double> sentimentScores) {
+    setAggregateScores(sentimentScores);
+    setAverageScore(sentimentScores);
   }
 
-  public List<Integer> getAggregateValues() {
-    return aggregateValues;
+  private void setAggregateScores(List<Double> sentimentScores) {
+    // TODO(Xin): Add sorting code
+    aggregateValues = new HashMap<>();
+    aggregateValues.put(new Range(-1.0, 1), 1);
   }
 
-  public Statistics(List<Integer> aggregateValues, double averageScore) {
-    this.aggregateValues = aggregateValues;
-    this.averageScore = averageScore;
+  private void setAverageScore(List<Double> sentimentScores) {
+    // TODO(Xin): Add average score method
+    averageScore = 0;
   }
 } 
