@@ -13,6 +13,7 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
+
 /**
  * Range for sorting sentiment scores 
  */

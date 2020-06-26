@@ -25,7 +25,6 @@ public class Statistics {
   private double averageScore;
 
   public Statistics(List<Double> sentimentScores) {
-    this.sentimentScores = sentimentScores;
     setAggregateScores(sentimentScores);
     setAverageScore(sentimentScores);
   }
@@ -33,7 +32,7 @@ public class Statistics {
   private void setAggregateScores(List<Double> sentimentScores) {
     // TODO(Xin): Add sorting code (Xin)
     aggregateValues = new HashMap<>();
-    map.put(new Range(-1.0, 1), 1);
+    aggregateValues.put(new Range(-1.0, 1), 1);
   }
 
   private void setAverageScore(List<Double> sentimentScores) {
