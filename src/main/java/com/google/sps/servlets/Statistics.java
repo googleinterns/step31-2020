@@ -12,19 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.servlets.utils;
+package com.google.sps.servlets;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Statistics {
   // Aggregated score for a list of comments  
-  // Contains sentiment scores in the range [-1, 1] with 0.2 intervals.
-  private List<Double> aggregateValues;
+  private Map<Range, Integer> aggregateValues;
   private double averageScore;
 
-  public Statistics(List<Double> aggregateValues, double averageScore) {
-    this.aggregateValues = aggregateValues;
-    this.averageScore = averageScore;
+  public Statistics(List<Double> sentimentScores) {
+    setAggregateScores(sentimentScores);
+    setAverageScore(sentimentScores);
+  }
+
+  private void setAggregateScores(List<Double> sentimentScores) {
+    // TODO(Xin): Add sorting code
+    aggregateValues = new HashMap<>();
+    aggregateValues.put(new Range(-1.0, 1), 1);
+  }
+
+  private void setAverageScore(List<Double> sentimentScores) {
+    // TODO(Xin): Add average score method
+    averageScore = 0;  
   }
 } 
