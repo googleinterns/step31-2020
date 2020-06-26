@@ -78,7 +78,6 @@ public class Statistics {
    * @return the range that contains calculated start and end point
    */
   private Range getInterval(double score) {
-
     // return null for edge cases
     if ((score < -1) || (score > 1)) {
       return null;
