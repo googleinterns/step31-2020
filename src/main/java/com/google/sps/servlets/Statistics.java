@@ -31,13 +31,13 @@ public class Statistics {
   }
 
   private void setAggregateScores(List<Double> sentimentScores) {
-    // TODO: Add sorting code (Xin)
+    // TODO(Xin): Add sorting code (Xin)
     aggregateValues = new HashMap<>();
     map.put(new Range(-1.0, 1), 1);
   }
 
   private void setAverageScore(List<Double> sentimentScores) {
-    // TODO: Add average score method (Xin)
+    // TODO(Xin): Add average score method
     averageScore = 0;  
   }
 } 
