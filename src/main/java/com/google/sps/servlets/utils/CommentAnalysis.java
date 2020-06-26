@@ -48,8 +48,7 @@ public class CommentAnalysis {
       UserComment userComment = new UserComment(commentThread);
       scoreValues.add(sentiAnalysisScore(userComment));
     }
-    double avgScore = scoreValues.stream().mapToDouble(i -> i).average().orElse(0);
-    return new Statistics(categorizeInterval(scoreValues), avgScore);
+    return new Statistics(scoreValues);
   }
 
   /**
@@ -68,28 +67,6 @@ public class CommentAnalysis {
     }
     comment.setSentimentScore(score);
     return score;
-  }
-
-  /**
-   * It categorizes all score values into different intervals of 0.2 from -1.0 to 1.0
-   * and counts the frequency for each interval.
-   * @param scoreValues a list of score values from -1.0 to 1.0
-   * @return a list of 10 integers representing scoreValues' appearance in differnt intervals
-   */
-  public List<Integer> categorizeInterval(List<Double> scoreValues) {
-    List<Integer> aggregatedValues = new ArrayList<>(Collections.nCopies(10, 0));
-    for (Double score: scoreValues) {
-      int index;
-      if ((-1.0 <= score) && (score < 1.0)) {
-        index = (int) Math.floor((score + 1) / 0.2);
-      } else if (score == 1.0) {
-        index = aggregatedValues.size() - 1;
-      } else {
-        continue;
-      }
-      aggregatedValues.set(index, aggregatedValues.get(index) + 1);
-    }
-    return aggregatedValues;
   }
 
   public void closeLanguage() {

@@ -21,6 +21,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.sps.servlets.utils.CommentAnalysis;
+import com.google.sps.servlets.utils.Range;
 import com.google.sps.servlets.utils.Statistics;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -46,9 +47,14 @@ public class CommentAnalysisTest {
   private static final String SNIPPET = "snippet";
   private static final String TEST_VIDEO_ID = "E_wKLOq-30M";
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-
-
-
+  private static final ArrayList<Double> SCOREVALUE_1 = new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
+  private static final ArrayList<Double> SCOREVALUE_2 = new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
+  private static final ArrayList<Double> SCOREVALUE_3 = new ArrayList<>(Arrays.asList(0.5, 0.9,  -0.5, -0.9));
+  private static final ArrayList<Double> SCOREVALUE_4 = new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
+  Statistics testStat_1 = new Statistics(SCOREVALUE_1);
+  Statistics testStat_2 = new Statistics(SCOREVALUE_2);
+  Statistics testStat_3 = new Statistics(SCOREVALUE_3);
+  Statistics testStat_4 = new Statistics(SCOREVALUE_4);
 
   /**
    * Build and return an authorized API client service.
@@ -64,29 +70,34 @@ public class CommentAnalysisTest {
 
   @Before
   public void setUp() throws GeneralSecurityException, IOException{
-    YouTube youtubeService = getService();
-    YouTube.CommentThreads.List youtuberequest = youtubeService.commentThreads().list(SNIPPET);
-    youtuberesponse = youtuberequest.setKey(DEVELOPER_KEY).setVideoId(TEST_VIDEO_ID)
-                                      .setMaxResults(2L).setTextFormat(PLAINTEXT).execute();
-    analysis = new CommentAnalysis(youtuberesponse);
+//    YouTube youtubeService = getService();
+//    YouTube.CommentThreads.List youtuberequest = youtubeService.commentThreads().list(SNIPPET);
+//    youtuberesponse = youtuberequest.setKey(DEVELOPER_KEY).setVideoId(TEST_VIDEO_ID)
+//                                      .setMaxResults(2L).setTextFormat(PLAINTEXT).execute();
+//    analysis = new CommentAnalysis(youtuberesponse);
   }
 
-  @Test
-  public void testSentimentAnalysisInRange() {
-    // Test the Sentiment Analysis Score within range -1 to 1.
-    Statistics result = analysis.computeOverallStats();
-    Assert.assertTrue(result.getAverageScore() >= -1 && result.getAverageScore() <= 1);
-  }
+//  @Test
+//  public void testSentimentAnalysisInRange() {
+//    // Test the Sentiment Analysis Score within range -1 to 1.
+//    Statistics result = analysis.computeOverallStats();
+//    Assert.assertTrue(result.getAverageScore() >= -1 && result.getAverageScore() <= 1);
+//  }
 
   @Test
   public void testCategorizationEdgeCases() {
-    ArrayList<Double> scoreValues_1 = new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
-    ArrayList<Double> scoreValues_2 = new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
-    ArrayList<Double> scoreValues_3 = new ArrayList<>(Arrays.asList(0.5, 0.9,  -0.5, -0.9));
-    ArrayList<Double> scoreValues_4 = new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
-    Assert.assertEquals(analysis.categorizeInterval(scoreValues_1).stream().mapToInt(i -> i).sum(), scoreValues_1.size());
-    Assert.assertEquals(analysis.categorizeInterval(scoreValues_2).stream().mapToInt(i -> i).sum(), scoreValues_2.size());
-    Assert.assertEquals(analysis.categorizeInterval(scoreValues_3).stream().mapToInt(i -> i).sum(), scoreValues_3.size());
-    Assert.assertEquals(analysis.categorizeInterval(scoreValues_4).stream().mapToInt(i -> i).sum(), 0);
+    Assert.assertEquals(testStat_1.getAggregateValues().get(new Range(0,0.2)).intValue(), 4);
+    Assert.assertEquals(testStat_1.getAggregateValues().get(new Range(-0.2,0)).intValue(), 2);
+    Assert.assertEquals(testStat_2.getAggregateValues().get(new Range(-1.0,-0.8)).intValue(), 1);
+    Assert.assertEquals(testStat_2.getAggregateValues().get(new Range(0.8,1)).intValue(), 1);
+    Assert.assertEquals(testStat_4.getAggregateValues().get(new Range(-1.0,-0.8)).intValue(), 0);
+    Assert.assertEquals(testStat_4.getAggregateValues().get(new Range(0.8,1.0)).intValue(), 0);
+  }
+
+  @Test
+  public void testAvgScore() {
+    Assert.assertTrue(testStat_2.getAverageScore() == 0.0);
+    Assert.assertTrue(testStat_3.getAverageScore() == 0.0);
+    Assert.assertTrue(testStat_4.getAverageScore() == 0.0);
   }
 }
