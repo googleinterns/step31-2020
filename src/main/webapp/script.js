@@ -32,6 +32,7 @@ function getYouTubeComments() {
  */ 
 function cleanseUrl(url) {
   // Split web address from parameters, extract first parameter
+  // TODO: Add checks to make this work if video is not first parameter.
   var videoId = url.split("?");
   videoId = (videoId.length > 1) ? videoId[1].split("&")[0] : videoId[0];
 
