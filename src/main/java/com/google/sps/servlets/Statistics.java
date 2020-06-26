@@ -26,8 +26,8 @@ public class Statistics {
 
   public Statistics(List<Double> sentimentScores) {
     this.sentimentScores = sentimentScores;
-    getAggregateScores(sentimentScores);
-    getAverageScore(sentimentScores);
+    setAggregateScores(sentimentScores);
+    setAverageScore(sentimentScores);
   }
 
   private void setAggregateScores(List<Double> sentimentScores) {
