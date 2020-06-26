@@ -56,7 +56,7 @@ public class YoutubeServlet extends HttpServlet {
     try {
       YouTube youtubeService = getService();
       String url = request.getParameter(URL_PARAMETER);
-      CommentThreadListResponse commentResponse = generateYouTubeRequest(url);
+      CommentThreadListResponse commentResponse = generateYouTubeRequest(url).execute();
       // TODO: input commentResponse into commentAnalysis class to get useful data
       Statistics statistics = new Statistics(new ArrayList<Double>(), 0);
       String json = new Gson().toJson(statistics);
@@ -83,14 +83,13 @@ public class YoutubeServlet extends HttpServlet {
   }
   
   // Helper function to simplify generation of YouTube API request.
-  private CommentThreadListResponse generateYouTubeRequest(String url) {
+  private YouTube.CommentThreads.List generateYouTubeRequest(String url) {
     YouTube.CommentThreads.List commentRequest = youtubeService.commentThreads()
         .list(SNIPPET_PARAMETERS);
-    CommentThreadListResponse commentResponse = commentRequest.setKey(DEVELOPER_KEY)
+    return commentRequest.setKey(DEVELOPER_KEY)
         .setVideoId(url)
         .setOrder(ORDER_PARAMETER)
         .setMaxResults(COMMENT_LIMIT)
         .execute();
-    return commentResponse;
   }
 }
