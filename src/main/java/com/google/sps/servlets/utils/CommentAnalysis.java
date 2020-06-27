@@ -23,18 +23,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 /**
  * This class encapsulates the each element in json comment array into separate user comment object
  * and do sentiment analysis on each of them.
  */
 public class CommentAnalysis {
-  private CommentThreadListResponse youtuberesponse;
+  private CommentThreadListResponse youtubeResponse;
   private LanguageServiceClient languageService;
 
-  public CommentAnalysis(CommentThreadListResponse youtuberesponse) throws IOException {
-    this.youtuberesponse = youtuberesponse;
+  public CommentAnalysis(CommentThreadListResponse youtubeResponse) throws IOException {
+    this.youtubeResponse = youtubeResponse;
     this.languageService = LanguageServiceClient.create();
   }
 
@@ -43,11 +43,10 @@ public class CommentAnalysis {
    * @return a Statistics object that contains required values to display
    */
   public Statistics computeOverallStats() {
-    ArrayList<Double> scoreValues = new ArrayList<>();
-    for (CommentThread commentThread: youtuberesponse.getItems()) {
-      UserComment userComment = new UserComment(commentThread);
-      scoreValues.add(sentiAnalysisScore(userComment));
-    }
+    List<Double> scoreValues = youtubeResponse.getItems().stream()
+                                .map(UserComment::new)
+                                .map(this::calculateSentiAnalysisScore)
+                                .collect(Collectors.toList());
     double avgScore = scoreValues.stream().mapToDouble(i -> i).average().orElse(0);
     return new Statistics(categorizeInterval(scoreValues), avgScore);
   }
@@ -57,7 +56,7 @@ public class CommentAnalysis {
    * @return sentiment score
    * @throws IOException if the sentiment analysis API is not working, throw the IOExeption
    */
-  private double sentiAnalysisScore(UserComment comment) {
+  private double calculateSentiAnalysisScore(UserComment comment) {
     // Start Sentiment Analysis Service.
     Document doc = Document.newBuilder().setContent(comment.getCommentMsg())
                        .setType(Document.Type.PLAIN_TEXT).build();
