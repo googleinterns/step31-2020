@@ -25,15 +25,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This class encapsulates the each element in json comment array into separate user comment object
- * and do sentiment analysis on each of them.
+ * This class encapsulates each element in json comment array into separate user comment object
+ * and does sentiment analysis on each of them.
  */
 public class CommentAnalysis {
   private CommentThreadListResponse youtubeResponse;
   private LanguageServiceClient languageService;
 
-  public CommentAnalysis(CommentThreadListResponse youtubeResponse) throws IOException {
-    this.youtubeResponse = youtubeResponse;
+  public CommentAnalysis() throws IOException {
     this.languageService = LanguageServiceClient.create();
   }
 
@@ -41,12 +40,17 @@ public class CommentAnalysis {
    * It computes an overall statistics score from the retrieved youtube comments.
    * @return a Statistics object that contains required values to display
    */
-  public Statistics computeOverallStats() {
+  public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
     ArrayList<Double> scoreValues = new ArrayList<>();
     for (CommentThread commentThread: youtubeResponse.getItems()) {
       UserComment userComment = new UserComment(commentThread);
-      scoreValues.add(calculateSentiAnalysisScore(userComment));
+      try {
+        scoreValues.add(calculateSentiAnalysisScore(userComment));
+      } catch (IOException e) {
+        System.err.println(e.getLocalizedMessage());
+      }
     }
+    System.out.println(scoreValues);
     return new Statistics(scoreValues);
   }
 
@@ -55,17 +59,19 @@ public class CommentAnalysis {
    * @return sentiment score
    * @throws IOException if the sentiment analysis API is not working, throw the IOExeption
    */
-  private double calculateSentiAnalysisScore(UserComment comment) {
+  private double calculateSentiAnalysisScore(UserComment comment) throws IOException  {
     // Start Sentiment Analysis Service.
     Document doc = Document.newBuilder().setContent(comment.getCommentMsg())
                        .setType(Document.Type.PLAIN_TEXT).build();
     Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
-    double score = 0.0;
     if (sentiment != null) {
-      score = (double) sentiment.getScore();
+      double score = (double) sentiment.getScore();
+      comment.setSentimentScore(score);
+      return score;
+    } else {
+      comment.setSentimentScore(null);
+      throw new IOException("Failed to build the sentiments");
     }
-    comment.setSentimentScore(score);
-    return score;
   }
 
   public void closeLanguage() {
