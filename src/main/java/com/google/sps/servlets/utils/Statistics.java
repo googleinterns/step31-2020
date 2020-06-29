@@ -23,7 +23,7 @@ public class Statistics {
   // Contains sentiment scores in the range [-1, 1] with 0.2 intervals.
   private Map<Range, Integer> aggregateValues;
   private double averageScore;
-  private static final double INTERVAL = 1.0;
+  private static final double INTERVAL = 0.2;
   private static final double UPPER_END = 1.0;
   private static final double LOWER_END = -1.0;
 
