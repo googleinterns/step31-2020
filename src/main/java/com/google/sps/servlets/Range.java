@@ -14,9 +14,7 @@
 
 package com.google.sps.servlets;
 
-/**
- * Range for sorting sentiment scores 
- */
+/** Range for sorting sentiment scores */
 public class Range {
   private double inclusiveStart;
   private double exclusiveEnd;
@@ -27,14 +25,14 @@ public class Range {
   }
 
   public double getInclusiveStart() {
-    return inclusiveStart;  
+    return inclusiveStart;
   }
 
   public double getExclusiveEnd() {
-    return exclusiveEnd;  
+    return exclusiveEnd;
   }
 
   public double getInterval() {
     return exclusiveEnd - inclusiveStart;
   }
-} 
+}
