@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,18 +20,17 @@ import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * This class encapsulates the each element in json comment array into separate user comment object
- * and do sentiment analysis on each of them.
+ * This class encapsulates each element in json comment array into separate user comment object
+ * and does sentiment analysis on each of them.
  */
 public class CommentAnalysis {
-  private CommentThreadListResponse youtuberesponse;
   private LanguageServiceClient languageService;
 
-  public CommentAnalysis(CommentThreadListResponse youtuberesponse) throws IOException {
-    this.youtuberesponse = youtuberesponse;
+  public CommentAnalysis() throws IOException {
     this.languageService = LanguageServiceClient.create();
   }
 
@@ -39,31 +38,34 @@ public class CommentAnalysis {
    * It computes an overall statistics score from the retrieved youtube comments.
    * @return a Statistics object that contains required values to display
    */
-  public Statistics computeOverallStats() {
-    ArrayList<Double> scoreValues = new ArrayList<>();
-    for (CommentThread commentThread: youtuberesponse.getItems()) {
-      UserComment userComment = new UserComment(commentThread);
-      scoreValues.add(sentiAnalysisScore(userComment));
-    }
+  public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
+
+    List<Double> scoreValues = youtubeResponse.getItems()
+                                              .stream()
+                                              .map(UserComment::new)
+                                              .map(this::calcualateSentiAnalysisScore)
+                                              .collect(Collectors.toList());
+    System.out.println(scoreValues);
     return new Statistics(scoreValues);
   }
 
   /**
    * Perform sentiment analysis of comment.
    * @return sentiment score
-   * @throws IOException if the sentiment analysis API is not working, throw the IOExeption
+   * @throws RuntimeException if the sentiment analysis API is not working, throw the IOExeption
    */
-  private double sentiAnalysisScore(UserComment comment) {
+  private double calcualateSentiAnalysisScore(UserComment comment) {
     // Start Sentiment Analysis Service.
-    Document doc = Document.newBuilder().setContent(comment.getCommentMsg())
-                       .setType(Document.Type.PLAIN_TEXT).build();
+    Document doc = Document.newBuilder()
+                           .setContent(comment.getCommentMsg())
+                           .setType(Document.Type.PLAIN_TEXT)
+                           .build();
     Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
-    double score = 0.0;
     if (sentiment != null) {
-      score = (double) sentiment.getScore();
+      return ((double) sentiment.getScore());
+    } else {
+      throw new RuntimeException("Failed to build the sentiments");
     }
-    comment.setSentimentScore(score);
-    return score;
   }
 
   public void closeLanguage() {

@@ -22,7 +22,6 @@ public class UserComment {
   private String commentId;
   private String commentMsg;
   private DateTime publishDate;
-  private Double sentimentScore;
 
   UserComment(CommentThread commentThread) {
     Comment topLevelComment =  commentThread.getSnippet().getTopLevelComment();
@@ -41,14 +40,6 @@ public class UserComment {
 
   public DateTime getPublishDate() {
     return publishDate;
-  }
-
-  public Double getSentimentScore() {
-    return sentimentScore;
-  }
-
-  public void setSentimentScore(Double sentimentScore) {
-    this.sentimentScore = sentimentScore;
   }
 
 }

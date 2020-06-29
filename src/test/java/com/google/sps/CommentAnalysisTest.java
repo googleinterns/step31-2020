@@ -74,14 +74,14 @@ public class CommentAnalysisTest {
     YouTube.CommentThreads.List youtuberequest = youtubeService.commentThreads().list(SNIPPET);
     youtuberesponse = youtuberequest.setKey(DEVELOPER_KEY).setVideoId(TEST_VIDEO_ID)
                                       .setMaxResults(2L).setTextFormat(PLAINTEXT).execute();
-    analysis = new CommentAnalysis(youtuberesponse);
+    analysis = new CommentAnalysis();
   }
 
   @Test
   public void testSentimentAnalysisInRange() {
     // Test the Sentiment Analysis Score within range -1 to 1.
-    Statistics result = analysis.computeOverallStats();
-    Assert.assertTrue(result.getAverageScore() >= -1 && result.getAverageScore() <= 1);
+    Statistics result = analysis.computeOverallStats(youtuberesponse);
+    Assert.assertTrue(Math.abs(result.getAverageScore()) <= 1);
   }
 
   @Test
