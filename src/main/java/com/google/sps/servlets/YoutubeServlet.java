@@ -54,19 +54,19 @@ public class YoutubeServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
     throws IOException, ServletException {
-      try {
-        String url = request.getParameter(URL_PARAMETER);
-        CommentThreadListResponse commentResponse = generateYouTubeRequest(url).execute();
-        // TODO: input commentResponse into commentAnalysis class to get useful data
-        Statistics statistics = new Statistics(new ArrayList<Double>());
-        String json = new Gson().toJson(statistics);
-        response.setContentType("application/json");
-        response.getWriter().println(json);
-      } catch (Exception e) { 
-        e.printStackTrace(System.err);
-        throw new ServletException("Unable to fetch YouTube Comments Through Servlet.", e);
-      }
+    try {
+      String url = request.getParameter(URL_PARAMETER);
+      CommentThreadListResponse commentResponse = generateYouTubeRequest(url).execute();
+      // TODO: input commentResponse into commentAnalysis class to get useful data
+      Statistics statistics = new Statistics(new ArrayList<Double>());
+      String json = new Gson().toJson(statistics);
+      response.setContentType("application/json");
+      response.getWriter().println(json);
+    } catch (Exception e) { 
+      e.printStackTrace(System.err);
+      throw new ServletException("Unable to fetch YouTube Comments Through Servlet.", e);
     }
+  }
 
   /**
    * Build and return an authorized API client service.
@@ -85,12 +85,12 @@ public class YoutubeServlet extends HttpServlet {
   // Helper function to simplify generation of YouTube API request.
   private YouTube.CommentThreads.List generateYouTubeRequest(String url)
     throws GeneralSecurityException, IOException {
-      YouTube youtubeService = getService();
-      YouTube.CommentThreads.List commentRequest = youtubeService.commentThreads()
-          .list(SNIPPET_PARAMETERS);
-      return commentRequest.setKey(DEVELOPER_KEY)
-          .setVideoId(url)
-          .setOrder(ORDER_PARAMETER)
-          .setMaxResults(COMMENT_LIMIT);
+    YouTube youtubeService = getService();
+    YouTube.CommentThreads.List commentRequest = youtubeService.commentThreads()
+        .list(SNIPPET_PARAMETERS);
+    return commentRequest.setKey(DEVELOPER_KEY)
+        .setVideoId(url)
+        .setOrder(ORDER_PARAMETER)
+        .setMaxResults(COMMENT_LIMIT);
     }
-}
+  }
