@@ -22,13 +22,13 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.lang.Exception.ServletException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
 
 /** Servlet that fetches from Youtube Server. */
 @WebServlet("/YouTubeComments")
@@ -49,13 +49,13 @@ public class YoutubeServlet extends HttpServlet {
    * API's arbitrary limit
    */
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response) 
+      throws IOException, ServletException {
     try {
-      YouTube youtubeService = getService();
       String url = request.getParameter(URL_PARAMETER);
       CommentThreadListResponse commentResponse = generateYouTubeRequest(url).execute();
       // TODO: input commentResponse into commentAnalysis class to get useful data
-      Statistics statistics = new Statistics(new ArrayList<Double>(), 0);
+      Statistics statistics = new Statistics(new ArrayList<Double>());
       String json = new Gson().toJson(statistics);
       response.setContentType("application/json");
       response.getWriter().println(json);
@@ -79,14 +79,14 @@ public class YoutubeServlet extends HttpServlet {
   }
 
   // Helper function to simplify generation of YouTube API request.
-  private YouTube.CommentThreads.List generateYouTubeRequest(String url) {
-    YouTube.CommentThreads.List commentRequest =
-        youtubeService.commentThreads().list(SNIPPET_PARAMETERS);
-    return commentRequest
-        .setKey(DEVELOPER_KEY)
+  private YouTube.CommentThreads.List generateYouTubeRequest(String url)
+      throws GeneralSecurityException, IOException {
+    YouTube youtubeService = getService();
+    YouTube.CommentThreads.List commentRequest = youtubeService.commentThreads()
+        .list(SNIPPET_PARAMETERS);
+    return commentRequest.setKey(DEVELOPER_KEY)
         .setVideoId(url)
         .setOrder(ORDER_PARAMETER)
-        .setMaxResults(COMMENT_LIMIT)
-        .execute();
+        .setMaxResults(COMMENT_LIMIT);
   }
 }
