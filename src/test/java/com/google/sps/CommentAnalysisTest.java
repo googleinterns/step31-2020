@@ -41,14 +41,11 @@ public class CommentAnalysisTest {
   private CommentThreadListResponse youtuberesponse;
   private CommentAnalysis analysis;
   private static final String APPLICATION_NAME = "testComment";
-  private static final String DEVELOPER_KEY = "AIzaSyDLE0TsAmPxbF_D_t3J4-aqBuFKs4chMgM";
+  private static final String DEVELOPER_KEY = "API_KEY";
   private static final String PLAINTEXT = "plainText";
   private static final String SNIPPET = "snippet";
   private static final String TEST_VIDEO_ID = "E_wKLOq-30M";
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-
-
-
 
   /**
    * Build and return an authorized API client service.
@@ -68,14 +65,14 @@ public class CommentAnalysisTest {
     YouTube.CommentThreads.List youtuberequest = youtubeService.commentThreads().list(SNIPPET);
     youtuberesponse = youtuberequest.setKey(DEVELOPER_KEY).setVideoId(TEST_VIDEO_ID)
                                       .setMaxResults(2L).setTextFormat(PLAINTEXT).execute();
-    analysis = new CommentAnalysis(youtuberesponse);
+    analysis = new CommentAnalysis();
   }
 
   @Test
   public void testSentimentAnalysisInRange() {
     // Test the Sentiment Analysis Score within range -1 to 1.
-    Statistics result = analysis.computeOverallStats();
-    Assert.assertTrue(result.getAverageScore() >= -1 && result.getAverageScore() <= 1);
+    Statistics result = analysis.computeOverallStats(youtuberesponse);
+    Assert.assertTrue(Math.abs(result.getAverageScore()) <= 1);
   }
 
   @Test
