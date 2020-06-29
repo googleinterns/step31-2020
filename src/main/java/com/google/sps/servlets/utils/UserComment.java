@@ -22,7 +22,6 @@ public class UserComment {
   private String commentId;
   private String commentMsg;
   private DateTime publishDate;
-  private Double sentimentScore;
 
   UserComment(CommentThread commentThread) {
     Comment topLevelComment =  commentThread.getSnippet().getTopLevelComment();
