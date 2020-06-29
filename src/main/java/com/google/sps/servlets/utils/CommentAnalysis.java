@@ -41,10 +41,10 @@ public class CommentAnalysis {
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
 
     List<Double> scoreValues = youtubeResponse.getItems()
-                                   .stream()
-                                   .map(UserComment::new)
-                                   .map(this::calcualateSentiAnalysisScore)
-                                   .collect(Collectors.toList());
+                                              .stream()
+                                              .map(UserComment::new)
+                                              .map(this::calcualateSentiAnalysisScore)
+                                              .collect(Collectors.toList());
     System.out.println(scoreValues);
     return new Statistics(scoreValues);
   }
