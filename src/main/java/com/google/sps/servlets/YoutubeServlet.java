@@ -24,11 +24,11 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
 
 /** Servlet that fetches from Youtube Server. */
 @WebServlet("/YouTubeComments")
@@ -49,7 +49,7 @@ public class YoutubeServlet extends HttpServlet {
    * API's arbitrary limit
    */
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) 
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
     try {
       String url = request.getParameter(URL_PARAMETER);
@@ -82,11 +82,12 @@ public class YoutubeServlet extends HttpServlet {
   private YouTube.CommentThreads.List generateYouTubeRequest(String url)
       throws GeneralSecurityException, IOException {
     YouTube youtubeService = getService();
-    YouTube.CommentThreads.List commentRequest = youtubeService.commentThreads()
-        .list(SNIPPET_PARAMETERS);
-    return commentRequest.setKey(DEVELOPER_KEY)
+    YouTube.CommentThreads.List commentRequest =
+        youtubeService.commentThreads().list(SNIPPET_PARAMETERS);
+    return commentRequest
+        .setKey(DEVELOPER_KEY)
         .setVideoId(url)
         .setOrder(ORDER_PARAMETER)
         .setMaxResults(COMMENT_LIMIT);
-    }
   }
+}
