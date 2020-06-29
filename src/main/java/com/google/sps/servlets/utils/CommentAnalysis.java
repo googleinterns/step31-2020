@@ -20,7 +20,8 @@ import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class encapsulates each element in json comment array into separate user comment object
@@ -38,12 +39,10 @@ public class CommentAnalysis {
    * @return a Statistics object that contains required values to display
    */
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
-    ArrayList<Double> scoreValues = new ArrayList<>();
-    for (CommentThread commentThread: youtubeResponse.getItems()) {
-      UserComment userComment = new UserComment(commentThread);
-      updateSentiAnalysisScore(userComment);
-      scoreValues.add(userComment.getSentimentScore());
-    }
+
+    List<Double> scoreValues = youtubeResponse.getItems().stream()
+                                   .map(UserComment::new).map(this::calcualateSentiAnalysisScore)
+                                   .collect(Collectors.toList());
     return new Statistics(scoreValues);
   }
 
@@ -52,14 +51,13 @@ public class CommentAnalysis {
    * @return sentiment score
    * @throws RuntimeException if the sentiment analysis API is not working, throw the IOExeption
    */
-  private void updateSentiAnalysisScore(UserComment comment) {
+  private double calcualateSentiAnalysisScore(UserComment comment) {
     // Start Sentiment Analysis Service.
     Document doc = Document.newBuilder().setContent(comment.getCommentMsg())
                        .setType(Document.Type.PLAIN_TEXT).build();
     Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
     if (sentiment != null) {
-      double score = (double) sentiment.getScore();
-      comment.setSentimentScore(score);
+      return ((double) sentiment.getScore());
     } else {
       throw new RuntimeException("Failed to build the sentiments");
     }

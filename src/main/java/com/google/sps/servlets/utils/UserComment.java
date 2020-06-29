@@ -43,12 +43,4 @@ public class UserComment {
     return publishDate;
   }
 
-  public Double getSentimentScore() {
-    return sentimentScore;
-  }
-
-  public void setSentimentScore(Double sentimentScore) {
-    this.sentimentScore = sentimentScore;
-  }
-
 }
