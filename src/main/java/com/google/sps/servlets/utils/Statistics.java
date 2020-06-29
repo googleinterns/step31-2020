@@ -23,6 +23,9 @@ public class Statistics {
   // Contains sentiment scores in the range [-1, 1] with 0.2 intervals.
   private Map<Range, Integer> aggregateValues;
   private double averageScore;
+  private static final double INTERVAL = 1.0;
+  private static final double UPPER_END = 1.0;
+  private static final double LOWER_END = -1.0;
 
   public Map<Range, Integer> getAggregateValues() {
     return aggregateValues;
@@ -44,11 +47,11 @@ public class Statistics {
    */
   private void setAggregateScores(List<Double> sentimentScores) {
     aggregateValues = new HashMap<>();
-    BigDecimal curPoint = BigDecimal.valueOf(-1.0);
-    BigDecimal interval = BigDecimal.valueOf(0.2);
+    BigDecimal curPoint = BigDecimal.valueOf(LOWER_END);
+    BigDecimal interval = BigDecimal.valueOf(INTERVAL);
 
-    // Initialize the HashMap with 0.2 intervals
-    while (curPoint.doubleValue() < 1.0) {
+    // Initialize the HashMap with intervals
+    while (curPoint.doubleValue() < UPPER_END) {
       Range currentRange = new Range(curPoint.doubleValue(), curPoint.add(interval).doubleValue());
       curPoint = curPoint.add(interval);
       aggregateValues.put(currentRange, 0);
@@ -65,11 +68,12 @@ public class Statistics {
 
   /**
    * Set the average score of given sentiment scores.
+   * Returns -99 if the average score is not valid.
    * @param sentimentScores a list of score values from -1.0 to 1.0
    */
   private void setAverageScore(List<Double> sentimentScores) {
     averageScore = sentimentScores.stream().mapToDouble(i -> i)
-                       .filter(score -> (score >= -1.0 && score <= 1.0)).average().orElse(0);
+                       .filter(score -> (score >= LOWER_END && score <= UPPER_END)).average().orElse(-99);
   }
 
   /**
@@ -79,22 +83,22 @@ public class Statistics {
    */
   private Range getInterval(double score) {
     // return null for edge cases
-    if ((score < -1) || (score > 1)) {
+    if ((score < LOWER_END) || (score > UPPER_END)) {
       return null;
     }
 
     // Round to its lower and upper point
     BigDecimal scoreVal = BigDecimal.valueOf(score);
     BigDecimal inclusiveStart;
-    if (score == 1) {
-      inclusiveStart = BigDecimal.valueOf(0.8);
+    if (score == UPPER_END) {
+      inclusiveStart = BigDecimal.valueOf(UPPER_END - INTERVAL);
     } else {
       BigDecimal roundedScore = scoreVal.setScale(1, BigDecimal.ROUND_DOWN);
-      inclusiveStart = roundedScore.remainder(BigDecimal.valueOf(0.2)).doubleValue() == 0
+      inclusiveStart = roundedScore.remainder(BigDecimal.valueOf(INTERVAL)).doubleValue() == 0
                            ? roundedScore
                            : (roundedScore.subtract(BigDecimal.valueOf(0.1)));
     }
-    BigDecimal exclusiveEnd = inclusiveStart.add(BigDecimal.valueOf(0.2));
+    BigDecimal exclusiveEnd = inclusiveStart.add(BigDecimal.valueOf(INTERVAL));
     return new Range(inclusiveStart.doubleValue(),exclusiveEnd.doubleValue());
   }
 }
