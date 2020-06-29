@@ -53,7 +53,7 @@ public class YoutubeServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws IOException, ServletException {
+      throws IOException, ServletException {
     try {
       String url = request.getParameter(URL_PARAMETER);
       CommentThreadListResponse commentResponse = generateYouTubeRequest(url).execute();
@@ -84,7 +84,7 @@ public class YoutubeServlet extends HttpServlet {
   
   // Helper function to simplify generation of YouTube API request.
   private YouTube.CommentThreads.List generateYouTubeRequest(String url)
-    throws GeneralSecurityException, IOException {
+      throws GeneralSecurityException, IOException {
     YouTube youtubeService = getService();
     YouTube.CommentThreads.List commentRequest = youtubeService.commentThreads()
         .list(SNIPPET_PARAMETERS);
