@@ -80,13 +80,6 @@ public class CommentAnalysisTest {
 
   @Test
   public void testCategorizationEdgeCases() {
-    ArrayList<Double> scoreValues_1 = new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
-    ArrayList<Double> scoreValues_2 = new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
-    ArrayList<Double> scoreValues_3 = new ArrayList<>(Arrays.asList(0.5, 0.9,  -0.5, -0.9));
-    ArrayList<Double> scoreValues_4 = new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
-    Assert.assertEquals(analysis.categorizeInterval(scoreValues_1).stream().mapToInt(i -> i).sum(), scoreValues_1.size());
-    Assert.assertEquals(analysis.categorizeInterval(scoreValues_2).stream().mapToInt(i -> i).sum(), scoreValues_2.size());
-    Assert.assertEquals(analysis.categorizeInterval(scoreValues_3).stream().mapToInt(i -> i).sum(), scoreValues_3.size());
-    Assert.assertEquals(analysis.categorizeInterval(scoreValues_4).stream().mapToInt(i -> i).sum(), 0);
+    // TODO: test for splitting different scores into intervals
   }
 }
