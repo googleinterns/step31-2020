@@ -19,8 +19,8 @@ import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -52,20 +52,21 @@ public class YoutubeServlet extends HttpServlet {
    * order to be relevance and max results to be 100, the API's arbitrary limit
    */
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-    try {
-      String url = request.getParameter(URL_PARAMETER);
-      CommentThreadListResponse commentResponse = generateYouTubeRequest(url).execute();
-      // TODO: input commentResponse into commentAnalysis class to get useful data
-      Statistics statistics = new Statistics(new ArrayList<Double>());
-      String json = new Gson().toJson(statistics);
-      response.setContentType("application/json");
-      response.getWriter().println(json);
-    } catch (Exception e) { 
-      e.printStackTrace(System.err);
-      throw new ServletException("Unable to fetch YouTube Comments Through Servlet.", e);
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
+    throws IOException, ServletException {
+      try {
+        String url = request.getParameter(URL_PARAMETER);
+        CommentThreadListResponse commentResponse = generateYouTubeRequest(url).execute();
+        // TODO: input commentResponse into commentAnalysis class to get useful data
+        Statistics statistics = new Statistics(new ArrayList<Double>());
+        String json = new Gson().toJson(statistics);
+        response.setContentType("application/json");
+        response.getWriter().println(json);
+      } catch (Exception e) { 
+        e.printStackTrace(System.err);
+        throw new ServletException("Unable to fetch YouTube Comments Through Servlet.", e);
+      }
     }
-  }
 
   /**
    * Build and return an authorized API client service.
@@ -82,13 +83,14 @@ public class YoutubeServlet extends HttpServlet {
   }
   
   // Helper function to simplify generation of YouTube API request.
-  private YouTube.CommentThreads.List generateYouTubeRequest(String url) throws GeneralSecurityException, IOException {
-    YouTube youtubeService = getService();
-    YouTube.CommentThreads.List commentRequest = youtubeService.commentThreads()
-        .list(SNIPPET_PARAMETERS);
-    return commentRequest.setKey(DEVELOPER_KEY)
-        .setVideoId(url)
-        .setOrder(ORDER_PARAMETER)
-        .setMaxResults(COMMENT_LIMIT);
-  }
+  private YouTube.CommentThreads.List generateYouTubeRequest(String url)
+    throws GeneralSecurityException, IOException {
+      YouTube youtubeService = getService();
+      YouTube.CommentThreads.List commentRequest = youtubeService.commentThreads()
+          .list(SNIPPET_PARAMETERS);
+      return commentRequest.setKey(DEVELOPER_KEY)
+          .setVideoId(url)
+          .setOrder(ORDER_PARAMETER)
+          .setMaxResults(COMMENT_LIMIT);
+    }
 }
