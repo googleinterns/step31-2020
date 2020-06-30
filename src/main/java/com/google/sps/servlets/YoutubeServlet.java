@@ -40,9 +40,10 @@ public class YoutubeServlet extends HttpServlet {
   // Parameters required by YouTube API to retrieve the comment threads
   private static final String SNIPPET_PARAMETERS = "snippet,replies";
   private static final String ORDER_PARAMETER = "relevance";
-  // TODO: obtain actual API Key
-  private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
+
   private static final String APPLICATION_NAME = "SAY";
+  private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
+
 
   /**
    * Retrieves comments from designated URL, passes them off to CommentAnalysis object to be wrapped
@@ -50,7 +51,7 @@ public class YoutubeServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws IOException, ServletException {
+      throws ServletException {
     try {
       String url = request.getParameter(URL_PARAMETER);
       CommentThreadListResponse commentResponse = generateYouTubeRequest(url).execute();
@@ -61,6 +62,7 @@ public class YoutubeServlet extends HttpServlet {
 
       String json = new Gson().toJson(statistics);
       response.setContentType("application/json");
+      System.out.println(json);
       response.getWriter().println(json);
     } catch (Exception e) {
       e.printStackTrace(System.err);
