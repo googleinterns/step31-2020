@@ -42,7 +42,7 @@ public class Statistics {
   }
 
   /**
-   * Categorizes all score values into different range intervals, counts the frequency for each
+   * Categorize all score values into different range intervals and count the frequency for each
    * interval, and set the aggregatedValues.
    *
    * @param sentimentScores a list of score values from -1.0 to 1.0

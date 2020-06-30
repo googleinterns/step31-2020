@@ -29,7 +29,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** This is a JUnit test for sentiment mockedAnalysis */
+/**
+ * This is a JUnit test for sentiment mockedAnalysis
+ */
 @RunWith(JUnit4.class)
 public class CommentAnalysisTest {
   private static final CommentAnalysis mockedAnalysis = mock(CommentAnalysis.class);
@@ -64,23 +66,33 @@ public class CommentAnalysisTest {
     // Test the Sentiment Analysis Score within range -1 to 1.
     Statistics normalStat = mockedAnalysis.computeOverallStats(mockedExpectedList);
     Assert.assertTrue(Math.abs(normalStat.getAverageScore()) <= 1);
-    // Test the Sentiment Analysis Score within range -1 to 1.
-    Statistics edgeStat = mockedAnalysis.computeOverallStats(mockedExpectedList);
+    Statistics edgeStat = mockedAnalysis.computeOverallStats(mockedEdgeList);
     Assert.assertTrue(Math.abs(edgeStat.getAverageScore()) <= 1);
   }
 
   @Test
   public void testCategorizationEdgeCases() {
+    // Test with mocked analysis interface
     Assert.assertEquals(
         mockedAnalysis
             .computeOverallStats(mockedExpectedList)
             .getAggregateValues()
             .get(new Range(0, 0.2))
-            .intValue(),
-        4);
+            .intValue(), 4);
+    Assert.assertEquals(
+        mockedAnalysis
+            .computeOverallStats(mockedEdgeList)
+            .getAggregateValues()
+            .get(new Range(-1.0, -0.8))
+            .intValue(), 1);
+    Assert.assertEquals(
+        mockedAnalysis
+            .computeOverallStats(mockedEdgeList)
+            .getAggregateValues()
+            .get(new Range(0.8, 1))
+            .intValue(), 1);
+    // Test without mocked analysis interface
     Assert.assertEquals(NORMAL_STAT.getAggregateValues().get(new Range(-0.2, 0)).intValue(), 2);
-    Assert.assertEquals(EDGE_STAT.getAggregateValues().get(new Range(-1.0, -0.8)).intValue(), 1);
-    Assert.assertEquals(EDGE_STAT.getAggregateValues().get(new Range(0.8, 1)).intValue(), 1);
     Assert.assertEquals(
         ALL_OUSIDE_STAT.getAggregateValues().get(new Range(-1.0, -0.8)).intValue(), 0);
     Assert.assertEquals(
