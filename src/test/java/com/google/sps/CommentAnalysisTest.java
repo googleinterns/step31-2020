@@ -14,6 +14,10 @@
 
 package com.google.sps;
 
+import com.google.api.services.youtube.model.Comment;
+import com.google.api.services.youtube.model.CommentSnippet;
+import com.google.api.services.youtube.model.CommentThreadSnippet;
+import org.junit.Before;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -55,26 +59,34 @@ public class CommentAnalysisTest {
 
   private LanguageServiceClient mockedlanguageService =
       mock(LanguageServiceClient.class, Mockito.RETURNS_DEEP_STUBS);
-  private CommentThreadListResponse mockedYouTubeResponse =
-      mock(CommentThreadListResponse.class, Mockito.RETURNS_DEEP_STUBS);
-  private CommentThread mockedCommentThread = mock(CommentThread.class, Mockito.RETURNS_DEEP_STUBS);
   private CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
+  private CommentSnippet topCommentSnippet = new CommentSnippet();
+  private Comment testTopComment = new Comment();
+  private CommentThreadSnippet testThreadSnippet = new CommentThreadSnippet();
+  private CommentThread testcommentThread = new CommentThread();
+  private CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
+
+
+  @Before
+  public void setUp() {
+    topCommentSnippet.setTextDisplay("Test Message");
+    testTopComment.setSnippet(topCommentSnippet);
+    testThreadSnippet.setTopLevelComment(testTopComment);
+    testcommentThread.setSnippet(testThreadSnippet);
+  }
 
   @Test
   public void testCalculateSentiment() {
     // This is a test method to calculate simulate and test the process in comment analysis
-    when(mockedYouTubeResponse.getItems())
-        .thenReturn(new ArrayList<>(Arrays.asList(mockedCommentThread, mockedCommentThread)));
-    when(mockedCommentThread.getSnippet().getTopLevelComment().getSnippet().getTextDisplay())
-        .thenReturn("Test Comment Message");
+    youtubeResponse.setItems(new ArrayList<>(Arrays.asList(testcommentThread, testcommentThread)));
     when(mockedlanguageService
             .analyzeSentiment(any(Document.class))
             .getDocumentSentiment()
             .getScore())
         .thenReturn(new Random().nextFloat() * 2 - 1);
-    Assert.assertNotNull(commentAnalysis.computeOverallStats(mockedYouTubeResponse));
+    Assert.assertNotNull(commentAnalysis.computeOverallStats(youtubeResponse));
     Assert.assertTrue(
-        Math.abs(commentAnalysis.computeOverallStats(mockedYouTubeResponse).getAverageScore())
+        Math.abs(commentAnalysis.computeOverallStats(youtubeResponse).getAverageScore())
             <= 1);
   }
 
