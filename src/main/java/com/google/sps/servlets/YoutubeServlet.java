@@ -47,9 +47,9 @@ public class YoutubeServlet extends HttpServlet {
   private static final String APPLICATION_NAME = "SAY";
 
   /**
-   * Applies parameters to the YouTube API, then extracts comments. URL is the only true variable;
-   * for this application we will always want order to be relevance and max results to be 100, the
-   * API's arbitrary limit
+   * Retrieves comments from designated URL, 
+   * passes them off to CommentAnalysis object to be wrapped into Statistics object,
+   * then writes the Statistics object to the frontend.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -72,19 +72,10 @@ public class YoutubeServlet extends HttpServlet {
   }
 
   /**
-   * Build and return an authorized API client service.
-   *
-   * @return an authorized API client service
-   * @throws GeneralSecurityException, IOException
+   * Applies parameters to the YouTube API, then extracts comments. URL is the only true variable;
+   * for this application we will always want order to be relevance and max results to be 100, the
+   * API's arbitrary limit
    */
-  private static YouTube getService() throws GeneralSecurityException, IOException {
-    final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
-        .setApplicationName(APPLICATION_NAME)
-        .build();
-  }
-
-  // Helper function to simplify generation of YouTube API request.
   private YouTube.CommentThreads.List generateYouTubeRequest(String url)
       throws GeneralSecurityException, IOException {
     YouTube youtubeService = getService();
@@ -95,5 +86,18 @@ public class YoutubeServlet extends HttpServlet {
         .setVideoId(url)
         .setOrder(ORDER_PARAMETER)
         .setMaxResults(COMMENT_LIMIT);
+  }
+
+   /**
+   * Build and return an authorized API client service.
+   *
+   * @return an authorized API client service
+   * @throws GeneralSecurityException, IOException
+   */
+  private static YouTube getService() throws GeneralSecurityException, IOException {
+    final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
+        .setApplicationName(APPLICATION_NAME)
+        .build();
   }
 }
