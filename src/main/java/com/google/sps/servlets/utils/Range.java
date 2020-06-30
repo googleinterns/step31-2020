@@ -31,7 +31,7 @@ public class Range {
   }
 
   private double getExclusiveEnd() {
-    return exclusiveEnd;  
+    return exclusiveEnd;
   }
 
   public double getInterval() {

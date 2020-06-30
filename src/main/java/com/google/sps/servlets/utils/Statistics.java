@@ -14,13 +14,19 @@
 
 package com.google.sps.servlets.utils;
 
+import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Statistics {
+  // Contains sentiment scores in the range [-1, 1] with given intervals.
   private Map<Range, Integer> aggregateValues;
   private double averageScore;
+  private static final double INTERVAL = 0.2;
+  private static final double UPPER_END = 1.0;
+  private static final double LOWER_END = -1.0;
 
   public Map<Range, Integer> getAggregateValues() {
     return aggregateValues;
@@ -35,14 +41,54 @@ public class Statistics {
     setAverageScore(sentimentScores);
   }
 
+  /**
+   * Categorizes all score values into different range intervals,
+   * counts the frequency for each interval, and set the aggregatedValues.
+   * @param sentimentScores a list of score values from -1.0 to 1.0
+   */
   private void setAggregateScores(List<Double> sentimentScores) {
-    // TODO(Xin): Add sorting code
     aggregateValues = new HashMap<>();
-    aggregateValues.put(new Range(-1.0, 1), 1);
+    BigDecimal curPoint = BigDecimal.valueOf(LOWER_END);
+    BigDecimal interval = BigDecimal.valueOf(INTERVAL);
+
+    // Initialize the HashMap with intervals
+    while (curPoint.doubleValue() < UPPER_END) {
+      Range currentRange = new Range(curPoint.doubleValue(), Math.min(curPoint.add(interval).doubleValue(), UPPER_END));
+      curPoint = curPoint.add(interval);
+      aggregateValues.put(currentRange, 0);
+    }
+
+    // Add score's interval to different ranges two sorting with and two pointers pop-up
+    sentimentScores.sort(Comparator.naturalOrder());
+    curPoint = BigDecimal.valueOf(LOWER_END);
+    int scoreIdx = 0;
+    while ((scoreIdx < sentimentScores.size()) && (curPoint.doubleValue() < UPPER_END)) {
+      double scoreVal = sentimentScores.get(scoreIdx);
+      // return null for edge cases
+      if ((scoreVal < LOWER_END) || (scoreVal > UPPER_END)) {
+        scoreIdx += 1;
+        continue;
+      }
+      // check available interval for scoreVal
+      BigDecimal nextPoint = curPoint.add(interval);
+      double intervalUpperVal = nextPoint.doubleValue();
+      if (scoreVal < intervalUpperVal || intervalUpperVal == UPPER_END) {
+        Range foundRange = new Range(curPoint.doubleValue(),intervalUpperVal);
+        aggregateValues.put(foundRange, aggregateValues.get(foundRange) + 1);
+        scoreIdx += 1;
+      } else {
+        curPoint = nextPoint;
+      }
+    }
   }
 
+  /**
+   * Set the average score of given sentiment scores.
+   * Returns -99 if the average score is not valid or none of the sentiment scores is valid.
+   * @param sentimentScores a list of score values from -1.0 to 1.0
+   */
   private void setAverageScore(List<Double> sentimentScores) {
-    // TODO(Xin): Add average score method
-    averageScore = 0;
+    averageScore = sentimentScores.stream().mapToDouble(i -> i)
+                       .filter(score -> (score >= LOWER_END && score <= UPPER_END)).average().orElse(-99);
   }
-} 
+}
