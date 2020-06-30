@@ -53,6 +53,7 @@ public class Statistics {
    * @param sentimentScores a list of score values from -1.0 to 1.0
    */
   private void setAggregateScores(List<Double> sentimentScores) {
+    // TODO: change Range class to BigDecimal to avoid imprecision conversions in floating points
     aggregateValues = new HashMap<>();
     BigDecimal curPoint = BigDecimal.valueOf(LOWER_END);
     BigDecimal interval = BigDecimal.valueOf(INTERVAL);
