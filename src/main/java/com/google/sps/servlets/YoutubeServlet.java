@@ -57,8 +57,11 @@ public class YoutubeServlet extends HttpServlet {
     try {
       String url = request.getParameter(URL_PARAMETER);
       CommentThreadListResponse commentResponse = generateYouTubeRequest(url).execute();
-      // TODO: input commentResponse into commentAnalysis class to get useful data
-      Statistics statistics = new Statistics(new ArrayList<Double>());
+
+      CommentAnalysis commentAnalysis = new CommentAnalysis();
+      Statistics statistics = commentAnalysis.computeOverallStats(commentResponse);
+      commentAnalysis.closeLanguage(); // Ensure memory  used by commentAnalysis is cleaned
+
       String json = new Gson().toJson(statistics);
       response.setContentType("application/json");
       response.getWriter().println(json);
