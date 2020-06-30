@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(getChart);
-
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
+const HIGHEST_SCORE = 1.0;
+const LOWEST_SCORE = -1.0;
+const INTERVAL = 0.2;
+
+google.charts.load('current', {'packages':['corechart']});
+google.setOnLoadCallback(getChart)
 
 function getYouTubeComments() { 
   const urlInput = document.getElementById('url-entry');
@@ -24,7 +27,7 @@ function getYouTubeComments() {
   fetch("/YouTubeComments?url="+url)
       .then(response => response.json()).then((comments) =>{
         return comments;
-    });
+  });
 }
 
 /*
@@ -46,40 +49,30 @@ function cleanseUrl(url) {
  * Fetches data and adds to html
  */
 function getChart() {
+  $('form').submit(function() {
     const data = new google.visualization.DataTable();
     data.addColumn('string', 'Range');
     data.addColumn('number', 'Count');
-    // TODO: change hardcoded data to sentiment scores (once that part is finished)
-    data.addRows([
-        ['-1.0', null],
-        [null, 1],
-        ['-0.8', null],
-        [null, 1],
-        ['-0.6', null],
-        [null, 4],
-        ['-0.4', null],
-        [null, 5],
-        ['-0.2', null],
-        [null, 10],
-        ['0.0', null],
-        [null, 10],
-        ['0.2', null],
-        [null, 10],
-        ['0.4', null],
-        [null, 10],
-        ['0.6', null],
-        [null, 15],
-        ['0.8', null],
-        [null, 15],
-        ['1.0', null]
-    ]);
+
+    currentLabel = LOWEST_SCORE;
+
+    while (currentLabel < HIGHEST_SCORE) {
+      // TODO: Replace abritrary value 6 with correct aggregation value  
+      data.addRows([
+          [(Math.round(currentLabel*10)/10).toString(), null],
+          [null, 6]
+      ]);
+      currentLabel += INTERVAL; 
+    }
 
     const options = {
       'title': 'Comment Sentiment Range',
       'width': CHART_WIDTH,
       'height':CHART_HEIGHT
-     };
+    };
     const chart = new google.visualization.ColumnChart(
         document.getElementById('chart-container'));
     chart.draw(data, options);
+  });
 }
+
