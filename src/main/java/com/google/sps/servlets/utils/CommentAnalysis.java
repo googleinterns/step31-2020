@@ -40,22 +40,21 @@ public class CommentAnalysis {
    */
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
 
-    List<Double> scoreValues = youtubeResponse.getItems()
-                                              .stream()
-                                              .map(UserComment::new)
-                                              .map(this::calcualateSentiAnalysisScore)
-                                              .collect(Collectors.toList());
-    System.out.println(scoreValues);
+    List<Double> scoreValues =
+        youtubeResponse.getItems()
+                        .stream()
+                        .map(UserComment::new)
+                        .map(this::calcualateSentiAnalysisScore)
+                        .collect(Collectors.toList());
     return new Statistics(scoreValues);
   }
 
   /**
-   * Perform sentiment analysis of comment.
+   * Calculate the sentiment analysis score for each single comment
    * @return sentiment score
    * @throws RuntimeException if the sentiment analysis API is not working, throw the IOExeption
    */
   private double calcualateSentiAnalysisScore(UserComment comment) {
-    // Start Sentiment Analysis Service.
     Document doc = Document.newBuilder()
                            .setContent(comment.getCommentMsg())
                            .setType(Document.Type.PLAIN_TEXT)
