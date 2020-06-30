@@ -14,9 +14,7 @@
 
 package com.google.sps.servlets.utils;
 
-/**
- * Range for the start and end point of sentiment scores.
- */
+/** Range for the start and end point of sentiment scores. */
 public class Range {
   private double inclusiveStart;
   private double exclusiveEnd;
@@ -27,7 +25,7 @@ public class Range {
   }
 
   private double getInclusiveStart() {
-    return inclusiveStart;  
+    return inclusiveStart;
   }
 
   private double getExclusiveEnd() {
@@ -45,7 +43,7 @@ public class Range {
     }
     Range rangeToCompare = (Range) objectToCompare;
     return ((rangeToCompare.getExclusiveEnd() == exclusiveEnd)
-                && (rangeToCompare.getInclusiveStart() == inclusiveStart));
+        && (rangeToCompare.getInclusiveStart() == inclusiveStart));
   }
 
   @Override

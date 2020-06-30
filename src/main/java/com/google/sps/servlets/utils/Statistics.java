@@ -42,8 +42,9 @@ public class Statistics {
   }
 
   /**
-   * Categorizes all score values into different range intervals,
-   * counts the frequency for each interval, and set the aggregatedValues.
+   * Categorizes all score values into different range intervals, counts the frequency for each
+   * interval, and set the aggregatedValues.
+   *
    * @param sentimentScores a list of score values from -1.0 to 1.0
    */
   private void setAggregateScores(List<Double> sentimentScores) {
@@ -53,7 +54,9 @@ public class Statistics {
 
     // Initialize the HashMap with intervals
     while (curPoint.doubleValue() < UPPER_END) {
-      Range currentRange = new Range(curPoint.doubleValue(), Math.min(curPoint.add(interval).doubleValue(), UPPER_END));
+      Range currentRange =
+          new Range(
+              curPoint.doubleValue(), Math.min(curPoint.add(interval).doubleValue(), UPPER_END));
       curPoint = curPoint.add(interval);
       aggregateValues.put(currentRange, 0);
     }
@@ -73,7 +76,7 @@ public class Statistics {
       BigDecimal nextPoint = curPoint.add(interval);
       double intervalUpperVal = nextPoint.doubleValue();
       if (scoreVal < intervalUpperVal || intervalUpperVal == UPPER_END) {
-        Range foundRange = new Range(curPoint.doubleValue(),intervalUpperVal);
+        Range foundRange = new Range(curPoint.doubleValue(), intervalUpperVal);
         aggregateValues.put(foundRange, aggregateValues.get(foundRange) + 1);
         scoreIdx += 1;
       } else {
@@ -83,12 +86,17 @@ public class Statistics {
   }
 
   /**
-   * Set the average score of given sentiment scores.
-   * Returns -99 if the average score is not valid or none of the sentiment scores is valid.
+   * Set the average score of given sentiment scores. Returns -99 if the average score is not valid
+   * or none of the sentiment scores is valid.
+   *
    * @param sentimentScores a list of score values from -1.0 to 1.0
    */
   private void setAverageScore(List<Double> sentimentScores) {
-    averageScore = sentimentScores.stream().mapToDouble(i -> i)
-                       .filter(score -> (score >= LOWER_END && score <= UPPER_END)).average().orElse(-99);
+    averageScore =
+        sentimentScores.stream()
+            .mapToDouble(i -> i)
+            .filter(score -> (score >= LOWER_END && score <= UPPER_END))
+            .average()
+            .orElse(-99);
   }
 }
