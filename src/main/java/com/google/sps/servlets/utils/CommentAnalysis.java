@@ -39,7 +39,6 @@ public class CommentAnalysis {
    * @return a Statistics object that contains required values to display
    */
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
-
     List<Double> scoreValues =
         youtubeResponse.getItems().stream()
             .map(UserComment::new)

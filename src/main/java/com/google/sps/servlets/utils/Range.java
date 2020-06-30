@@ -24,11 +24,11 @@ public class Range {
     this.exclusiveEnd = exclusiveEnd;
   }
 
-  private double getInclusiveStart() {
+  public double getInclusiveStart() {
     return inclusiveStart;
   }
 
-  private double getExclusiveEnd() {
+  public double getExclusiveEnd() {
     return exclusiveEnd;
   }
 
