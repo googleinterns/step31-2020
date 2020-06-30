@@ -43,7 +43,7 @@ public class YoutubeServlet extends HttpServlet {
   private static final String SNIPPET_PARAMETERS = "snippet,replies";
   private static final String ORDER_PARAMETER = "relevance";
   // TODO: obtain actual API Key
-  private static final String DEVELOPER_KEY = "OUR_API_KEY";
+  private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
   private static final String APPLICATION_NAME = "SAY";
 
   /**
