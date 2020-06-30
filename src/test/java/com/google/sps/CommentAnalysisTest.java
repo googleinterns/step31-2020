@@ -14,16 +14,15 @@
 
 package com.google.sps;
 
-import com.google.api.services.youtube.model.Comment;
-import com.google.api.services.youtube.model.CommentSnippet;
-import com.google.api.services.youtube.model.CommentThreadSnippet;
-import org.junit.Before;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.api.services.youtube.model.Comment;
+import com.google.api.services.youtube.model.CommentSnippet;
 import com.google.api.services.youtube.model.CommentThread;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
+import com.google.api.services.youtube.model.CommentThreadSnippet;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.sps.servlets.utils.CommentAnalysis;
@@ -33,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -66,8 +66,6 @@ public class CommentAnalysisTest {
       mock(LanguageServiceClient.class, Mockito.RETURNS_DEEP_STUBS);
   private CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
 
-
-
   @Before
   public void setUp() {
     topCommentSnippet.setTextDisplay("Test Message");
@@ -87,8 +85,7 @@ public class CommentAnalysisTest {
         .thenReturn(new Random().nextFloat() * 2 - 1);
     Assert.assertNotNull(commentAnalysis.computeOverallStats(youtubeResponse));
     Assert.assertTrue(
-        Math.abs(commentAnalysis.computeOverallStats(youtubeResponse).getAverageScore())
-            <= 1);
+        Math.abs(commentAnalysis.computeOverallStats(youtubeResponse).getAverageScore()) <= 1);
   }
 
   @Test
