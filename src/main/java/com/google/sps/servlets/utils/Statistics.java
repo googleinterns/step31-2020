@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Statistics {
+  // Aggregated score for a list of comments  
   private Map<Range, Integer> aggregateValues;
   private double averageScore;
 
