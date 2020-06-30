@@ -69,9 +69,9 @@ public class YoutubeServlet extends HttpServlet {
   }
 
   /**
-   * Applies parameters to comment request, then  us it to extract comments. 
-   * URL is the only true variable; for this application we will always want order to be relevance,
-   * and max results to be 100, the API's arbitrary limit.
+   * Applies parameters to comment request, then us it to extract comments. URL is the only true
+   * variable; for this application we will always want order to be relevance, and max results to be
+   * 100, the API's arbitrary limit.
    */
   private YouTube.CommentThreads.List generateYouTubeRequest(String url)
       throws GeneralSecurityException, IOException {
