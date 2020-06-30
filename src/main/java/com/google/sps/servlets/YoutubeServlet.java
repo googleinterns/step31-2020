@@ -20,13 +20,11 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
+import com.google.gson.Gson;
 import com.google.sps.servlets.utils.CommentAnalysis;
 import com.google.sps.servlets.utils.Statistics;
-import com.google.sps.servlets.utils.UserComment;
-import com.google.gson.Gson;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -47,9 +45,8 @@ public class YoutubeServlet extends HttpServlet {
   private static final String APPLICATION_NAME = "SAY";
 
   /**
-   * Retrieves comments from designated URL, 
-   * passes them off to CommentAnalysis object to be wrapped into Statistics object,
-   * then writes the Statistics object to the frontend.
+   * Retrieves comments from designated URL, passes them off to CommentAnalysis object to be wrapped
+   * into Statistics object, then writes the Statistics object to the frontend.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -88,7 +85,7 @@ public class YoutubeServlet extends HttpServlet {
         .setMaxResults(COMMENT_LIMIT);
   }
 
-   /**
+  /**
    * Build and return an authorized API client service.
    *
    * @return an authorized API client service
