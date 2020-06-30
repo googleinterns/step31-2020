@@ -57,14 +57,15 @@ public class CommentAnalysisTest {
   private static final Statistics ALL_OUSIDE_STAT = new Statistics(ALL_OUSIDE_SCORE);
   private static final Statistics ONE_OUSIDE_STAT = new Statistics(ONE_OUSIDE_SCORE);
 
+  private Comment testTopComment = new Comment();
+  private CommentSnippet topCommentSnippet = new CommentSnippet();
+  private CommentThread testcommentThread = new CommentThread();
+  private CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
+  private CommentThreadSnippet testThreadSnippet = new CommentThreadSnippet();
   private LanguageServiceClient mockedlanguageService =
       mock(LanguageServiceClient.class, Mockito.RETURNS_DEEP_STUBS);
   private CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
-  private CommentSnippet topCommentSnippet = new CommentSnippet();
-  private Comment testTopComment = new Comment();
-  private CommentThreadSnippet testThreadSnippet = new CommentThreadSnippet();
-  private CommentThread testcommentThread = new CommentThread();
-  private CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
+
 
 
   @Before
