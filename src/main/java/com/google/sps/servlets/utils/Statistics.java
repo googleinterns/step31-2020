@@ -19,14 +19,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Statistics {
-  // Contains sentiment scores in the range [-1, 1] with given intervals.
-  private Map<Range, Integer> aggregateValues;
-  private double averageScore;
   private static final double INTERVAL = 0.2;
   private static final double UPPER_END = 1.0;
   private static final double LOWER_END = -1.0;
+  // Contains sentiment scores in the range [-1, 1] with given intervals.
+  private Map<Range, Integer> aggregateValues;
+  private double averageScore;
 
   public Map<Range, Integer> getAggregateValues() {
     return aggregateValues;
@@ -37,6 +38,10 @@ public class Statistics {
   }
 
   public Statistics(List<Double> sentimentScores) {
+    sentimentScores =
+        sentimentScores.stream()
+                       .filter(score -> (score >= LOWER_END && score <= UPPER_END))
+                       .collect(Collectors.toList());
     setAggregateScores(sentimentScores);
     setAverageScore(sentimentScores);
   }
@@ -52,7 +57,7 @@ public class Statistics {
     BigDecimal curPoint = BigDecimal.valueOf(LOWER_END);
     BigDecimal interval = BigDecimal.valueOf(INTERVAL);
 
-    // Initialize the HashMap with intervals
+//     Initialize the HashMap with intervals
     while (curPoint.doubleValue() < UPPER_END) {
       Range currentRange =
           new Range(
@@ -60,18 +65,12 @@ public class Statistics {
       curPoint = curPoint.add(interval);
       aggregateValues.put(currentRange, 0);
     }
-
     // Add score's interval to different ranges two sorting with and two pointers pop-up
     sentimentScores.sort(Comparator.naturalOrder());
     curPoint = BigDecimal.valueOf(LOWER_END);
     int scoreIdx = 0;
     while ((scoreIdx < sentimentScores.size()) && (curPoint.doubleValue() < UPPER_END)) {
       double scoreVal = sentimentScores.get(scoreIdx);
-      // return null for edge cases
-      if ((scoreVal < LOWER_END) || (scoreVal > UPPER_END)) {
-        scoreIdx += 1;
-        continue;
-      }
       // check available interval for scoreVal
       BigDecimal nextPoint = curPoint.add(interval);
       double intervalUpperVal = nextPoint.doubleValue();
@@ -95,7 +94,6 @@ public class Statistics {
     averageScore =
         sentimentScores.stream()
             .mapToDouble(i -> i)
-            .filter(score -> (score >= LOWER_END && score <= UPPER_END))
             .average()
             .orElse(-99);
   }

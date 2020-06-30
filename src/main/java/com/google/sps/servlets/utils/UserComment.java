@@ -23,7 +23,11 @@ public class UserComment {
   private String commentMsg;
   private DateTime publishDate;
 
-  UserComment(CommentThread commentThread) {
+  /**
+   * Encapsulate a comment Thread into an User Comment object.
+   * @param commentThread given comment thread retrieved from Youtube API
+   */
+  public UserComment(CommentThread commentThread) {
     Comment topLevelComment = commentThread.getSnippet().getTopLevelComment();
     this.commentId = topLevelComment.getId();
     this.commentMsg = topLevelComment.getSnippet().getTextDisplay();

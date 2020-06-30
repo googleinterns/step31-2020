@@ -29,8 +29,21 @@ import java.util.stream.Collectors;
 public class CommentAnalysis {
   private LanguageServiceClient languageService;
 
+  /**
+   * Constructor to create and initialize language service for sentiment analysis
+   * @throws IOException error when the service cannot be started successfully
+   */
   public CommentAnalysis() throws IOException {
     this.languageService = LanguageServiceClient.create();
+  }
+
+  /**
+   * Constructor for mocked test to pass in mocked language client service.
+   * @param languageService language service that has been created
+   */
+  public CommentAnalysis(LanguageServiceClient languageService) {
+    languageService.close();
+    this.languageService = languageService;
   }
 
   /**
@@ -54,7 +67,6 @@ public class CommentAnalysis {
    * @throws RuntimeException if the sentiment analysis API is not working, throw the IOExeption
    */
   private double calcualateSentiAnalysisScore(UserComment comment) {
-    // Start Sentiment Analysis Service.
     Document doc =
         Document.newBuilder()
             .setContent(comment.getCommentMsg())
