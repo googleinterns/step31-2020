@@ -55,11 +55,10 @@ public class CommentAnalysis {
    */
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
     List<Double> scoreValues =
-        youtubeResponse.getItems()
-                       .stream()
-                       .map(UserComment::new)
-                       .map(this::calcualateSentiAnalysisScore)
-                       .collect(Collectors.toList());
+        youtubeResponse.getItems().stream()
+            .map(UserComment::new)
+            .map(this::calcualateSentiAnalysisScore)
+            .collect(Collectors.toList());
     return new Statistics(scoreValues);
   }
 
@@ -72,9 +71,9 @@ public class CommentAnalysis {
   private double calcualateSentiAnalysisScore(UserComment comment) {
     Document doc =
         Document.newBuilder()
-                .setContent(comment.getCommentMsg())
-                .setType(Document.Type.PLAIN_TEXT)
-                .build();
+            .setContent(comment.getCommentMsg())
+            .setType(Document.Type.PLAIN_TEXT)
+            .build();
     Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
     if (sentiment != null) {
       return ((double) sentiment.getScore());

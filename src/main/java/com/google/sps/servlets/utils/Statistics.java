@@ -40,8 +40,8 @@ public class Statistics {
   public Statistics(List<Double> sentimentScores) {
     sentimentScores =
         sentimentScores.stream()
-                       .filter(score -> (score >= LOWER_END && score <= UPPER_END))
-                       .collect(Collectors.toList());
+            .filter(score -> (score >= LOWER_END && score <= UPPER_END))
+            .collect(Collectors.toList());
     setAggregateScores(sentimentScores);
     setAverageScore(sentimentScores);
   }
