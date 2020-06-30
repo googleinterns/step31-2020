@@ -42,6 +42,7 @@ public class YoutubeServlet extends HttpServlet {
   private static final String ORDER_PARAMETER = "relevance";
 
   private static final String APPLICATION_NAME = "SAY";
+  // TODO: have dev key come from centralized location, rather than being hard-coded.
   private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
 
   /**
