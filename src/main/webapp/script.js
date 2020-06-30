@@ -54,15 +54,12 @@ function getChart() {
     data.addColumn('string', 'Range');
     data.addColumn('number', 'Count');
 
-    currentLabel = LOWEST_SCORE;
-
-    while (currentLabel < HIGHEST_SCORE) {
+    for (currentLabel = LOWEST_SCORE; currentLabel < HIGHEST_SCORE; currentLabel += INTERVAL) {
       // TODO: Replace abritrary value 6 with correct aggregation value  
       data.addRows([
-          [(Math.round(currentLabel*10)/10).toString(), null],
+          [(Math.round(currentLabel * 10) / 10).toString(), null],
           [null, 6]
       ]);
-      currentLabel += INTERVAL; 
     }
 
     const options = {
