@@ -45,7 +45,6 @@ public class CommentAnalysis {
             .map(UserComment::new)
             .map(this::calcualateSentiAnalysisScore)
             .collect(Collectors.toList());
-    System.out.println(scoreValues);
     return new Statistics(scoreValues);
   }
 
