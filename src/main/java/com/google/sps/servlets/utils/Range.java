@@ -16,6 +16,7 @@ package com.google.sps.servlets.utils;
 
 /** Range for the start and end point of sentiment scores. */
 public class Range {
+  // TODO: change the double to BigDecimal or int type to avoid imprecision in floating points
   private double inclusiveStart;
   private double exclusiveEnd;
 
