@@ -44,7 +44,6 @@ public class YoutubeServlet extends HttpServlet {
   private static final String APPLICATION_NAME = "SAY";
   private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
 
-
   /**
    * Retrieves comments from designated URL, passes them off to CommentAnalysis object to be wrapped
    * into Statistics object, then writes the Statistics object to the frontend.
