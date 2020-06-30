@@ -36,21 +36,18 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public class CommentAnalysisTest {
   private static final CommentAnalysis mockedAnalysis = mock(CommentAnalysis.class);
-  private static final CommentThreadListResponse mockedExpectedList = mock(CommentThreadListResponse.class);;
+  private static final CommentThreadListResponse mockedExpectedList = mock(CommentThreadListResponse.class);
   private static final CommentThreadListResponse mockedEdgeList = mock(CommentThreadListResponse.class);
   private static final ArrayList<Double> SCORE_IN_RANGE = new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
   private static final ArrayList<Double> EDGE_SCORE = new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
   private static final ArrayList<Double> SYMMETRIC_SCORE = new ArrayList<>(Arrays.asList(0.5, 0.9,  -0.5, -0.9));
   private static final ArrayList<Double> ALL_OUSIDE_SCORE = new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
   private static final ArrayList<Double> ONE_OUSIDE_SCORE = new ArrayList<>(Arrays.asList(-2.0, -1.0, 0.0));
-  private static final ArrayList<Double> NULL_SCORE = null;
   private static final Statistics NORMAL_STAT = new Statistics(SCORE_IN_RANGE);
   private static final Statistics EDGE_STAT = new Statistics(EDGE_SCORE);
   private static final Statistics SYMMETRIC_STAT = new Statistics(SYMMETRIC_SCORE);
   private static final Statistics ALL_OUSIDE_STAT = new Statistics(ALL_OUSIDE_SCORE);
   private static final Statistics ONE_OUSIDE_STAT = new Statistics(ONE_OUSIDE_SCORE);
-  
-
 
   @Before
   public void setUp() {
@@ -85,6 +82,5 @@ public class CommentAnalysisTest {
     Assert.assertEquals(SYMMETRIC_STAT.getAverageScore(), 0.0, 0);
     Assert.assertEquals(ALL_OUSIDE_STAT.getAverageScore(), -99, 0);
     Assert.assertEquals(ONE_OUSIDE_STAT.getAverageScore(), -0.5, 0);
-
   }
 }
