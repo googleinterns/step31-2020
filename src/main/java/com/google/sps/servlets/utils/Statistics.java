@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.servlets;
+package com.google.sps.servlets.utils;
 
+import com.google.sps.servlets.Range;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Statistics {
-  // Aggregated score for a list of comments  
+  // Aggregated score for a list of comments
   private Map<Range, Integer> aggregateValues;
   private double averageScore;
 
@@ -36,6 +37,6 @@ public class Statistics {
 
   private void setAverageScore(List<Double> sentimentScores) {
     // TODO(Xin): Add average score method
-    averageScore = 0;  
+    averageScore = 0;
   }
-} 
+}
