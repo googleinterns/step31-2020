@@ -40,8 +40,8 @@ public class Statistics {
   public Statistics(List<Double> sentimentScores) {
     sentimentScores =
         sentimentScores.stream()
-            .filter(score -> (score >= LOWER_END && score <= UPPER_END))
-            .collect(Collectors.toList());
+                       .filter(score -> (score >= LOWER_END && score <= UPPER_END))
+                       .collect(Collectors.toList());
     setAggregateScores(sentimentScores);
     setAverageScore(sentimentScores);
   }
@@ -57,7 +57,7 @@ public class Statistics {
     BigDecimal curPoint = BigDecimal.valueOf(LOWER_END);
     BigDecimal interval = BigDecimal.valueOf(INTERVAL);
 
-    //     Initialize the HashMap with intervals
+    // Initialize the HashMap with intervals
     while (curPoint.doubleValue() < UPPER_END) {
       Range currentRange =
           new Range(
