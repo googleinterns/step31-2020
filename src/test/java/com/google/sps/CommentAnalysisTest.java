@@ -14,24 +14,24 @@
 
 package com.google.sps;
 
-import com.google.api.services.youtube.model.CommentThread;
-import com.google.cloud.language.v1.Document;
-import com.google.cloud.language.v1.LanguageServiceClient;
-import java.util.Random;
 import static org.mockito.ArgumentMatchers.any;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import com.google.api.services.youtube.model.CommentThread;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.sps.servlets.utils.CommentAnalysis;
 import com.google.sps.servlets.utils.Range;
 import com.google.sps.servlets.utils.Statistics;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
 
 /** This is a JUnit test for sentiment mockedAnalysis */
 @RunWith(JUnit4.class)
@@ -52,20 +52,29 @@ public class CommentAnalysisTest {
   private static final Statistics ALL_OUSIDE_STAT = new Statistics(ALL_OUSIDE_SCORE);
   private static final Statistics ONE_OUSIDE_STAT = new Statistics(ONE_OUSIDE_SCORE);
 
-  private LanguageServiceClient mockedlanguageService = mock(LanguageServiceClient.class, Mockito.RETURNS_DEEP_STUBS);
-  private CommentThreadListResponse mockedYouTubeResponse = mock(CommentThreadListResponse.class, Mockito.RETURNS_DEEP_STUBS);
+  private LanguageServiceClient mockedlanguageService =
+      mock(LanguageServiceClient.class, Mockito.RETURNS_DEEP_STUBS);
+  private CommentThreadListResponse mockedYouTubeResponse =
+      mock(CommentThreadListResponse.class, Mockito.RETURNS_DEEP_STUBS);
   private CommentThread mockedCommentThread = mock(CommentThread.class, Mockito.RETURNS_DEEP_STUBS);
   private CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
 
   @Test
   public void testCalculateSentiment() {
     // This is a test method to calculate simulate and test the process in comment analysis
-    when(mockedYouTubeResponse.getItems()).thenReturn(new ArrayList<>(Arrays.asList(mockedCommentThread, mockedCommentThread)));
-    when(mockedCommentThread.getSnippet().getTopLevelComment().getSnippet().getTextDisplay()).thenReturn("Test Comment Message");
-    when(mockedlanguageService.analyzeSentiment(any(Document.class)).getDocumentSentiment().getScore()).thenReturn(new Random().nextFloat() * 2 -1);
+    when(mockedYouTubeResponse.getItems())
+        .thenReturn(new ArrayList<>(Arrays.asList(mockedCommentThread, mockedCommentThread)));
+    when(mockedCommentThread.getSnippet().getTopLevelComment().getSnippet().getTextDisplay())
+        .thenReturn("Test Comment Message");
+    when(mockedlanguageService
+            .analyzeSentiment(any(Document.class))
+            .getDocumentSentiment()
+            .getScore())
+        .thenReturn(new Random().nextFloat() * 2 - 1);
     Assert.assertNotNull(commentAnalysis.computeOverallStats(mockedYouTubeResponse));
-    Assert.assertTrue(Math.abs(commentAnalysis.computeOverallStats(mockedYouTubeResponse).getAverageScore()) <= 1);
-
+    Assert.assertTrue(
+        Math.abs(commentAnalysis.computeOverallStats(mockedYouTubeResponse).getAverageScore())
+            <= 1);
   }
 
   @Test
@@ -78,18 +87,9 @@ public class CommentAnalysisTest {
   @Test
   public void testCategorizationEdgeCases() {
     // Test with mocked analysis interface
-    Assert.assertEquals(
-        NORMAL_STAT.getAggregateValues()
-                   .get(new Range(0, 0.2))
-                   .intValue(), 4);
-    Assert.assertEquals(
-        EDGE_STAT.getAggregateValues()
-                 .get(new Range(-1.0, -0.8))
-                 .intValue(), 1);
-    Assert.assertEquals(
-        EDGE_STAT.getAggregateValues()
-                 .get(new Range(0.8, 1))
-                 .intValue(), 1);
+    Assert.assertEquals(NORMAL_STAT.getAggregateValues().get(new Range(0, 0.2)).intValue(), 4);
+    Assert.assertEquals(EDGE_STAT.getAggregateValues().get(new Range(-1.0, -0.8)).intValue(), 1);
+    Assert.assertEquals(EDGE_STAT.getAggregateValues().get(new Range(0.8, 1)).intValue(), 1);
     // Test without mocked analysis interface
     Assert.assertEquals(NORMAL_STAT.getAggregateValues().get(new Range(-0.2, 0)).intValue(), 2);
     Assert.assertEquals(

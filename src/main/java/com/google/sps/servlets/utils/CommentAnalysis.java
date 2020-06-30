@@ -31,6 +31,7 @@ public class CommentAnalysis {
 
   /**
    * Constructor to create and initialize language service for sentiment analysis
+   *
    * @throws IOException error when the service cannot be started successfully
    */
   public CommentAnalysis() throws IOException {
@@ -39,6 +40,7 @@ public class CommentAnalysis {
 
   /**
    * Constructor for mocked test to pass in mocked language client service.
+   *
    * @param languageService language service that has been created
    */
   public CommentAnalysis(LanguageServiceClient languageService) {

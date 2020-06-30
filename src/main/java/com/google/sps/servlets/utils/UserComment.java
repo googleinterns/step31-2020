@@ -25,6 +25,7 @@ public class UserComment {
 
   /**
    * Encapsulate a comment Thread into an User Comment object.
+   *
    * @param commentThread given comment thread retrieved from Youtube API
    */
   public UserComment(CommentThread commentThread) {
