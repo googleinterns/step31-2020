@@ -24,18 +24,13 @@ import com.google.sps.servlets.utils.CommentAnalysis;
 import com.google.sps.servlets.utils.Statistics;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/**
- * This is a JUnit test for sentiment analysis
- */
+/** This is a JUnit test for sentiment analysis */
 @RunWith(JUnit4.class)
 public class CommentAnalysisTest {
   private CommentThreadListResponse youtuberesponse;
@@ -56,15 +51,21 @@ public class CommentAnalysisTest {
   public static YouTube getService() throws GeneralSecurityException, IOException {
     final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
-               .setApplicationName(APPLICATION_NAME).build();
+        .setApplicationName(APPLICATION_NAME)
+        .build();
   }
 
   @Before
-  public void setUp() throws GeneralSecurityException, IOException{
+  public void setUp() throws GeneralSecurityException, IOException {
     YouTube youtubeService = getService();
     YouTube.CommentThreads.List youtuberequest = youtubeService.commentThreads().list(SNIPPET);
-    youtuberesponse = youtuberequest.setKey(DEVELOPER_KEY).setVideoId(TEST_VIDEO_ID)
-                                      .setMaxResults(2L).setTextFormat(PLAINTEXT).execute();
+    youtuberesponse =
+        youtuberequest
+            .setKey(DEVELOPER_KEY)
+            .setVideoId(TEST_VIDEO_ID)
+            .setMaxResults(2L)
+            .setTextFormat(PLAINTEXT)
+            .execute();
     analysis = new CommentAnalysis();
   }
 

@@ -24,7 +24,7 @@ public class UserComment {
   private DateTime publishDate;
 
   UserComment(CommentThread commentThread) {
-    Comment topLevelComment =  commentThread.getSnippet().getTopLevelComment();
+    Comment topLevelComment = commentThread.getSnippet().getTopLevelComment();
     this.commentId = topLevelComment.getId();
     this.commentMsg = topLevelComment.getSnippet().getTextDisplay();
     this.publishDate = topLevelComment.getSnippet().getPublishedAt();
@@ -41,5 +41,4 @@ public class UserComment {
   public DateTime getPublishDate() {
     return publishDate;
   }
-
 }

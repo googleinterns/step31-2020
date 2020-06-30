@@ -14,7 +14,6 @@
 
 package com.google.sps.servlets.utils;
 
-import com.google.api.services.youtube.model.CommentThread;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
@@ -24,8 +23,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This class encapsulates each element in json comment array into separate user comment object
- * and does sentiment analysis on each of them.
+ * This class encapsulates each element in json comment array into separate user comment object and
+ * does sentiment analysis on each of them.
  */
 public class CommentAnalysis {
   private LanguageServiceClient languageService;
@@ -36,29 +35,31 @@ public class CommentAnalysis {
 
   /**
    * It computes an overall statistics score from the retrieved youtube comments.
+   *
    * @return a Statistics object that contains required values to display
    */
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
 
     List<Double> scoreValues =
-        youtubeResponse.getItems()
-                        .stream()
-                        .map(UserComment::new)
-                        .map(this::calcualateSentiAnalysisScore)
-                        .collect(Collectors.toList());
+        youtubeResponse.getItems().stream()
+            .map(UserComment::new)
+            .map(this::calcualateSentiAnalysisScore)
+            .collect(Collectors.toList());
     return new Statistics(scoreValues);
   }
 
   /**
    * Calculate the sentiment analysis score for each single comment
+   *
    * @return sentiment score
    * @throws RuntimeException if the sentiment analysis API is not working, throw the IOExeption
    */
   private double calcualateSentiAnalysisScore(UserComment comment) {
-    Document doc = Document.newBuilder()
-                           .setContent(comment.getCommentMsg())
-                           .setType(Document.Type.PLAIN_TEXT)
-                           .build();
+    Document doc =
+        Document.newBuilder()
+            .setContent(comment.getCommentMsg())
+            .setType(Document.Type.PLAIN_TEXT)
+            .build();
     Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
     if (sentiment != null) {
       return ((double) sentiment.getScore());
