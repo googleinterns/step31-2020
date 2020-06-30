@@ -14,17 +14,10 @@
 
 package com.google.sps;
 
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.sps.servlets.utils.CommentAnalysis;
 import com.google.sps.servlets.utils.Range;
 import com.google.sps.servlets.utils.Statistics;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,71 +26,65 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 
 /**
- * This is a JUnit test for sentiment analysis
+ * This is a JUnit test for sentiment mockedAnalysis
  */
 @RunWith(JUnit4.class)
 public class CommentAnalysisTest {
-  private CommentThreadListResponse youtuberesponse;
-  private CommentAnalysis analysis;
-  private static final String APPLICATION_NAME = "testComment";
-  private static final String DEVELOPER_KEY = "AIzaSyDLE0TsAmPxbF_D_t3J4-aqBuFKs4chMgM";
-  private static final String PLAINTEXT = "plainText";
-  private static final String SNIPPET = "snippet";
-  private static final String TEST_VIDEO_ID = "E_wKLOq-30M";
-  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-  private static final ArrayList<Double> SCOREVALUE_1 = new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
-  private static final ArrayList<Double> SCOREVALUE_2 = new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
-  private static final ArrayList<Double> SCOREVALUE_3 = new ArrayList<>(Arrays.asList(0.5, 0.9,  -0.5, -0.9));
-  private static final ArrayList<Double> SCOREVALUE_4 = new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
-  Statistics testStat_1 = new Statistics(SCOREVALUE_1);
-  Statistics testStat_2 = new Statistics(SCOREVALUE_2);
-  Statistics testStat_3 = new Statistics(SCOREVALUE_3);
-  Statistics testStat_4 = new Statistics(SCOREVALUE_4);
+  private static final CommentAnalysis mockedAnalysis = mock(CommentAnalysis.class);
+  private static final CommentThreadListResponse mockedExpectedList = mock(CommentThreadListResponse.class);;
+  private static final CommentThreadListResponse mockedEdgeList = mock(CommentThreadListResponse.class);
+  private static final ArrayList<Double> SCORE_IN_RANGE = new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
+  private static final ArrayList<Double> EDGE_SCORE = new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
+  private static final ArrayList<Double> SYMMETRIC_SCORE = new ArrayList<>(Arrays.asList(0.5, 0.9,  -0.5, -0.9));
+  private static final ArrayList<Double> ALL_OUSIDE_SCORE = new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
+  private static final ArrayList<Double> ONE_OUSIDE_SCORE = new ArrayList<>(Arrays.asList(-2.0, -1.0, 0.0));
+  private static final ArrayList<Double> NULL_SCORE = null;
+  private static final Statistics NORMAL_STAT = new Statistics(SCORE_IN_RANGE);
+  private static final Statistics EDGE_STAT = new Statistics(EDGE_SCORE);
+  private static final Statistics SYMMETRIC_STAT = new Statistics(SYMMETRIC_SCORE);
+  private static final Statistics ALL_OUSIDE_STAT = new Statistics(ALL_OUSIDE_SCORE);
+  private static final Statistics ONE_OUSIDE_STAT = new Statistics(ONE_OUSIDE_SCORE);
+  
 
-  /**
-   * Build and return an authorized API client service.
-   *
-   * @return an authorized API client service
-   * @throws GeneralSecurityException, IOException
-   */
-  public static YouTube getService() throws GeneralSecurityException, IOException {
-    final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
-               .setApplicationName(APPLICATION_NAME).build();
-  }
 
   @Before
-  public void setUp() throws GeneralSecurityException, IOException{
-    YouTube youtubeService = getService();
-    YouTube.CommentThreads.List youtuberequest = youtubeService.commentThreads().list(SNIPPET);
-    youtuberesponse = youtuberequest.setKey(DEVELOPER_KEY).setVideoId(TEST_VIDEO_ID)
-                                      .setMaxResults(2L).setTextFormat(PLAINTEXT).execute();
-    analysis = new CommentAnalysis();
+  public void setUp() {
+    when(mockedAnalysis.computeOverallStats(mockedExpectedList)).thenReturn(NORMAL_STAT);
+    when(mockedAnalysis.computeOverallStats(mockedEdgeList)).thenReturn(EDGE_STAT);
   }
 
   @Test
   public void testSentimentAnalysisInRange() {
     // Test the Sentiment Analysis Score within range -1 to 1.
-    Statistics result = analysis.computeOverallStats(youtuberesponse);
-    Assert.assertTrue(Math.abs(result.getAverageScore()) <= 1);
+    Statistics normalStat = mockedAnalysis.computeOverallStats(mockedExpectedList);
+    Assert.assertTrue(Math.abs(normalStat.getAverageScore()) <= 1);
+    // Test the Sentiment Analysis Score within range -1 to 1.
+    Statistics edgeStat = mockedAnalysis.computeOverallStats(mockedExpectedList);
+    Assert.assertTrue(Math.abs(edgeStat.getAverageScore()) <= 1);
   }
 
   @Test
   public void testCategorizationEdgeCases() {
-    Assert.assertEquals(testStat_1.getAggregateValues().get(new Range(0,0.2)).intValue(), 4);
-    Assert.assertEquals(testStat_1.getAggregateValues().get(new Range(-0.2,0)).intValue(), 2);
-    Assert.assertEquals(testStat_2.getAggregateValues().get(new Range(-1.0,-0.8)).intValue(), 1);
-    Assert.assertEquals(testStat_2.getAggregateValues().get(new Range(0.8,1)).intValue(), 1);
-    Assert.assertEquals(testStat_4.getAggregateValues().get(new Range(-1.0,-0.8)).intValue(), 0);
-    Assert.assertEquals(testStat_4.getAggregateValues().get(new Range(0.8,1.0)).intValue(), 0);
+    Assert.assertEquals(mockedAnalysis.computeOverallStats(mockedExpectedList).getAggregateValues().get(new Range(0,0.2)).intValue(), 4);
+    Assert.assertEquals(NORMAL_STAT.getAggregateValues().get(new Range(-0.2,0)).intValue(), 2);
+    Assert.assertEquals(EDGE_STAT.getAggregateValues().get(new Range(-1.0,-0.8)).intValue(), 1);
+    Assert.assertEquals(EDGE_STAT.getAggregateValues().get(new Range(0.8,1)).intValue(), 1);
+    Assert.assertEquals(ALL_OUSIDE_STAT.getAggregateValues().get(new Range(-1.0,-0.8)).intValue(), 0);
+    Assert.assertEquals(ALL_OUSIDE_STAT.getAggregateValues().get(new Range(0.8,1.0)).intValue(), 0);
+    Assert.assertEquals(ONE_OUSIDE_STAT.getAggregateValues().get(new Range(-1.0,-0.8)).intValue(), 1);
   }
 
   @Test
   public void testAvgScore() {
-    Assert.assertTrue(testStat_2.getAverageScore() == 0.0);
-    Assert.assertTrue(testStat_3.getAverageScore() == 0.0);
-    Assert.assertTrue(testStat_4.getAverageScore() == 0.0);
+    Assert.assertEquals(EDGE_STAT.getAverageScore(), 0.0, 0);
+    Assert.assertEquals(SYMMETRIC_STAT.getAverageScore(), 0.0, 0);
+    Assert.assertEquals(ALL_OUSIDE_STAT.getAverageScore(), -99, 0);
+    Assert.assertEquals(ONE_OUSIDE_STAT.getAverageScore(), -0.5, 0);
+
   }
 }
