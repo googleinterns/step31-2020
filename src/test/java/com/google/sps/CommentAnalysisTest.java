@@ -83,7 +83,9 @@ public class CommentAnalysisTest {
             .getDocumentSentiment()
             .getScore())
         .thenReturn(new Random().nextFloat() * 2 - 1);
-    Assert.assertNotNull(commentAnalysis.computeOverallStats(youtubeResponse));
+    Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
+    Assert.assertNotNull(testStat);
+    Assert.assertNotNull(testStat.getAggregateValues());
     Assert.assertTrue(
         Math.abs(commentAnalysis.computeOverallStats(youtubeResponse).getAverageScore()) <= 1);
   }
@@ -97,12 +99,18 @@ public class CommentAnalysisTest {
 
   @Test
   public void testCategorizationEdgeCases() {
-    // Test with mocked analysis interface
-    Assert.assertEquals(NORMAL_STAT.getAggregateValues().get(new Range(0, 0.2)).intValue(), 4);
     Assert.assertEquals(EDGE_STAT.getAggregateValues().get(new Range(-1.0, -0.8)).intValue(), 1);
     Assert.assertEquals(EDGE_STAT.getAggregateValues().get(new Range(0.8, 1)).intValue(), 1);
-    // Test without mocked analysis interface
+    }
+
+  @Test
+  public void testCategorizationNormalCases() {
+    Assert.assertEquals(NORMAL_STAT.getAggregateValues().get(new Range(0, 0.2)).intValue(), 4);
     Assert.assertEquals(NORMAL_STAT.getAggregateValues().get(new Range(-0.2, 0)).intValue(), 2);
+  }
+
+  @Test
+  public void testCategorizationOutsiderCases() {
     Assert.assertEquals(
         ALL_OUSIDE_STAT.getAggregateValues().get(new Range(-1.0, -0.8)).intValue(), 0);
     Assert.assertEquals(
@@ -112,9 +120,18 @@ public class CommentAnalysisTest {
   }
 
   @Test
-  public void testAvgScore() {
-    Assert.assertEquals(EDGE_STAT.getAverageScore(), 0.0, 0);
+  public void testAvgNormalScore() {
     Assert.assertEquals(SYMMETRIC_STAT.getAverageScore(), 0.0, 0);
+  }
+
+  @Test
+  public void testAvgEdgeScore() {
+    Assert.assertEquals(EDGE_STAT.getAverageScore(), 0.0, 0);
+  }
+
+
+  @Test
+  public void testAvgOutsiderScore() {
     Assert.assertEquals(ALL_OUSIDE_STAT.getAverageScore(), -99, 0);
     Assert.assertEquals(ONE_OUSIDE_STAT.getAverageScore(), -0.5, 0);
   }
