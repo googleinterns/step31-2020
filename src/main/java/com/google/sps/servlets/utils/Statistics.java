@@ -41,7 +41,9 @@ public class Statistics {
   }
 
   /**
-   * Constructor of Statistics to filter out invalid sentiment scores, set aggregate hash map and average score
+   * Constructor of Statistics to filter out invalid sentiment scores, set aggregate hash map and
+   * average score
+   *
    * @param sentimentScores given score values
    */
   public Statistics(List<Double> sentimentScores) {
