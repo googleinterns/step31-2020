@@ -21,9 +21,10 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.gson.Gson;
+import com.google.sps.servlets.utils.CommentAnalysis;
+import com.google.sps.servlets.utils.Statistics;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -39,23 +40,26 @@ public class YoutubeServlet extends HttpServlet {
   // Parameters required by YouTube API to retrieve the comment threads
   private static final String SNIPPET_PARAMETERS = "snippet,replies";
   private static final String ORDER_PARAMETER = "relevance";
-  // TODO: obtain actual API Key
-  private static final String DEVELOPER_KEY = "OUR_API_KEY";
+
   private static final String APPLICATION_NAME = "SAY";
+  // TODO: have dev key come from centralized location, rather than being hard-coded.
+  private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
 
   /**
-   * Applies parameters to the YouTube API, then extracts comments. URL is the only true variable;
-   * for this application we will always want order to be relevance and max results to be 100, the
-   * API's arbitrary limit
+   * Retrieves comments from designated URL, passes them off to CommentAnalysis object to be wrapped
+   * into Statistics object, then writes the Statistics object to the frontend.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws IOException, ServletException {
+      throws ServletException {
     try {
       String url = request.getParameter(URL_PARAMETER);
       CommentThreadListResponse commentResponse = generateYouTubeRequest(url).execute();
-      // TODO: input commentResponse into commentAnalysis class to get useful data
-      Statistics statistics = new Statistics(new ArrayList<Double>());
+
+      CommentAnalysis commentAnalysis = new CommentAnalysis();
+      Statistics statistics = commentAnalysis.computeOverallStats(commentResponse);
+      commentAnalysis.closeLanguage();
+
       String json = new Gson().toJson(statistics);
       response.setContentType("application/json");
       response.getWriter().println(json);
@@ -63,6 +67,23 @@ public class YoutubeServlet extends HttpServlet {
       e.printStackTrace(System.err);
       throw new ServletException("Unable to fetch YouTube Comments Through Servlet.", e);
     }
+  }
+
+  /**
+   * Applies parameters to comment request, then uses it to extract comments. URL is the only true
+   * variable; for this application we will always want order to be relevance, and max results to be
+   * 100, the API's limit for how many comments can be retrieved via a single request.
+   */
+  private YouTube.CommentThreads.List generateYouTubeRequest(String url)
+      throws GeneralSecurityException, IOException {
+    YouTube youtubeService = getService();
+    YouTube.CommentThreads.List commentRequest =
+        youtubeService.commentThreads().list(SNIPPET_PARAMETERS);
+    return commentRequest
+        .setKey(DEVELOPER_KEY)
+        .setVideoId(url)
+        .setOrder(ORDER_PARAMETER)
+        .setMaxResults(COMMENT_LIMIT);
   }
 
   /**
@@ -76,18 +97,5 @@ public class YoutubeServlet extends HttpServlet {
     return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
         .setApplicationName(APPLICATION_NAME)
         .build();
-  }
-
-  // Helper function to simplify generation of YouTube API request.
-  private YouTube.CommentThreads.List generateYouTubeRequest(String url)
-      throws GeneralSecurityException, IOException {
-    YouTube youtubeService = getService();
-    YouTube.CommentThreads.List commentRequest =
-        youtubeService.commentThreads().list(SNIPPET_PARAMETERS);
-    return commentRequest
-        .setKey(DEVELOPER_KEY)
-        .setVideoId(url)
-        .setOrder(ORDER_PARAMETER)
-        .setMaxResults(COMMENT_LIMIT);
   }
 }
