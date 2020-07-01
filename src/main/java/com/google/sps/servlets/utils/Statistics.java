@@ -55,22 +55,21 @@ public class Statistics {
   private void setAggregateScores(List<Double> sentimentScores) {
     // TODO: change Range class to BigDecimal to avoid imprecision conversions in floating points
     aggregateValues = new HashMap<>();
-    BigDecimal curPoint = BigDecimal.valueOf(LOWER_END);
     BigDecimal interval = BigDecimal.valueOf(INTERVAL);
+    BigDecimal upperPoint = BigDecimal.valueOf(UPPER_END);
 
     // Initialize the HashMap with intervals
-    while (curPoint.doubleValue() < UPPER_END) {
+    for (BigDecimal tempPoint = BigDecimal.valueOf(LOWER_END); tempPoint.compareTo(upperPoint) < 0; tempPoint = tempPoint.add(interval)){
       Range currentRange =
           new Range(
-              curPoint.doubleValue(), Math.min(curPoint.add(interval).doubleValue(), UPPER_END));
-      curPoint = curPoint.add(interval);
+              tempPoint.doubleValue(), Math.min(tempPoint.add(interval).doubleValue(), UPPER_END));
       aggregateValues.put(currentRange, 0);
     }
     // Add score's interval to different ranges two sorting with and two pointers pop-up
     sentimentScores.sort(Comparator.naturalOrder());
-    curPoint = BigDecimal.valueOf(LOWER_END);
+    BigDecimal curPoint = BigDecimal.valueOf(LOWER_END);
     int scoreIdx = 0;
-    while ((scoreIdx < sentimentScores.size()) && (curPoint.doubleValue() < UPPER_END)) {
+    while ((scoreIdx < sentimentScores.size()) && (curPoint.compareTo(upperPoint) < 0)) {
       double scoreVal = sentimentScores.get(scoreIdx);
       // check available interval for scoreVal
       BigDecimal nextPoint = curPoint.add(interval);
