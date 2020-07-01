@@ -14,9 +14,6 @@
 
 package com.google.sps;
 
-import java.util.List;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -34,10 +31,12 @@ import com.google.sps.servlets.utils.Statistics;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
@@ -63,14 +62,13 @@ public class CommentAnalysisTest {
   private static Comment testTopComment = new Comment();
   private static CommentSnippet topCommentSnippet = new CommentSnippet();
   private static CommentThread testCommentThread = new CommentThread();
-  private static List<CommentThread>
-      testCommentThreadLst = new ArrayList<>(Arrays.asList(testCommentThread, testCommentThread));
+  private static List<CommentThread> testCommentThreadLst =
+      new ArrayList<>(Arrays.asList(testCommentThread, testCommentThread));
   private static CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
   private static CommentThreadSnippet testThreadSnippet = new CommentThreadSnippet();
   private static LanguageServiceClient mockedlanguageService =
       mock(LanguageServiceClient.class, Mockito.RETURNS_DEEP_STUBS);
   private static CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
-
 
   @Before
   public void setUp() {
@@ -81,12 +79,12 @@ public class CommentAnalysisTest {
     youtubeResponse.setItems(testCommentThreadLst);
   }
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
+  @Rule public ExpectedException exception = ExpectedException.none();
 
   @Test
   public void testCalculateSentiment() {
-    // This is a test method to calculate simulate and test the process in comment analysis language service
+    // This is a test method to calculate simulate and test the process in comment analysis language
+    // service
     when(mockedlanguageService
             .analyzeSentiment(any(Document.class))
             .getDocumentSentiment()
@@ -95,12 +93,14 @@ public class CommentAnalysisTest {
     Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
     Assert.assertNotNull(testStat);
     Assert.assertNotNull(testStat.getAggregateValues());
+    Assert.assertEquals(testStat.getAverageScore(), 0.23, 0.01);
     Assert.assertEquals(
         testStat.getAverageScore(), 0.23, 0.01);
-    Assert.assertEquals(testStat
-                            .getAggregateValues()
-                            .get(new Range(BigDecimal.valueOf(0.2),
-                                BigDecimal.valueOf(0.4))).intValue(),
+    Assert.assertEquals(
+        testStat
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(0.2), BigDecimal.valueOf(0.4)))
+            .intValue(),
         2);
   }
 
