@@ -101,7 +101,7 @@ public class CommentAnalysisTest {
   public void testCategorizationEdgeCases() {
     Assert.assertEquals(EDGE_STAT.getAggregateValues().get(new Range(-1.0, -0.8)).intValue(), 1);
     Assert.assertEquals(EDGE_STAT.getAggregateValues().get(new Range(0.8, 1)).intValue(), 1);
-    }
+  }
 
   @Test
   public void testCategorizationNormalCases() {
@@ -128,7 +128,6 @@ public class CommentAnalysisTest {
   public void testAvgEdgeScore() {
     Assert.assertEquals(EDGE_STAT.getAverageScore(), 0.0, 0);
   }
-
 
   @Test
   public void testAvgOutsiderScore() {
