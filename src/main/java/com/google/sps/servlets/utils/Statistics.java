@@ -59,7 +59,9 @@ public class Statistics {
     BigDecimal upperPoint = BigDecimal.valueOf(UPPER_END);
 
     // Initialize the HashMap with intervals
-    for (BigDecimal tempPoint = BigDecimal.valueOf(LOWER_END); tempPoint.compareTo(upperPoint) < 0; tempPoint = tempPoint.add(interval)){
+    for (BigDecimal tempPoint = BigDecimal.valueOf(LOWER_END);
+        tempPoint.compareTo(upperPoint) < 0;
+        tempPoint = tempPoint.add(interval)) {
       Range currentRange =
           new Range(
               tempPoint.doubleValue(), Math.min(tempPoint.add(interval).doubleValue(), UPPER_END));
