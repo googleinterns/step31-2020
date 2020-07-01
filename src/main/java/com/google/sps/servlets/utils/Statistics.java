@@ -25,11 +25,11 @@ public class Statistics {
   private static final double LOWER_END_VAL = -1.0;
   private static final double UPPER_END_VAL = 1.0;
   private static final BigDecimal INTERVAL = BigDecimal.valueOf(0.2);
-  ;
+
   private static final BigDecimal UPPER_END = BigDecimal.valueOf(1.0);
-  ;
+
   private static final BigDecimal LOWER_END = BigDecimal.valueOf(-1.0);
-  ;
+
   // Contains sentiment scores in the range [-1, 1] with given intervals.
   private Map<Range, Integer> aggregateValues;
   private double averageScore;
@@ -42,6 +42,10 @@ public class Statistics {
     return averageScore;
   }
 
+  /**
+   * Constructor of Statistics to filter out invalid sentiment scores, set aggregate hash map and average score
+   * @param sentimentScores given score values
+   */
   public Statistics(List<Double> sentimentScores) {
     sentimentScores =
         sentimentScores.stream()
