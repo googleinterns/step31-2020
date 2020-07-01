@@ -62,7 +62,7 @@ public class Statistics {
     for (BigDecimal tempPoint = BigDecimal.valueOf(LOWER_END); tempPoint.compareTo(upperPoint) < 0; tempPoint = tempPoint.add(interval)){
       Range currentRange =
           new Range(
-              tempPoint.doubleValue(), Math.min(tempPoint.add(interval).doubleValue(), UPPER_END));
+              tempPoint, upperPoint.min(tempPoint.add(interval)));
       aggregateValues.put(currentRange, 0);
     }
     // Add score's interval to different ranges two sorting with and two pointers pop-up
@@ -70,12 +70,11 @@ public class Statistics {
     BigDecimal curPoint = BigDecimal.valueOf(LOWER_END);
     int scoreIdx = 0;
     while ((scoreIdx < sentimentScores.size()) && (curPoint.compareTo(upperPoint) < 0)) {
-      double scoreVal = sentimentScores.get(scoreIdx);
       // check available interval for scoreVal
       BigDecimal nextPoint = curPoint.add(interval);
-      double intervalUpperVal = nextPoint.doubleValue();
-      if (scoreVal < intervalUpperVal || intervalUpperVal == UPPER_END) {
-        Range foundRange = new Range(curPoint.doubleValue(), intervalUpperVal);
+      BigDecimal scorePoint = BigDecimal.valueOf(sentimentScores.get(scoreIdx));
+      if (scorePoint.compareTo(nextPoint) < 0 || (nextPoint.compareTo(upperPoint) == 0)) {
+        Range foundRange = new Range(curPoint, nextPoint);
         aggregateValues.put(foundRange, aggregateValues.get(foundRange) + 1);
         scoreIdx += 1;
       } else {

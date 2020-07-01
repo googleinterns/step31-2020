@@ -14,27 +14,29 @@
 
 package com.google.sps.servlets.utils;
 
+import java.math.BigDecimal;
+
 /** Range for the start and end point of sentiment scores. */
 public class Range {
   // TODO: change the double to BigDecimal or int type to avoid imprecision in floating points
-  private double inclusiveStart;
-  private double exclusiveEnd;
+  private BigDecimal inclusiveStart;
+  private BigDecimal exclusiveEnd;
 
-  public Range(double inclusiveStart, double exclusiveEnd) {
+  public Range(BigDecimal inclusiveStart, BigDecimal exclusiveEnd) {
     this.inclusiveStart = inclusiveStart;
     this.exclusiveEnd = exclusiveEnd;
   }
 
-  public double getInclusiveStart() {
+  public BigDecimal getInclusiveStart() {
     return inclusiveStart;
   }
 
-  public double getExclusiveEnd() {
+  public BigDecimal getExclusiveEnd() {
     return exclusiveEnd;
   }
 
-  public double getInterval() {
-    return exclusiveEnd - inclusiveStart;
+  public BigDecimal getInterval() {
+    return exclusiveEnd.subtract(inclusiveStart);
   }
 
   @Override
@@ -43,8 +45,8 @@ public class Range {
       return false;
     }
     Range rangeToCompare = (Range) objectToCompare;
-    return ((rangeToCompare.getExclusiveEnd() == exclusiveEnd)
-        && (rangeToCompare.getInclusiveStart() == inclusiveStart));
+    return ((rangeToCompare.getExclusiveEnd().compareTo(exclusiveEnd) == 0)
+        && (rangeToCompare.getInclusiveStart().compareTo(inclusiveStart)) == 0);
   }
 
   @Override
