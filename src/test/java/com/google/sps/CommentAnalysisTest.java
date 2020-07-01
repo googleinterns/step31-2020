@@ -14,70 +14,157 @@
 
 package com.google.sps;
 
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.youtube.YouTube;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import com.google.api.services.youtube.model.Comment;
+import com.google.api.services.youtube.model.CommentSnippet;
+import com.google.api.services.youtube.model.CommentThread;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
+import com.google.api.services.youtube.model.CommentThreadSnippet;
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.sps.servlets.utils.CommentAnalysis;
+import com.google.sps.servlets.utils.Range;
 import com.google.sps.servlets.utils.Statistics;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
 
-/** This is a JUnit test for sentiment analysis */
+/** This is a JUnit test for sentiment mockedAnalysis */
 @RunWith(JUnit4.class)
 public class CommentAnalysisTest {
-  private CommentThreadListResponse youtuberesponse;
-  private CommentAnalysis analysis;
-  private static final String APPLICATION_NAME = "testComment";
-  private static final String DEVELOPER_KEY = "API_KEY";
-  private static final String PLAINTEXT = "plainText";
-  private static final String SNIPPET = "snippet";
-  private static final String TEST_VIDEO_ID = "E_wKLOq-30M";
-  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+  private static final ArrayList<Double> SCORE_IN_RANGE =
+      new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
+  private static final ArrayList<Double> EDGE_SCORE =
+      new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
+  private static final ArrayList<Double> SYMMETRIC_SCORE =
+      new ArrayList<>(Arrays.asList(0.5, 0.9, -0.5, -0.9));
+  private static final ArrayList<Double> ALL_OUTSIDE_SCORE =
+      new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
+  private static final ArrayList<Double> ONE_OUSIDE_SCORE =
+      new ArrayList<>(Arrays.asList(-2.0, -1.0, 0.0));
+  private static final Statistics NORMAL_STAT = new Statistics(SCORE_IN_RANGE);
+  private static final Statistics EDGE_STAT = new Statistics(EDGE_SCORE);
+  private static final Statistics SYMMETRIC_STAT = new Statistics(SYMMETRIC_SCORE);
+  private static final Statistics ALL_OUSIDE_STAT = new Statistics(ALL_OUTSIDE_SCORE);
+  private static final Statistics ONE_OUSIDE_STAT = new Statistics(ONE_OUSIDE_SCORE);
 
-  /**
-   * Build and return an authorized API client service.
-   *
-   * @return an authorized API client service
-   * @throws GeneralSecurityException, IOException
-   */
-  public static YouTube getService() throws GeneralSecurityException, IOException {
-    final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
-        .setApplicationName(APPLICATION_NAME)
-        .build();
-  }
+  private Comment testTopComment = new Comment();
+  private CommentSnippet topCommentSnippet = new CommentSnippet();
+  private CommentThread testcommentThread = new CommentThread();
+  private CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
+  private CommentThreadSnippet testThreadSnippet = new CommentThreadSnippet();
+  private LanguageServiceClient mockedlanguageService =
+      mock(LanguageServiceClient.class, Mockito.RETURNS_DEEP_STUBS);
+  private CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
 
   @Before
-  public void setUp() throws GeneralSecurityException, IOException {
-    YouTube youtubeService = getService();
-    YouTube.CommentThreads.List youtuberequest = youtubeService.commentThreads().list(SNIPPET);
-    youtuberesponse =
-        youtuberequest
-            .setKey(DEVELOPER_KEY)
-            .setVideoId(TEST_VIDEO_ID)
-            .setMaxResults(2L)
-            .setTextFormat(PLAINTEXT)
-            .execute();
-    analysis = new CommentAnalysis();
+  public void setUp() {
+    topCommentSnippet.setTextDisplay("Test Message");
+    testTopComment.setSnippet(topCommentSnippet);
+    testThreadSnippet.setTopLevelComment(testTopComment);
+    testcommentThread.setSnippet(testThreadSnippet);
+  }
+
+  @Test
+  public void testCalculateSentiment() {
+    // This is a test method to calculate simulate and test the process in comment analysis
+    youtubeResponse.setItems(new ArrayList<>(Arrays.asList(testcommentThread, testcommentThread)));
+    when(mockedlanguageService
+            .analyzeSentiment(any(Document.class))
+            .getDocumentSentiment()
+            .getScore())
+        .thenReturn(new Random().nextFloat() * 2 - 1);
+    Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
+    Assert.assertNotNull(testStat);
+    Assert.assertNotNull(testStat.getAggregateValues());
+    Assert.assertTrue(
+        Math.abs(commentAnalysis.computeOverallStats(youtubeResponse).getAverageScore()) <= 1);
   }
 
   @Test
   public void testSentimentAnalysisInRange() {
     // Test the Sentiment Analysis Score within range -1 to 1.
-    Statistics result = analysis.computeOverallStats(youtuberesponse);
-    Assert.assertTrue(Math.abs(result.getAverageScore()) <= 1);
+    Assert.assertTrue(Math.abs(NORMAL_STAT.getAverageScore()) <= 1);
+    //    Assert.assertTrue(Math.abs(EDGE_STAT.getAverageScore()) <= 1);
   }
 
   @Test
   public void testCategorizationEdgeCases() {
-    // TODO: test for splitting different scores into intervals
+    Assert.assertEquals(
+        EDGE_STAT
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
+            .intValue(),
+        1);
+    Assert.assertEquals(
+        EDGE_STAT
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(0.8), BigDecimal.valueOf(1.0)))
+            .intValue(),
+        1);
+  }
+
+  @Test
+  public void testCategorizationNormalCases() {
+    Assert.assertEquals(
+        NORMAL_STAT
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(0.0), BigDecimal.valueOf(0.2)))
+            .intValue(),
+        4);
+    Assert.assertEquals(
+        NORMAL_STAT
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(-0.2), BigDecimal.valueOf(0.0)))
+            .intValue(),
+        2);
+  }
+
+  @Test
+  public void testCategorizationOutsiderCases() {
+    Assert.assertEquals(
+        ALL_OUSIDE_STAT
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
+            .intValue(),
+        0);
+    Assert.assertEquals(
+        ALL_OUSIDE_STAT
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(0.8), BigDecimal.valueOf(1.0)))
+            .intValue(),
+        0);
+    Assert.assertEquals(
+        ONE_OUSIDE_STAT
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
+            .intValue(),
+        1);
+  }
+
+  @Test
+  public void testAvgNormalScore() {
+    Assert.assertEquals(SYMMETRIC_STAT.getAverageScore(), 0.0, 0);
+  }
+
+  @Test
+  public void testAvgEdgeScore() {
+    Assert.assertEquals(EDGE_STAT.getAverageScore(), 0.0, 0);
+  }
+
+  @Test
+  public void testAvgOutsiderScore() {
+    Assert.assertEquals(ALL_OUSIDE_STAT.getAverageScore(), -99, 0);
+    Assert.assertEquals(ONE_OUSIDE_STAT.getAverageScore(), -0.5, 0);
   }
 }
