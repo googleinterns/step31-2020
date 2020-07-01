@@ -44,7 +44,6 @@ public class CommentAnalysis {
    * @param languageService language service that has been created
    */
   public CommentAnalysis(LanguageServiceClient languageService) {
-    languageService.close();
     this.languageService = languageService;
   }
 

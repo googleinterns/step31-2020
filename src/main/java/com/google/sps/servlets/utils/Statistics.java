@@ -26,8 +26,8 @@ public class Statistics {
   private static final double LOWER_END_VAL = -1.0;
   private static final double UPPER_END_VAL = 1.0;
   private static final BigDecimal INTERVAL = BigDecimal.valueOf(0.2);
-  private static final BigDecimal UPPER_END = BigDecimal.valueOf(1.0);
-  private static final BigDecimal LOWER_END = BigDecimal.valueOf(-1.0);
+  private static final BigDecimal UPPER_END = BigDecimal.valueOf(UPPER_END_VAL);
+  private static final BigDecimal LOWER_END = BigDecimal.valueOf(LOWER_END_VAL);
 
   // Contains sentiment scores in the range [-1, 1] with given intervals.
   private Map<Range, Integer> aggregateValues;
@@ -47,7 +47,7 @@ public class Statistics {
    *
    * @param sentimentScores given score values
    */
-  public Statistics(List<Double> sentimentScores) {
+  public Statistics(List<Double> sentimentScores) throws RuntimeException {
     sentimentScores =
         sentimentScores.stream()
             .filter(score -> (score >= LOWER_END_VAL && score <= UPPER_END_VAL))
@@ -99,7 +99,7 @@ public class Statistics {
    *
    * @param sentimentScores a list of score values from -1.0 to 1.0
    */
-  private void setAverageScore(List<Double> sentimentScores) {
+  private void setAverageScore(List<Double> sentimentScores) throws RuntimeException {
     averageScore =
         sentimentScores.stream()
                        .mapToDouble(i -> i)

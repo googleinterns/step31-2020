@@ -14,6 +14,9 @@
 
 package com.google.sps;
 
+import java.util.List;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -42,6 +45,7 @@ import org.mockito.Mockito;
 /** This is a JUnit test for sentiment mockedAnalysis */
 @RunWith(JUnit4.class)
 public class CommentAnalysisTest {
+  private static final float testScore = 0.23f;
   private static final ArrayList<Double> SCORE_IN_RANGE =
       new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
   private static final ArrayList<Double> EDGE_SCORE =
@@ -55,47 +59,56 @@ public class CommentAnalysisTest {
   private static final Statistics NORMAL_STAT = new Statistics(SCORE_IN_RANGE);
   private static final Statistics EDGE_STAT = new Statistics(EDGE_SCORE);
   private static final Statistics SYMMETRIC_STAT = new Statistics(SYMMETRIC_SCORE);
-  private static final Statistics ALL_OUSIDE_STAT = new Statistics(ALL_OUTSIDE_SCORE);
   private static final Statistics ONE_OUSIDE_STAT = new Statistics(ONE_OUSIDE_SCORE);
-
-  private Comment testTopComment = new Comment();
-  private CommentSnippet topCommentSnippet = new CommentSnippet();
-  private CommentThread testcommentThread = new CommentThread();
-  private CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
-  private CommentThreadSnippet testThreadSnippet = new CommentThreadSnippet();
-  private LanguageServiceClient mockedlanguageService =
+  private static Comment testTopComment = new Comment();
+  private static CommentSnippet topCommentSnippet = new CommentSnippet();
+  private static CommentThread testCommentThread = new CommentThread();
+  private static List<CommentThread>
+      testCommentThreadLst = new ArrayList<>(Arrays.asList(testCommentThread, testCommentThread));
+  private static CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
+  private static CommentThreadSnippet testThreadSnippet = new CommentThreadSnippet();
+  private static LanguageServiceClient mockedlanguageService =
       mock(LanguageServiceClient.class, Mockito.RETURNS_DEEP_STUBS);
-  private CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
+  private static CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
+
 
   @Before
   public void setUp() {
     topCommentSnippet.setTextDisplay("Test Message");
     testTopComment.setSnippet(topCommentSnippet);
     testThreadSnippet.setTopLevelComment(testTopComment);
-    testcommentThread.setSnippet(testThreadSnippet);
+    testCommentThread.setSnippet(testThreadSnippet);
+    youtubeResponse.setItems(testCommentThreadLst);
   }
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
 
   @Test
   public void testCalculateSentiment() {
-    // This is a test method to calculate simulate and test the process in comment analysis
-    youtubeResponse.setItems(new ArrayList<>(Arrays.asList(testcommentThread, testcommentThread)));
+    // This is a test method to calculate simulate and test the process in comment analysis language service
     when(mockedlanguageService
             .analyzeSentiment(any(Document.class))
             .getDocumentSentiment()
             .getScore())
-        .thenReturn(new Random().nextFloat() * 2 - 1);
+        .thenReturn(testScore);
     Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
     Assert.assertNotNull(testStat);
     Assert.assertNotNull(testStat.getAggregateValues());
-    Assert.assertTrue(
-        Math.abs(commentAnalysis.computeOverallStats(youtubeResponse).getAverageScore()) <= 1);
+    Assert.assertEquals(
+        testStat.getAverageScore(), 0.23,0.01);
+    Assert.assertEquals(testStat
+                            .getAggregateValues()
+                            .get(new Range(BigDecimal.valueOf(0.2),
+                                BigDecimal.valueOf(0.4))).intValue(),
+        2);
   }
 
   @Test
   public void testSentimentAnalysisInRange() {
     // Test the Sentiment Analysis Score within range -1 to 1.
     Assert.assertTrue(Math.abs(NORMAL_STAT.getAverageScore()) <= 1);
-//    Assert.assertTrue(Math.abs(EDGE_STAT.getAverageScore()) <= 1);
+    Assert.assertTrue(Math.abs(EDGE_STAT.getAverageScore()) <= 1);
   }
 
   @Test
@@ -133,18 +146,6 @@ public class CommentAnalysisTest {
   @Test
   public void testCategorizationOutsiderCases() {
     Assert.assertEquals(
-        ALL_OUSIDE_STAT
-            .getAggregateValues()
-            .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
-            .intValue(),
-        0);
-    Assert.assertEquals(
-        ALL_OUSIDE_STAT
-            .getAggregateValues()
-            .get(new Range(BigDecimal.valueOf(0.8), BigDecimal.valueOf(1.0)))
-            .intValue(),
-        0);
-    Assert.assertEquals(
         ONE_OUSIDE_STAT
             .getAggregateValues()
             .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
@@ -163,8 +164,25 @@ public class CommentAnalysisTest {
   }
 
   @Test
-  public void testAvgOutsiderScore() {
-    Assert.assertEquals(ALL_OUSIDE_STAT.getAverageScore(), -99, 0);
+  public void testAvgAllOutsiderScore() {
+    exception.expect(RuntimeException.class);
+    Statistics all_outside_stat = new Statistics(ALL_OUTSIDE_SCORE);
+    Assert.assertEquals(
+        all_outside_stat
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
+            .intValue(),
+        0);
+    Assert.assertEquals(
+        all_outside_stat
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(0.8), BigDecimal.valueOf(1.0)))
+            .intValue(),
+        0);
+  }
+
+  @Test
+  public void testAvgOneOutsiderScore() {
     Assert.assertEquals(ONE_OUSIDE_STAT.getAverageScore(), -0.5, 0);
   }
 }
