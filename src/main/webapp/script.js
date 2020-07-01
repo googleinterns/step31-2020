@@ -49,26 +49,29 @@ function cleanseUrl(url) {
  */
 function getChart() {
   $('form').submit(function() {
-    const CommentCount = new google.visualization.DataTable();
-    CommentCount.addColumn('string', 'Range');
-    CommentCount.addColumn('number', 'Count');
+    const CommentSentimentTable = new google.visualization.DataTable();
+    CommentSentimentTable.addColumn('string', 'SentimentRange');
+    CommentSentimentTable.addColumn('number', 'CommentCount');
 
     for (currentLabel = LOWEST_SCORE; currentLabel < HIGHEST_SCORE; currentLabel += INTERVAL) {
       // TODO: Replace abritrary value 6 with correct aggregation value  
-      CommentCount.addRows([
+      CommentSentimentTable.addRows([
           [(Math.round(currentLabel * 10) / 10).toString(), null],
-          [null, 6]
+          [null, Math.random()*10]
       ]);
     }
+
+    CommentSentimentTable.addRows([['1.0', null]]);
 
     const options = {
       'title': 'Comment Sentiment Range',
       'width': CHART_WIDTH,
-      'height':CHART_HEIGHT
+      'height':CHART_HEIGHT,
+      'bar': {groupWidth: "100"}
     };
     const chart = new google.visualization.ColumnChart(
         document.getElementById('chart-container'));
-    chart.draw(CommentCount, options);
+    chart.draw(CommentSentimentTable, options);
   });
 }
 
