@@ -22,9 +22,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Statistics {
-  private static final double INTERVAL = 0.2;
-  private static final double UPPER_END = 1.0;
-  private static final double LOWER_END = -1.0;
+  private static final double LOWER_END_VAL = -1.0;
+  private static final double UPPER_END_VAL = 1.0;
+  private static final BigDecimal INTERVAL = BigDecimal.valueOf(0.2);;
+  private static final BigDecimal UPPER_END = BigDecimal.valueOf(1.0);;
+  private static final BigDecimal LOWER_END = BigDecimal.valueOf(-1.0);;
   // Contains sentiment scores in the range [-1, 1] with given intervals.
   private Map<Range, Integer> aggregateValues;
   private double averageScore;
@@ -40,7 +42,7 @@ public class Statistics {
   public Statistics(List<Double> sentimentScores) {
     sentimentScores =
         sentimentScores.stream()
-            .filter(score -> (score >= LOWER_END && score <= UPPER_END))
+            .filter(score -> (score >= LOWER_END_VAL && score <= UPPER_END_VAL))
             .collect(Collectors.toList());
     setAggregateScores(sentimentScores);
     setAverageScore(sentimentScores);
@@ -53,29 +55,26 @@ public class Statistics {
    * @param sentimentScores a list of score values from -1.0 to 1.0
    */
   private void setAggregateScores(List<Double> sentimentScores) {
-    // TODO: change Range class to BigDecimal to avoid imprecision conversions in floating points
     aggregateValues = new HashMap<>();
-    BigDecimal interval = BigDecimal.valueOf(INTERVAL);
-    BigDecimal upperPoint = BigDecimal.valueOf(UPPER_END);
 
     // Initialize the HashMap with intervals
-    for (BigDecimal tempPoint = BigDecimal.valueOf(LOWER_END);
-        tempPoint.compareTo(upperPoint) < 0;
-        tempPoint = tempPoint.add(interval)) {
+    for (BigDecimal tempPoint = LOWER_END;
+        tempPoint.compareTo(UPPER_END) < 0;
+        tempPoint = tempPoint.add(INTERVAL)) {
       Range currentRange =
           new Range(
-              tempPoint, upperPoint.min(tempPoint.add(interval)));
+              tempPoint, UPPER_END.min(tempPoint.add(INTERVAL)));
       aggregateValues.put(currentRange, 0);
     }
     // Add score's interval to different ranges two sorting with and two pointers pop-up
     sentimentScores.sort(Comparator.naturalOrder());
-    BigDecimal curPoint = BigDecimal.valueOf(LOWER_END);
+    BigDecimal curPoint = LOWER_END;
     int scoreIdx = 0;
-    while ((scoreIdx < sentimentScores.size()) && (curPoint.compareTo(upperPoint) < 0)) {
+    while ((scoreIdx < sentimentScores.size()) && (curPoint.compareTo(UPPER_END) < 0)) {
       // check available interval for scoreVal
-      BigDecimal nextPoint = curPoint.add(interval);
+      BigDecimal nextPoint = curPoint.add(INTERVAL);
       BigDecimal scorePoint = BigDecimal.valueOf(sentimentScores.get(scoreIdx));
-      if (scorePoint.compareTo(nextPoint) < 0 || (nextPoint.compareTo(upperPoint) == 0)) {
+      if (scorePoint.compareTo(nextPoint) < 0 || (nextPoint.compareTo(UPPER_END) == 0)) {
         Range foundRange = new Range(curPoint, nextPoint);
         aggregateValues.put(foundRange, aggregateValues.get(foundRange) + 1);
         scoreIdx += 1;
