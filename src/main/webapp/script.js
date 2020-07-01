@@ -12,19 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(getChart);
-
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
+const HIGHEST_SCORE = 1.0;
+const LOWEST_SCORE = -1.0;
+const INTERVAL = 0.2;
 
-function getYouTubeComments() { 
+google.charts.load('current', {'packages':['corechart']});
+google.setOnLoadCallback(getChart)
+
+async function getYouTubeComments() { 
   const urlInput = document.getElementById('url-entry');
   const url = cleanseUrl(urlInput.value);
-  fetch("/YouTubeComments?url="+url)
-      .then(response => response.json()).then((comments) =>{
-        return comments;
-    });
+  const response = await fetch("/YouTubeComments?url="+url);
+  const comments = await response.json();
+  return comments;
 }
 
 /*
@@ -46,40 +48,30 @@ function cleanseUrl(url) {
  * Fetches data and adds to html
  */
 function getChart() {
-    const data = new google.visualization.DataTable();
-    data.addColumn('string', 'Range');
-    data.addColumn('number', 'Count');
-    // TODO: change hardcoded data to sentiment scores (once that part is finished)
-    data.addRows([
-        ['-1.0', null],
-        [null, 1],
-        ['-0.8', null],
-        [null, 1],
-        ['-0.6', null],
-        [null, 4],
-        ['-0.4', null],
-        [null, 5],
-        ['-0.2', null],
-        [null, 10],
-        ['0.0', null],
-        [null, 10],
-        ['0.2', null],
-        [null, 10],
-        ['0.4', null],
-        [null, 10],
-        ['0.6', null],
-        [null, 15],
-        ['0.8', null],
-        [null, 15],
-        ['1.0', null]
-    ]);
+  $('form').submit(function() {
+    const CommentSentimentTable = new google.visualization.DataTable();
+    CommentSentimentTable.addColumn('string', 'SentimentRange');
+    CommentSentimentTable.addColumn('number', 'CommentCount');
+
+    for (currentLabel = LOWEST_SCORE; currentLabel < HIGHEST_SCORE; currentLabel += INTERVAL) {
+      // TODO: Replace abritrary value 6 with correct aggregation value  
+      CommentSentimentTable.addRows([
+          [(Math.round(currentLabel * 10) / 10).toString(), null],
+          [null, Math.random()*10]
+      ]);
+    }
+
+    CommentSentimentTable.addRows([['1.0', null]]);
 
     const options = {
       'title': 'Comment Sentiment Range',
       'width': CHART_WIDTH,
-      'height':CHART_HEIGHT
-     };
+      'height':CHART_HEIGHT,
+      'bar': {groupWidth: "100"}
+    };
     const chart = new google.visualization.ColumnChart(
         document.getElementById('chart-container'));
-    chart.draw(data, options);
+    chart.draw(CommentSentimentTable, options);
+  });
 }
+

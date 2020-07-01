@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <title>SAY</title>
     <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="script.js"></script>
   </head>
   <body>  
     <div>
-      <form>
-        <p>Enter a YouTube video link:</p>
-        <textarea name="link-input"></textarea>
+      <form onsubmit="return false">
+        <p>Enter a YouTube video link (https://youtube.com/watch?v=...):</p>
+        <input name="link-input" required pattern="https?://www.youtube.com/watch\?v=.+"/>
         </br>
-        <input type="submit" onClick="getChart()"/>
+        <input type="submit" id="submit-btn"/>
         </br>
       </form>
       <div id="chart-container"></div>
