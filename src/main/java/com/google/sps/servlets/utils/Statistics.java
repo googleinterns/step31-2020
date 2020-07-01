@@ -42,7 +42,7 @@ public class Statistics {
   }
 
   public Map<Range, Integer> getScores() {
-      return aggregateValues;
+    return aggregateValues;
   }
 
   /**
