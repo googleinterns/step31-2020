@@ -82,9 +82,9 @@ public class Statistics {
       BigDecimal tempRangeLowerPoint = tempRange.getInclusiveStart();
       BigDecimal tempRangeUpperPoint = tempRange.getExclusiveEnd();
       while ((scoreIdx < sentimentScores.size())
-                 && (tempRangeLowerPoint.compareTo(BigDecimal.valueOf(sentimentScores.get(scoreIdx))) <= 0)
-                 && ((tempRangeUpperPoint.compareTo(BigDecimal.valueOf(sentimentScores.get(scoreIdx))) > 0)
-                         || (tempRangeUpperPoint.compareTo(UPPER_END) == 0))) {
+          && (tempRangeLowerPoint.compareTo(BigDecimal.valueOf(sentimentScores.get(scoreIdx))) <= 0)
+          && ((tempRangeUpperPoint.compareTo(BigDecimal.valueOf(sentimentScores.get(scoreIdx))) > 0)
+              || (tempRangeUpperPoint.compareTo(UPPER_END) == 0))) {
         aggregateValues.put(tempRange, aggregateValues.get(tempRange) + 1);
         scoreIdx += 1;
       }
@@ -93,17 +93,19 @@ public class Statistics {
   }
 
   /**
-   * Set the average score of given sentiment scores.
-   * Throws an runtime exception if the average score is not valid
-   * or none of the sentiment scores is valid.
+   * Set the average score of given sentiment scores. Throws an runtime exception if the average
+   * score is not valid or none of the sentiment scores is valid.
    *
    * @param sentimentScores a list of score values from -1.0 to 1.0
    */
   private void setAverageScore(List<Double> sentimentScores) {
     averageScore =
         sentimentScores.stream()
-                       .mapToDouble(i -> i)
-                       .average()
-                       .orElseThrow(() -> new RuntimeException("Unable to calculate sentiment average due to empty input list."));
+            .mapToDouble(i -> i)
+            .average()
+            .orElseThrow(
+                () ->
+                    new RuntimeException(
+                        "Unable to calculate sentiment average due to empty input list."));
   }
 }
