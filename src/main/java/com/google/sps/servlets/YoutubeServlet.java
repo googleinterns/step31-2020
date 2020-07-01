@@ -58,7 +58,7 @@ public class YoutubeServlet extends HttpServlet {
 
       CommentAnalysis commentAnalysis = new CommentAnalysis();
       Statistics statistics = commentAnalysis.computeOverallStats(commentResponse);
-      commentAnalysis.closeLanguage(); // Ensure memory  used by commentAnalysis is cleaned
+      commentAnalysis.closeLanguage(); 
 
       String json = new Gson().toJson(statistics);
       response.setContentType("application/json");
@@ -72,7 +72,7 @@ public class YoutubeServlet extends HttpServlet {
   /**
    * Applies parameters to comment request, then us it to extract comments. URL is the only true
    * variable; for this application we will always want order to be relevance, and max results to be
-   * 100, the API's arbitrary limit.
+   * 100, the API's limit for how many comments can be retrieved via a single request.
    */
   private YouTube.CommentThreads.List generateYouTubeRequest(String url)
       throws GeneralSecurityException, IOException {
