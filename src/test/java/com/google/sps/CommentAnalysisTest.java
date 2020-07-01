@@ -94,8 +94,7 @@ public class CommentAnalysisTest {
     Assert.assertNotNull(testStat);
     Assert.assertNotNull(testStat.getAggregateValues());
     Assert.assertEquals(testStat.getAverageScore(), 0.23, 0.01);
-    Assert.assertEquals(
-        testStat.getAverageScore(), 0.23, 0.01);
+    Assert.assertEquals(testStat.getAverageScore(), 0.23, 0.01);
     Assert.assertEquals(
         testStat
             .getAggregateValues()
