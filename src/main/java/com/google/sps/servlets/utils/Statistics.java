@@ -15,6 +15,7 @@
 package com.google.sps.servlets.utils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -63,39 +64,46 @@ public class Statistics {
    */
   private void setAggregateScores(List<Double> sentimentScores) {
     aggregateValues = new HashMap<>();
-
+    List<Range> keyRanges = new ArrayList<>();
     // Initialize the HashMap with intervals
     for (BigDecimal tempPoint = LOWER_END;
         tempPoint.compareTo(UPPER_END) < 0;
         tempPoint = tempPoint.add(INTERVAL)) {
       Range currentRange = new Range(tempPoint, UPPER_END.min(tempPoint.add(INTERVAL)));
       aggregateValues.put(currentRange, 0);
+      keyRanges.add(currentRange);
     }
     // Add score's interval to different ranges two sorting with and two pointers pop-up
     sentimentScores.sort(Comparator.naturalOrder());
-    BigDecimal curPoint = LOWER_END;
+    int rangeIdx = 0;
     int scoreIdx = 0;
-    while ((scoreIdx < sentimentScores.size()) && (curPoint.compareTo(UPPER_END) < 0)) {
-      // check available interval for scoreVal
-      BigDecimal nextPoint = curPoint.add(INTERVAL);
-      BigDecimal scorePoint = BigDecimal.valueOf(sentimentScores.get(scoreIdx));
-      if (scorePoint.compareTo(nextPoint) < 0 || (nextPoint.compareTo(UPPER_END) == 0)) {
-        Range foundRange = new Range(curPoint, nextPoint);
-        aggregateValues.put(foundRange, aggregateValues.get(foundRange) + 1);
+    while (rangeIdx < keyRanges.size()) {
+      Range tempRange = keyRanges.get(rangeIdx);
+      BigDecimal tempRangeLowerPoint = tempRange.getInclusiveStart();
+      BigDecimal tempRangeUpperPoint = tempRange.getExclusiveEnd();
+      while ((scoreIdx < sentimentScores.size())
+                 && (tempRangeLowerPoint.compareTo(BigDecimal.valueOf(sentimentScores.get(scoreIdx))) <= 0)
+                 && ((tempRangeUpperPoint.compareTo(BigDecimal.valueOf(sentimentScores.get(scoreIdx))) > 0)
+                         || (tempRangeUpperPoint.compareTo(UPPER_END) == 0))) {
+        aggregateValues.put(tempRange, aggregateValues.get(tempRange) + 1);
         scoreIdx += 1;
-      } else {
-        curPoint = nextPoint;
       }
+      rangeIdx += 1;
     }
   }
 
   /**
-   * Set the average score of given sentiment scores. Returns -99 if the average score is not valid
+   * Set the average score of given sentiment scores.
+   * Throws an runtime exception if the average score is not valid
    * or none of the sentiment scores is valid.
    *
    * @param sentimentScores a list of score values from -1.0 to 1.0
    */
   private void setAverageScore(List<Double> sentimentScores) {
-    averageScore = sentimentScores.stream().mapToDouble(i -> i).average().orElse(-99);
+    averageScore =
+        sentimentScores.stream()
+                       .mapToDouble(i -> i)
+                       .average()
+                       .orElseThrow(() -> new RuntimeException("Unable to calculate sentiment average due to empty input list."));
   }
 }
