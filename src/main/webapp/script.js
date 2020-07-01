@@ -21,13 +21,12 @@ const INTERVAL = 0.2;
 google.charts.load('current', {'packages':['corechart']});
 google.setOnLoadCallback(getChart)
 
-function getYouTubeComments() { 
+async function getYouTubeComments() { 
   const urlInput = document.getElementById('url-entry');
   const url = cleanseUrl(urlInput.value);
-  fetch("/YouTubeComments?url="+url)
-      .then(response => response.json()).then((comments) =>{
-        return comments;
-  });
+  const response = await fetch("/YouTubeComments?url="+url);
+  const comments = await response.json();
+  return comments;
 }
 
 /*
@@ -50,13 +49,13 @@ function cleanseUrl(url) {
  */
 function getChart() {
   $('form').submit(function() {
-    const data = new google.visualization.DataTable();
-    data.addColumn('string', 'Range');
-    data.addColumn('number', 'Count');
+    const CommentCount = new google.visualization.DataTable();
+    CommentCount.addColumn('string', 'Range');
+    CommentCount.addColumn('number', 'Count');
 
     for (currentLabel = LOWEST_SCORE; currentLabel < HIGHEST_SCORE; currentLabel += INTERVAL) {
       // TODO: Replace abritrary value 6 with correct aggregation value  
-      data.addRows([
+      CommentCount.addRows([
           [(Math.round(currentLabel * 10) / 10).toString(), null],
           [null, 6]
       ]);
@@ -69,7 +68,7 @@ function getChart() {
     };
     const chart = new google.visualization.ColumnChart(
         document.getElementById('chart-container'));
-    chart.draw(data, options);
+    chart.draw(CommentCount, options);
   });
 }
 
