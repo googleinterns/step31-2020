@@ -14,7 +14,6 @@
 
 package com.google.sps;
 
-import java.math.BigDecimal;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -29,6 +28,7 @@ import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.sps.servlets.utils.CommentAnalysis;
 import com.google.sps.servlets.utils.Range;
 import com.google.sps.servlets.utils.Statistics;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -100,24 +100,56 @@ public class CommentAnalysisTest {
 
   @Test
   public void testCategorizationEdgeCases() {
-    Assert.assertEquals(EDGE_STAT.getAggregateValues().get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8))).intValue(), 1);
-    Assert.assertEquals(EDGE_STAT.getAggregateValues().get(new Range(BigDecimal.valueOf(0.8), BigDecimal.valueOf(1.0))).intValue(), 1);
+    Assert.assertEquals(
+        EDGE_STAT
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
+            .intValue(),
+        1);
+    Assert.assertEquals(
+        EDGE_STAT
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(0.8), BigDecimal.valueOf(1.0)))
+            .intValue(),
+        1);
   }
 
   @Test
   public void testCategorizationNormalCases() {
-    Assert.assertEquals(NORMAL_STAT.getAggregateValues().get(new Range(BigDecimal.valueOf(0.0), BigDecimal.valueOf(0.2))).intValue(), 4);
-    Assert.assertEquals(NORMAL_STAT.getAggregateValues().get(new Range(BigDecimal.valueOf(-0.2), BigDecimal.valueOf(0.0))).intValue(), 2);
+    Assert.assertEquals(
+        NORMAL_STAT
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(0.0), BigDecimal.valueOf(0.2)))
+            .intValue(),
+        4);
+    Assert.assertEquals(
+        NORMAL_STAT
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(-0.2), BigDecimal.valueOf(0.0)))
+            .intValue(),
+        2);
   }
 
   @Test
   public void testCategorizationOutsiderCases() {
     Assert.assertEquals(
-        ALL_OUSIDE_STAT.getAggregateValues().get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8))).intValue(), 0);
+        ALL_OUSIDE_STAT
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
+            .intValue(),
+        0);
     Assert.assertEquals(
-        ALL_OUSIDE_STAT.getAggregateValues().get(new Range(BigDecimal.valueOf(0.8), BigDecimal.valueOf(1.0))).intValue(), 0);
+        ALL_OUSIDE_STAT
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(0.8), BigDecimal.valueOf(1.0)))
+            .intValue(),
+        0);
     Assert.assertEquals(
-        ONE_OUSIDE_STAT.getAggregateValues().get(new Range(BigDecimal.valueOf(-1.0),BigDecimal.valueOf( -0.8))).intValue(), 1);
+        ONE_OUSIDE_STAT
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
+            .intValue(),
+        1);
   }
 
   @Test
