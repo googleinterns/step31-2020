@@ -14,14 +14,37 @@
 
 package com.google.sps;
 
+import com.google.sps.servlets.YoutubeServlet;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 /** This is a JUnit test for the Youtube Servlet */
 @RunWith(JUnit4.class)
 public class YoutubeServletTest {
   private YoutubeServlet servlet;
+  private MockHttpServletRequest mockRequest;
+  private MockHttpServletResponse mockResponse;
+
+  private String testUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+
+  @Before
+  public void setUp() throws Exception {
+    servlet = new YoutubeServlet();
+    mockRequest = new MockHttpServletRequest();
+    mockResponse = new MockHttpServletResponse();
+
+  }
+
+  @Test
+  public void testDoesntCrash() throws Exception {
+    mockRequest.addParameter("url", testUrl);
+    servlet.doGet(mockRequest, mockResponse);
+  }
 }
