@@ -60,6 +60,10 @@ public class YoutubeServlet extends HttpServlet {
       Statistics statistics = commentAnalysis.computeOverallStats(commentResponse);
       commentAnalysis.closeLanguage();
 
+      System.out.println("Statistics" + statistics);
+      System.out.println(statistics.getAverageScore());
+      System.out.println(statistics.getScores());
+
       String json = new Gson().toJson(statistics);
       response.setContentType("application/json");
       response.getWriter().println(json);

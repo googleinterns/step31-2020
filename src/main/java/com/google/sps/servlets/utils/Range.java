@@ -53,9 +53,4 @@ public class Range {
   public int hashCode() {
     return this.toString().hashCode();
   }
-
-  @Override
-  public String toString() {
-    return "(" + inclusiveStart + ", " + exclusiveEnd + ")";
-  }
 }

@@ -22,12 +22,13 @@ google.charts.load('current', {'packages':['corechart']});
 google.setOnLoadCallback(getChart)
 
 async function getYouTubeComments() { 
-  const urlInput = document.getElementById('url-entry');
+  const urlInput = document.getElementById('link-input');
   const url = cleanseUrl(urlInput.value);
   const response = await fetch("/YouTubeComments?url="+url);
   const comments = await response.json();
   return comments;
 }
+
 
 /*
  * Extracts video id from full url
@@ -47,27 +48,31 @@ function cleanseUrl(url) {
 /**
  * Fetches data and adds to html
  */
-function getChart() {
-  $('form').submit(function() {
+async function getChart() {
+  $('form').submit(async function() {
+    commentStats = await getYouTubeComments();
+    console.log(commentStats);
+    averageScore = commentStats.averageScore;
+    aggregatedValues = commentStats.aggregateValues; 
+
     const CommentSentimentTable = new google.visualization.DataTable();
     CommentSentimentTable.addColumn('string', 'SentimentRange');
     CommentSentimentTable.addColumn('number', 'CommentCount');
 
-    for (currentLabel = LOWEST_SCORE; currentLabel < HIGHEST_SCORE; currentLabel += INTERVAL) {
-      // TODO: Replace abritrary value 6 with correct aggregation value  
+    currentLabel = LOWEST_SCORE;
+    Object.keys(aggregatedValues).forEach(function(key) {
       CommentSentimentTable.addRows([
-          [(Math.round(currentLabel * 10) / 10).toString(), null],
-          [null, Math.random()*10]
+        [key.inclusiveStart.toString(), null],
+        [null, aggregatedValues[key]]
       ]);
-    }
-
-    CommentSentimentTable.addRows([['1.0', null]]);
+      currentLabel += INTERVAL;
+    });
+    CommentSentimentTable.addRow(["1.0", null]);
 
     const options = {
       'title': 'Comment Sentiment Range',
       'width': CHART_WIDTH,
-      'height':CHART_HEIGHT,
-      'bar': {groupWidth: "100"}
+      'height':CHART_HEIGHT
     };
     const chart = new google.visualization.ColumnChart(
         document.getElementById('chart-container'));

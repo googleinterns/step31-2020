@@ -41,6 +41,10 @@ public class Statistics {
     return averageScore;
   }
 
+  public Map<Range, Integer> getScores() {
+      return aggregateValues;
+  }
+
   /**
    * Constructor of Statistics to filter out invalid sentiment scores, set aggregate hash map and
    * average score
