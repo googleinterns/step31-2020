@@ -62,9 +62,7 @@ public class Statistics {
     for (BigDecimal tempPoint = BigDecimal.valueOf(LOWER_END);
         tempPoint.compareTo(upperPoint) < 0;
         tempPoint = tempPoint.add(interval)) {
-      Range currentRange =
-          new Range(
-              tempPoint, upperPoint.min(tempPoint.add(interval)));
+      Range currentRange = new Range(tempPoint, upperPoint.min(tempPoint.add(interval)));
       aggregateValues.put(currentRange, 0);
     }
     // Add score's interval to different ranges two sorting with and two pointers pop-up
