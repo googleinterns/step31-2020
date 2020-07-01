@@ -24,9 +24,12 @@ import java.util.stream.Collectors;
 public class Statistics {
   private static final double LOWER_END_VAL = -1.0;
   private static final double UPPER_END_VAL = 1.0;
-  private static final BigDecimal INTERVAL = BigDecimal.valueOf(0.2);;
-  private static final BigDecimal UPPER_END = BigDecimal.valueOf(1.0);;
-  private static final BigDecimal LOWER_END = BigDecimal.valueOf(-1.0);;
+  private static final BigDecimal INTERVAL = BigDecimal.valueOf(0.2);
+  ;
+  private static final BigDecimal UPPER_END = BigDecimal.valueOf(1.0);
+  ;
+  private static final BigDecimal LOWER_END = BigDecimal.valueOf(-1.0);
+  ;
   // Contains sentiment scores in the range [-1, 1] with given intervals.
   private Map<Range, Integer> aggregateValues;
   private double averageScore;
@@ -61,9 +64,7 @@ public class Statistics {
     for (BigDecimal tempPoint = LOWER_END;
         tempPoint.compareTo(UPPER_END) < 0;
         tempPoint = tempPoint.add(INTERVAL)) {
-      Range currentRange =
-          new Range(
-              tempPoint, UPPER_END.min(tempPoint.add(INTERVAL)));
+      Range currentRange = new Range(tempPoint, UPPER_END.min(tempPoint.add(INTERVAL)));
       aggregateValues.put(currentRange, 0);
     }
     // Add score's interval to different ranges two sorting with and two pointers pop-up
