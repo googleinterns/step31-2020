@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import org.junit.Before;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -36,7 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -53,25 +53,6 @@ public class CommentAnalysisTest {
   private static final BigDecimal UPPER_END = BigDecimal.valueOf(UPPER_END_VAL);
   private static final BigDecimal LOWER_END = BigDecimal.valueOf(LOWER_END_VAL);
   private static final float TEST_SCORE = 0.23f;
-  private static Comment testTopComment = new Comment();
-  private static CommentSnippet topCommentSnippet = new CommentSnippet();
-  private static CommentThread testCommentThread = new CommentThread();
-  private static List<CommentThread> testCommentThreadList =
-      new ArrayList<>(Arrays.asList(testCommentThread, testCommentThread));
-  private static CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
-  private static CommentThreadSnippet testThreadSnippet = new CommentThreadSnippet();
-  private static LanguageServiceClient mockedlanguageService =
-      mock(LanguageServiceClient.class, Mockito.RETURNS_DEEP_STUBS);
-  private static CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
-
-  @Before
-  public void setUp() {
-    topCommentSnippet.setTextDisplay("Test Message");
-    testTopComment.setSnippet(topCommentSnippet);
-    testThreadSnippet.setTopLevelComment(testTopComment);
-    testCommentThread.setSnippet(testThreadSnippet);
-    youtubeResponse.setItems(testCommentThreadList);
-  }
 
   /**
    * It constructs a HashMap with current range for expected score categorizations for comparisions.
@@ -98,15 +79,42 @@ public class CommentAnalysisTest {
 
   @Rule public ExpectedException exception = ExpectedException.none();
 
+  @Before
+  public void setup() {
+
+  }
   @Test
   public void testCalculateSentiment() {
-    // This is a test method to calculate simulate and test the process in comment analysis language
-    // service
+    // This is a test method to calculate simulate and test the process in comment analysis language service
+
+    // Declarations of mocked variables
+    Comment testTopComment = new Comment();
+    CommentSnippet topCommentSnippet = new CommentSnippet();
+    CommentThread testCommentThread = new CommentThread();
+    List<CommentThread> testCommentThreadList =
+        new ArrayList<>(Arrays.asList(testCommentThread, testCommentThread));
+    CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
+    CommentThreadSnippet testThreadSnippet = new CommentThreadSnippet();
+    LanguageServiceClient mockedlanguageService =
+        mock(LanguageServiceClient.class, Mockito.RETURNS_DEEP_STUBS);
+    when(mockedlanguageService
+             .analyzeSentiment(any(Document.class))
+             .getDocumentSentiment()
+             .getScore())
+        .thenReturn(TEST_SCORE);
+    CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
+
+    // Set the dependencies between constructed comments and threads
+    testTopComment.setSnippet(topCommentSnippet.setTextDisplay("Test Message"));
+    testCommentThread.setSnippet(testThreadSnippet.setTopLevelComment(testTopComment));
+    youtubeResponse.setItems(testCommentThreadList);
     when(mockedlanguageService
             .analyzeSentiment(any(Document.class))
             .getDocumentSentiment()
             .getScore())
         .thenReturn(TEST_SCORE);
+
+    // Compute and test the score from mocked language service
     Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
     Assert.assertNotNull(testStat);
     Assert.assertNotNull(testStat.getAggregateValues());
