@@ -14,9 +14,6 @@
 
 package com.google.sps;
 
-import java.math.RoundingMode;
-import java.util.HashMap;
-import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,9 +29,12 @@ import com.google.sps.servlets.utils.CommentAnalysis;
 import com.google.sps.servlets.utils.Range;
 import com.google.sps.servlets.utils.Statistics;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -74,7 +74,8 @@ public class CommentAnalysisTest {
   }
 
   private Map<Range, Integer> initializeMap(List<Integer> frequency) {
-    if (frequency.size() != UPPER_END.subtract(LOWER_END).divide(INTERVAL, RoundingMode.UP).intValue()){
+    if (frequency.size()
+        != UPPER_END.subtract(LOWER_END).divide(INTERVAL, RoundingMode.UP).intValue()) {
       throw new RuntimeException("Initialize list got wrong size");
     }
     int freqIdx = 0;
@@ -105,8 +106,9 @@ public class CommentAnalysisTest {
     Assert.assertNotNull(testStat);
     Assert.assertNotNull(testStat.getAggregateValues());
     Assert.assertEquals(testStat.getAverageScore(), 0.23, 0.01);
-    Assert.assertEquals(initializeMap(new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0))), testStat.getAggregateValues());
-
+    Assert.assertEquals(
+        initializeMap(new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0))),
+        testStat.getAggregateValues());
   }
 
   @Test
@@ -117,14 +119,18 @@ public class CommentAnalysisTest {
     Assert.assertEquals(
         6, normalStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
     Assert.assertEquals(-0.048, normalStat.getAverageScore(), 0.01);
-    Assert.assertEquals(initializeMap(new ArrayList<>(Arrays.asList(0, 0, 0, 0, 2, 4, 0, 0, 0, 0))), normalStat.getAggregateValues());
+    Assert.assertEquals(
+        initializeMap(new ArrayList<>(Arrays.asList(0, 0, 0, 0, 2, 4, 0, 0, 0, 0))),
+        normalStat.getAggregateValues());
   }
 
   @Test
   public void testEdgeCases() {
     ArrayList<Double> edgeScore = new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
     Statistics edgeStat = new Statistics(edgeScore);
-    Assert.assertEquals(initializeMap(new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 1))), edgeStat.getAggregateValues());
+    Assert.assertEquals(
+        initializeMap(new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 1))),
+        edgeStat.getAggregateValues());
   }
 
   @Test
@@ -132,7 +138,9 @@ public class CommentAnalysisTest {
     ArrayList<Double> oneOutsideScore = new ArrayList<>(Arrays.asList(-2.0, -1.0, 0.0));
     Statistics oneOutsideStat = new Statistics(oneOutsideScore);
     Assert.assertEquals(oneOutsideStat.getAverageScore(), -0.5, 0);
-    Assert.assertEquals(initializeMap(new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 0))), oneOutsideStat.getAggregateValues());
+    Assert.assertEquals(
+        initializeMap(new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 0))),
+        oneOutsideStat.getAggregateValues());
   }
 
   @Test
