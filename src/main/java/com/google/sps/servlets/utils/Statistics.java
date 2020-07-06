@@ -72,9 +72,9 @@ public class Statistics {
       BigDecimal nextPoint = UPPER_END.min(tempPoint.add(INTERVAL));
       Range currentRange = new Range(tempPoint, nextPoint);
       aggregateValues.put(currentRange, 0);
-      for (int scoreIdx = updatingScoreIdx; scoreIdx < sentimentScores.size(); scoreIdx++)  {
+      for (int scoreIdx = updatingScoreIdx; scoreIdx < sentimentScores.size(); scoreIdx++) {
         BigDecimal scorePoint = BigDecimal.valueOf(sentimentScores.get(scoreIdx));
-        if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_END) == 0 ) {
+        if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_END) == 0) {
           aggregateValues.put(currentRange, aggregateValues.get(currentRange) + 1);
         } else {
           updatingScoreIdx = scoreIdx;
