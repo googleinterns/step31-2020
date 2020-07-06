@@ -77,7 +77,7 @@ public class Statistics {
       int scoreIdx;
       for (scoreIdx = updatingScoreIdx; scoreIdx < sentimentScores.size(); scoreIdx++) {
         BigDecimal scorePoint = BigDecimal.valueOf(sentimentScores.get(scoreIdx));
-        if (((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_END) == 0)) {
+        if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_END) == 0) {
           aggregateValues.put(currentRange, aggregateValues.get(currentRange) + 1);
         } else {
           break;
