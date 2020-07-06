@@ -58,7 +58,9 @@ async function getChart() {
     CommentSentimentTable.addColumn('number', 'CommentCount');
 
     currentLabel = LOWEST_SCORE;
-    Object.keys(aggregatedValues).sort((a,b) => a-b).forEach(function(key) {
+    // The json keys (ranges of scores) are sorted through their starting values
+    // using subtraction comparison  
+    Object.keys(aggregatedValues).sort((a, b) => a - b).forEach(function(key) {
       CommentSentimentTable.addRows([
           [key, null],
           [null, aggregatedValues[key]]
