@@ -55,6 +55,6 @@ public class Range {
 
   @Override
   public String toString() {
-    return "(" + inclusiveStart + ", " + exclusiveEnd + ")";
+    return inclusiveStart.toString();
   }
 }

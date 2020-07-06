@@ -106,7 +106,6 @@ public class CommentAnalysisTest {
     Assert.assertNotNull(testStat.getAggregateValues());
     Assert.assertEquals(testStat.getAverageScore(), 0.23, 0.01);
     Assert.assertEquals(initializeMap(new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0))), testStat.getAggregateValues());
-
   }
 
   @Test
