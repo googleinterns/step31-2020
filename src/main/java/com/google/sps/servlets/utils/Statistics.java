@@ -15,7 +15,6 @@
 package com.google.sps.servlets.utils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -64,27 +63,24 @@ public class Statistics {
    */
   private void setAggregateScores(List<Double> sentimentScores) {
     aggregateValues = new HashMap<>();
-    // Initialize the hashmap with given intervals from -1 to 1 and add each sentiment score to its corresponding ranges
+    // Add score's interval to different ranges two sorting with and two pointers pop-up
     sentimentScores.sort(Comparator.naturalOrder());
     int updatingScoreIdx = 0;
-    // loop through lowerpoint of each interval and initialize its value to 0
     for (BigDecimal tempPoint = LOWER_END;
         tempPoint.compareTo(UPPER_END) < 0;
         tempPoint = tempPoint.add(INTERVAL)) {
       BigDecimal nextPoint = UPPER_END.min(tempPoint.add(INTERVAL));
       Range currentRange = new Range(tempPoint, nextPoint);
       aggregateValues.put(currentRange, 0);
-      // loop through all scores within this interval and update the frequency in aggregated values
-      int scoreIdx;
-      for (scoreIdx = updatingScoreIdx; scoreIdx < sentimentScores.size(); scoreIdx++) {
+      for (int scoreIdx = updatingScoreIdx; scoreIdx < sentimentScores.size(); scoreIdx++)  {
         BigDecimal scorePoint = BigDecimal.valueOf(sentimentScores.get(scoreIdx));
-        if (((scorePoint.compareTo(nextPoint) < 0)|| nextPoint.compareTo(UPPER_END) == 0)) {
+        if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_END) == 0 ) {
           aggregateValues.put(currentRange, aggregateValues.get(currentRange) + 1);
         } else {
+          updatingScoreIdx = scoreIdx;
           break;
         }
       }
-      updatingScoreIdx = scoreIdx;
     }
   }
 
