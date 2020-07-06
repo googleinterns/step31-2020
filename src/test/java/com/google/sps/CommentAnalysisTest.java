@@ -88,7 +88,12 @@ public class CommentAnalysisTest {
     Assert.assertNotNull(testStat);
     Assert.assertNotNull(testStat.getAggregateValues());
     Assert.assertEquals(testStat.getAverageScore(), 0.23, 0.01);
-    Assert.assertEquals(testStat.getAggregateValues().get(new Range(BigDecimal.valueOf(0.2),BigDecimal.valueOf(0.4))).intValue(), 2);
+    Assert.assertEquals(
+        testStat
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(0.2), BigDecimal.valueOf(0.4)))
+            .intValue(),
+        2);
     Assert.assertEquals(
         testStat
             .getAggregateValues()
@@ -115,7 +120,6 @@ public class CommentAnalysisTest {
     Assert.assertEquals(edgeStat.getAverageScore(), 0.0, 0);
     Assert.assertEquals(3, edgeStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
     Assert.assertTrue(Math.abs(edgeStat.getAverageScore()) <= 1);
-
   }
 
   @Test
@@ -135,10 +139,11 @@ public class CommentAnalysisTest {
             .intValue(),
         2);
     Assert.assertTrue(Math.abs(normalStat.getAverageScore()) <= 1);
-    Assert.assertEquals(6, normalStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
+    Assert.assertEquals(
+        6, normalStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
     Assert.assertEquals(symmetricStat.getAverageScore(), 0.0, 0);
-    Assert.assertEquals(4, symmetricStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
-
+    Assert.assertEquals(
+        4, symmetricStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
   }
 
   @Test
@@ -151,14 +156,14 @@ public class CommentAnalysisTest {
             .intValue(),
         1);
     Assert.assertEquals(oneOutsideStat.getAverageScore(), -0.5, 0);
-    Assert.assertEquals(2, oneOutsideStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
+    Assert.assertEquals(
+        2, oneOutsideStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
   }
-  
+
   @Test
   public void testExceptionAllOutsiderScore() {
     exception.expect(RuntimeException.class);
-    ArrayList<Double> allOutsideScore =
-        new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
+    ArrayList<Double> allOutsideScore = new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
     Statistics allOutsideStat = new Statistics(allOutsideScore);
     Assert.assertEquals(
         allOutsideStat
