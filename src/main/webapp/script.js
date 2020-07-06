@@ -72,6 +72,9 @@ function getChart() {
     const chart = new google.visualization.ColumnChart(
         document.getElementById('chart-container'));
     chart.draw(CommentSentimentTable, options);
+
+    const averageContainer = document.getElementById('average-container');
+    averageContainer.innerHTML = "Average Sentiment Score: " + 6;
   });
 }
 
