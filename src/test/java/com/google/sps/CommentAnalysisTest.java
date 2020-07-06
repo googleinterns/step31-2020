@@ -161,8 +161,6 @@ public class CommentAnalysisTest {
     Assert.assertEquals(
         initializeMap(new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0))),
         allOutsideStat.getAggregateValues());
-    Assert.assertEquals(
-        0.0,
-        allOutsideStat.getAverageScore(), 0.1);
+    Assert.assertEquals(0.0, allOutsideStat.getAverageScore(), 0.1);
   }
 }
