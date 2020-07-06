@@ -32,7 +32,7 @@ public class YoutubeServletTest {
   private MockHttpServletRequest mockRequest;
   private MockHttpServletResponse mockResponse;
 
-  private String testUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+  private String testUrl = "dQw4w9WgXcQ";
 
   @Before
   public void setUp() throws Exception {
