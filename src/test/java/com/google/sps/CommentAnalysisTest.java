@@ -103,26 +103,6 @@ public class CommentAnalysisTest {
   }
 
   @Test
-  public void testEdgeCases() {
-    Statistics edgeStat = new Statistics(EDGE_SCORE);
-    Assert.assertEquals(
-        edgeStat
-            .getAggregateValues()
-            .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
-            .intValue(),
-        1);
-    Assert.assertEquals(
-        edgeStat
-            .getAggregateValues()
-            .get(new Range(BigDecimal.valueOf(0.8), BigDecimal.valueOf(1.0)))
-            .intValue(),
-        1);
-    Assert.assertEquals(edgeStat.getAverageScore(), 0.0, 0);
-    Assert.assertEquals(3, edgeStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
-    Assert.assertTrue(Math.abs(edgeStat.getAverageScore()) <= 1);
-  }
-
-  @Test
   public void testNormalSymmetricCases() {
     Statistics normalStat = new Statistics(SCORE_IN_RANGE);
     Statistics symmetricStat = new Statistics(SYMMETRIC_SCORE);
@@ -144,6 +124,27 @@ public class CommentAnalysisTest {
     Assert.assertEquals(symmetricStat.getAverageScore(), 0.0, 0);
     Assert.assertEquals(
         4, symmetricStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
+  }
+
+
+  @Test
+  public void testEdgeCases() {
+    Statistics edgeStat = new Statistics(EDGE_SCORE);
+    Assert.assertEquals(
+        edgeStat
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
+            .intValue(),
+        1);
+    Assert.assertEquals(
+        edgeStat
+            .getAggregateValues()
+            .get(new Range(BigDecimal.valueOf(0.8), BigDecimal.valueOf(1.0)))
+            .intValue(),
+        1);
+    Assert.assertEquals(edgeStat.getAverageScore(), 0.0, 0);
+    Assert.assertEquals(3, edgeStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
+    Assert.assertTrue(Math.abs(edgeStat.getAverageScore()) <= 1);
   }
 
   @Test
