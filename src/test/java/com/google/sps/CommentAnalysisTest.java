@@ -44,25 +44,19 @@ import org.mockito.Mockito;
 /** This is a JUnit test for sentiment mockedAnalysis */
 @RunWith(JUnit4.class)
 public class CommentAnalysisTest {
-  private static final float testScore = 0.23f;
+  private static final float TEST_SCORE = 0.23f;
   private static final ArrayList<Double> SCORE_IN_RANGE =
       new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
   private static final ArrayList<Double> EDGE_SCORE =
       new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
   private static final ArrayList<Double> SYMMETRIC_SCORE =
       new ArrayList<>(Arrays.asList(0.5, 0.9, -0.5, -0.9));
-  private static final ArrayList<Double> ALL_OUTSIDE_SCORE =
-      new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
   private static final ArrayList<Double> ONE_OUSIDE_SCORE =
       new ArrayList<>(Arrays.asList(-2.0, -1.0, 0.0));
-  private static final Statistics NORMAL_STAT = new Statistics(SCORE_IN_RANGE);
-  private static final Statistics EDGE_STAT = new Statistics(EDGE_SCORE);
-  private static final Statistics SYMMETRIC_STAT = new Statistics(SYMMETRIC_SCORE);
-  private static final Statistics ONE_OUSIDE_STAT = new Statistics(ONE_OUSIDE_SCORE);
   private static Comment testTopComment = new Comment();
   private static CommentSnippet topCommentSnippet = new CommentSnippet();
   private static CommentThread testCommentThread = new CommentThread();
-  private static List<CommentThread> testCommentThreadLst =
+  private static List<CommentThread> testCommentThreadList =
       new ArrayList<>(Arrays.asList(testCommentThread, testCommentThread));
   private static CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
   private static CommentThreadSnippet testThreadSnippet = new CommentThreadSnippet();
@@ -76,7 +70,7 @@ public class CommentAnalysisTest {
     testTopComment.setSnippet(topCommentSnippet);
     testThreadSnippet.setTopLevelComment(testTopComment);
     testCommentThread.setSnippet(testThreadSnippet);
-    youtubeResponse.setItems(testCommentThreadLst);
+    youtubeResponse.setItems(testCommentThreadList);
   }
 
   @Rule public ExpectedException exception = ExpectedException.none();
@@ -89,12 +83,12 @@ public class CommentAnalysisTest {
             .analyzeSentiment(any(Document.class))
             .getDocumentSentiment()
             .getScore())
-        .thenReturn(testScore);
+        .thenReturn(TEST_SCORE);
     Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
     Assert.assertNotNull(testStat);
     Assert.assertNotNull(testStat.getAggregateValues());
     Assert.assertEquals(testStat.getAverageScore(), 0.23, 0.01);
-    Assert.assertEquals(testStat.getAverageScore(), 0.23, 0.01);
+    Assert.assertEquals(testStat.getAggregateValues().get(new Range(BigDecimal.valueOf(0.2),BigDecimal.valueOf(0.4))).intValue(), 2);
     Assert.assertEquals(
         testStat
             .getAggregateValues()
@@ -104,84 +98,79 @@ public class CommentAnalysisTest {
   }
 
   @Test
-  public void testSentimentAnalysisInRange() {
-    // Test the Sentiment Analysis Score within range -1 to 1.
-    Assert.assertTrue(Math.abs(NORMAL_STAT.getAverageScore()) <= 1);
-    Assert.assertTrue(Math.abs(EDGE_STAT.getAverageScore()) <= 1);
-  }
-
-  @Test
-  public void testCategorizationEdgeCases() {
+  public void testEdgeCases() {
+    Statistics edgeStat = new Statistics(EDGE_SCORE);
     Assert.assertEquals(
-        EDGE_STAT
+        edgeStat
             .getAggregateValues()
             .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
             .intValue(),
         1);
     Assert.assertEquals(
-        EDGE_STAT
+        edgeStat
             .getAggregateValues()
             .get(new Range(BigDecimal.valueOf(0.8), BigDecimal.valueOf(1.0)))
             .intValue(),
         1);
+    Assert.assertEquals(edgeStat.getAverageScore(), 0.0, 0);
+    Assert.assertEquals(3, edgeStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
+    Assert.assertTrue(Math.abs(edgeStat.getAverageScore()) <= 1);
+
   }
 
   @Test
-  public void testCategorizationNormalCases() {
+  public void testNormalSymmetricCases() {
+    Statistics normalStat = new Statistics(SCORE_IN_RANGE);
+    Statistics symmetricStat = new Statistics(SYMMETRIC_SCORE);
     Assert.assertEquals(
-        NORMAL_STAT
+        normalStat
             .getAggregateValues()
             .get(new Range(BigDecimal.valueOf(0.0), BigDecimal.valueOf(0.2)))
             .intValue(),
         4);
     Assert.assertEquals(
-        NORMAL_STAT
+        normalStat
             .getAggregateValues()
             .get(new Range(BigDecimal.valueOf(-0.2), BigDecimal.valueOf(0.0)))
             .intValue(),
         2);
+    Assert.assertTrue(Math.abs(normalStat.getAverageScore()) <= 1);
+    Assert.assertEquals(6, normalStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
+    Assert.assertEquals(symmetricStat.getAverageScore(), 0.0, 0);
+    Assert.assertEquals(4, symmetricStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
+
   }
 
   @Test
-  public void testCategorizationOutsiderCases() {
+  public void testOneOutsiderCases() {
+    Statistics oneOutsideStat = new Statistics(ONE_OUSIDE_SCORE);
     Assert.assertEquals(
-        ONE_OUSIDE_STAT
+        oneOutsideStat
             .getAggregateValues()
             .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
             .intValue(),
         1);
+    Assert.assertEquals(oneOutsideStat.getAverageScore(), -0.5, 0);
+    Assert.assertEquals(2, oneOutsideStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
   }
-
+  
   @Test
-  public void testAvgNormalScore() {
-    Assert.assertEquals(SYMMETRIC_STAT.getAverageScore(), 0.0, 0);
-  }
-
-  @Test
-  public void testAvgEdgeScore() {
-    Assert.assertEquals(EDGE_STAT.getAverageScore(), 0.0, 0);
-  }
-
-  @Test
-  public void testAvgAllOutsiderScore() {
+  public void testExceptionAllOutsiderScore() {
     exception.expect(RuntimeException.class);
-    Statistics all_outside_stat = new Statistics(ALL_OUTSIDE_SCORE);
+    ArrayList<Double> allOutsideScore =
+        new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
+    Statistics allOutsideStat = new Statistics(allOutsideScore);
     Assert.assertEquals(
-        all_outside_stat
+        allOutsideStat
             .getAggregateValues()
             .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
             .intValue(),
         0);
     Assert.assertEquals(
-        all_outside_stat
+        allOutsideStat
             .getAggregateValues()
             .get(new Range(BigDecimal.valueOf(0.8), BigDecimal.valueOf(1.0)))
             .intValue(),
         0);
-  }
-
-  @Test
-  public void testAvgOneOutsiderScore() {
-    Assert.assertEquals(ONE_OUSIDE_STAT.getAverageScore(), -0.5, 0);
   }
 }
