@@ -86,12 +86,6 @@ public class CommentAnalysisTest {
             .get(new Range(BigDecimal.valueOf(0.2), BigDecimal.valueOf(0.4)))
             .intValue(),
         2);
-    Assert.assertEquals(
-        testStat
-            .getAggregateValues()
-            .get(new Range(BigDecimal.valueOf(0.2), BigDecimal.valueOf(0.4)))
-            .intValue(),
-        2);
   }
 
   @Test
