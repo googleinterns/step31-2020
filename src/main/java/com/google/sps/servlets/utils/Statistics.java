@@ -15,7 +15,6 @@
 package com.google.sps.servlets.utils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +25,8 @@ public class Statistics {
   private static final double LOWER_END_VAL = -1.0;
   private static final double UPPER_END_VAL = 1.0;
   private static final BigDecimal INTERVAL = BigDecimal.valueOf(0.2);
-  private static final BigDecimal UPPER_END = BigDecimal.valueOf(1.0);
-  private static final BigDecimal LOWER_END = BigDecimal.valueOf(-1.0);
+  private static final BigDecimal UPPER_END = BigDecimal.valueOf(UPPER_END_VAL);
+  private static final BigDecimal LOWER_END = BigDecimal.valueOf(LOWER_END_VAL);
 
   // Contains sentiment scores in the range [-1, 1] with given intervals.
   private Map<Range, Integer> aggregateValues;
@@ -47,11 +46,11 @@ public class Statistics {
 
   /**
    * Constructor of Statistics to filter out invalid sentiment scores, set aggregate hash map and
-   * average score
+   * average score.
    *
    * @param sentimentScores given score values
    */
-  public Statistics(List<Double> sentimentScores) {
+  public Statistics(List<Double> sentimentScores) throws RuntimeException {
     sentimentScores =
         sentimentScores.stream()
             .filter(score -> (score >= LOWER_END_VAL && score <= UPPER_END_VAL))
@@ -68,31 +67,24 @@ public class Statistics {
    */
   private void setAggregateScores(List<Double> sentimentScores) {
     aggregateValues = new HashMap<>();
-    List<Range> keyRanges = new ArrayList<>();
-    // Initialize the HashMap with intervals
+    // Add score's interval to different ranges two sorting with and two pointers pop-up
+    sentimentScores.sort(Comparator.naturalOrder());
+    int updatingScoreIdx = 0;
     for (BigDecimal tempPoint = LOWER_END;
         tempPoint.compareTo(UPPER_END) < 0;
         tempPoint = tempPoint.add(INTERVAL)) {
-      Range currentRange = new Range(tempPoint, UPPER_END.min(tempPoint.add(INTERVAL)));
+      BigDecimal nextPoint = UPPER_END.min(tempPoint.add(INTERVAL));
+      Range currentRange = new Range(tempPoint, nextPoint);
       aggregateValues.put(currentRange, 0);
-      keyRanges.add(currentRange);
-    }
-    // Add score's interval to different ranges two sorting with and two pointers pop-up
-    sentimentScores.sort(Comparator.naturalOrder());
-    int rangeIdx = 0;
-    int scoreIdx = 0;
-    while (rangeIdx < keyRanges.size()) {
-      Range tempRange = keyRanges.get(rangeIdx);
-      BigDecimal tempRangeLowerPoint = tempRange.getInclusiveStart();
-      BigDecimal tempRangeUpperPoint = tempRange.getExclusiveEnd();
-      while ((scoreIdx < sentimentScores.size())
-          && (tempRangeLowerPoint.compareTo(BigDecimal.valueOf(sentimentScores.get(scoreIdx))) <= 0)
-          && ((tempRangeUpperPoint.compareTo(BigDecimal.valueOf(sentimentScores.get(scoreIdx))) > 0)
-              || (tempRangeUpperPoint.compareTo(UPPER_END) == 0))) {
-        aggregateValues.put(tempRange, aggregateValues.get(tempRange) + 1);
-        scoreIdx += 1;
+      for (int scoreIdx = updatingScoreIdx; scoreIdx < sentimentScores.size(); scoreIdx++) {
+        BigDecimal scorePoint = BigDecimal.valueOf(sentimentScores.get(scoreIdx));
+        if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_END) == 0) {
+          aggregateValues.put(currentRange, aggregateValues.get(currentRange) + 1);
+        } else {
+          updatingScoreIdx = scoreIdx;
+          break;
+        }
       }
-      rangeIdx += 1;
     }
   }
 
@@ -102,7 +94,7 @@ public class Statistics {
    *
    * @param sentimentScores a list of score values from -1.0 to 1.0
    */
-  private void setAverageScore(List<Double> sentimentScores) {
+  private void setAverageScore(List<Double> sentimentScores) throws RuntimeException {
     averageScore =
         sentimentScores.stream()
             .mapToDouble(i -> i)

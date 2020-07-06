@@ -52,6 +52,9 @@ async function getChart() {
   $('form').submit(async function() {
     commentStats = await getYouTubeComments();
     console.log(commentStats);
+    console.log(commentStats.averageScore);
+    console.log(commentStats.aggregateValues);
+
     averageScore = commentStats.averageScore;
     aggregatedValues = commentStats.aggregateValues; 
 
@@ -60,9 +63,11 @@ async function getChart() {
     CommentSentimentTable.addColumn('number', 'CommentCount');
 
     currentLabel = LOWEST_SCORE;
-    Object.keys(aggregatedValues).forEach(function(key) {
+    Object.keys(aggregatedValues).sort((a,b) => a-b).forEach(function(key) {
+      console.log(key);
+      console.log(aggregatedValues[key]);
       CommentSentimentTable.addRows([
-        [key.inclusiveStart.toString(), null],
+        [key, null],
         [null, aggregatedValues[key]]
       ]);
       currentLabel += INTERVAL;
@@ -77,6 +82,6 @@ async function getChart() {
     const chart = new google.visualization.ColumnChart(
         document.getElementById('chart-container'));
     chart.draw(CommentSentimentTable, options);
-  });
+  })
 }
 
