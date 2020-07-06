@@ -126,7 +126,6 @@ public class CommentAnalysisTest {
         4, symmetricStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
   }
 
-
   @Test
   public void testEdgeCases() {
     Statistics edgeStat = new Statistics(EDGE_SCORE);
