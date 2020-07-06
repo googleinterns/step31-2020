@@ -14,7 +14,6 @@
 
 package com.google.sps;
 
-import org.junit.Before;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -82,17 +82,19 @@ public class CommentAnalysisTest {
   @Rule public ExpectedException exception = ExpectedException.none();
 
   @Before
-  public void setup() {
+  public void setup() {}
 
-  }
   @Test
   public void testCalculateSentiment() {
-    // This is a test method to calculate simulate and test the process in comment analysis language service
+    // This is a test method to calculate simulate and test the process in comment analysis language
+    // service
 
-    // Declarations of mocked variables and set the dependencies between constructed comments and threads
+    // Declarations of mocked variables and set the dependencies between constructed comments and
+    // threads
     CommentSnippet topCommentSnippet = new CommentSnippet().setTextDisplay("Test Message");
     Comment testTopComment = new Comment().setSnippet(topCommentSnippet);
-    CommentThreadSnippet testThreadSnippet = new CommentThreadSnippet().setTopLevelComment(testTopComment);
+    CommentThreadSnippet testThreadSnippet =
+        new CommentThreadSnippet().setTopLevelComment(testTopComment);
     CommentThread testCommentThread = new CommentThread().setSnippet(testThreadSnippet);
     List<CommentThread> testCommentThreadList =
         new ArrayList<>(Arrays.asList(testCommentThread, testCommentThread));
@@ -103,9 +105,9 @@ public class CommentAnalysisTest {
     LanguageServiceClient mockedlanguageService =
         mock(LanguageServiceClient.class, Mockito.RETURNS_DEEP_STUBS);
     when(mockedlanguageService
-             .analyzeSentiment(any(Document.class))
-             .getDocumentSentiment()
-             .getScore())
+            .analyzeSentiment(any(Document.class))
+            .getDocumentSentiment()
+            .getScore())
         .thenReturn(TEST_SCORE);
     CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
 
