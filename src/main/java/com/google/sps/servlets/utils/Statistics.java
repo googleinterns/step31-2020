@@ -70,7 +70,7 @@ public class Statistics {
         tempPoint.compareTo(UPPER_END) < 0;
         tempPoint = tempPoint.add(INTERVAL)) {
       BigDecimal nextPoint = UPPER_END.min(tempPoint.add(INTERVAL));
-      Range currentRange = new Range(tempPoint, nexgtPoint);
+      Range currentRange = new Range(tempPoint, nextPoint);
       aggregateValues.put(currentRange, 0);
       // loop through sorted scores within currentRange from updated score pointer and update its corresponding appearance frequency in aggregatedValues
       int scoreIdx;
