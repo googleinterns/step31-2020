@@ -89,12 +89,10 @@ public class CommentAnalysisTest {
   }
 
   @Test
-  public void testNormalSymmetricCases() {
+  public void testNormalCases() {
     ArrayList<Double> scoreInRange =
         new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
-    ArrayList<Double> symmetricScore = new ArrayList<>(Arrays.asList(0.5, 0.9, -0.5, -0.9));
     Statistics normalStat = new Statistics(scoreInRange);
-    Statistics symmetricStat = new Statistics(symmetricScore);
     Assert.assertEquals(
         normalStat
             .getAggregateValues()
@@ -107,12 +105,9 @@ public class CommentAnalysisTest {
             .get(new Range(BigDecimal.valueOf(-0.2), BigDecimal.valueOf(0.0)))
             .intValue(),
         2);
-    Assert.assertTrue(Math.abs(normalStat.getAverageScore()) <= 1);
     Assert.assertEquals(
         6, normalStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
-    Assert.assertEquals(symmetricStat.getAverageScore(), 0.0, 0);
-    Assert.assertEquals(
-        4, symmetricStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
+    Assert.assertEquals(-0.048, normalStat.getAverageScore(), 0.01);
   }
 
   @Test
