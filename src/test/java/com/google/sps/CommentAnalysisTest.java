@@ -89,14 +89,17 @@ public class CommentAnalysisTest {
   public void testCalculateSentiment() {
     // This is a test method to calculate simulate and test the process in comment analysis language service
 
-    // Declarations of mocked variables
-    Comment testTopComment = new Comment();
-    CommentSnippet topCommentSnippet = new CommentSnippet();
-    CommentThread testCommentThread = new CommentThread();
+    // Declarations of mocked variables and set the dependencies between constructed comments and threads
+    CommentSnippet topCommentSnippet = new CommentSnippet().setTextDisplay("Test Message");
+    Comment testTopComment = new Comment().setSnippet(topCommentSnippet);
+    CommentThreadSnippet testThreadSnippet = new CommentThreadSnippet().setTopLevelComment(testTopComment);
+    CommentThread testCommentThread = new CommentThread().setSnippet(testThreadSnippet);
     List<CommentThread> testCommentThreadList =
         new ArrayList<>(Arrays.asList(testCommentThread, testCommentThread));
     CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
-    CommentThreadSnippet testThreadSnippet = new CommentThreadSnippet();
+    youtubeResponse.setItems(testCommentThreadList);
+
+    // Mock the service variables
     LanguageServiceClient mockedlanguageService =
         mock(LanguageServiceClient.class, Mockito.RETURNS_DEEP_STUBS);
     when(mockedlanguageService
@@ -105,16 +108,6 @@ public class CommentAnalysisTest {
              .getScore())
         .thenReturn(TEST_SCORE);
     CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
-
-    // Set the dependencies between constructed comments and threads
-    testTopComment.setSnippet(topCommentSnippet.setTextDisplay("Test Message"));
-    testCommentThread.setSnippet(testThreadSnippet.setTopLevelComment(testTopComment));
-    youtubeResponse.setItems(testCommentThreadList);
-    when(mockedlanguageService
-            .analyzeSentiment(any(Document.class))
-            .getDocumentSentiment()
-            .getScore())
-        .thenReturn(TEST_SCORE);
 
     // Compute and test the score from mocked language service
     Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
