@@ -48,7 +48,7 @@ public class CommentAnalysisTest {
    * @return an authorized API client service
    * @throws GeneralSecurityException, IOException
    */
- /* public static YouTube getService() throws GeneralSecurityException, IOException {
+  public static YouTube getService() throws GeneralSecurityException, IOException {
     final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
         .setApplicationName(APPLICATION_NAME)
@@ -75,7 +75,7 @@ public class CommentAnalysisTest {
     Statistics result = analysis.computeOverallStats(youtuberesponse);
     Assert.assertTrue(Math.abs(result.getAverageScore()) <= 1);
   }
-*/
+
   @Test
   public void testCategorizationEdgeCases() {
     // TODO: test for splitting different scores into intervals
