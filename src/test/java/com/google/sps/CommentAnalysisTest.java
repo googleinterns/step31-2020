@@ -56,8 +56,10 @@ public class CommentAnalysisTest {
 
   /**
    * It constructs a HashMap with current range for expected score categorizations for comparisions.
+   *
    * @param frequency a list of frequency corresponding to each interval sorted in ascending order
-   * @return constructed hashmap with keys as ranges based on intervals and values corresponding to frequency input
+   * @return constructed hashmap with keys as ranges based on intervals and values corresponding to
+   *     frequency input
    */
   private Map<Range, Integer> initializeMap(List<Integer> frequency) {
     if (frequency.size()
