@@ -14,16 +14,13 @@
 
 package com.google.sps;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.google.api.services.youtube.model.Comment;
 import com.google.api.services.youtube.model.CommentSnippet;
 import com.google.api.services.youtube.model.CommentThread;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.api.services.youtube.model.CommentThreadSnippet;
-import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.sps.servlets.utils.CommentAnalysis;
 import com.google.sps.servlets.utils.Range;
@@ -85,22 +82,22 @@ public class CommentAnalysisTest {
   public void testCalculateSentiment() {
     // This is a test method to calculate simulate and test the process in comment analysis language
     // service
-//    when(mockedlanguageService
-//             .analyzeSentiment(any(Document.class))
-//             .getDocumentSentiment()
-//             .getScore())
-//        .thenReturn(testScore);
-//    Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
-//    Assert.assertNotNull(testStat);
-//    Assert.assertNotNull(testStat.getAggregateValues());
-//    Assert.assertEquals(testStat.getAverageScore(), 0.23, 0.01);
-//    Assert.assertEquals(testStat.getAverageScore(), 0.23, 0.01);
-//    Assert.assertEquals(
-//        testStat
-//            .getAggregateValues()
-//            .get(new Range(BigDecimal.valueOf(0.2), BigDecimal.valueOf(0.4)))
-//            .intValue(),
-//        2);
+    //    when(mockedlanguageService
+    //             .analyzeSentiment(any(Document.class))
+    //             .getDocumentSentiment()
+    //             .getScore())
+    //        .thenReturn(testScore);
+    //    Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
+    //    Assert.assertNotNull(testStat);
+    //    Assert.assertNotNull(testStat.getAggregateValues());
+    //    Assert.assertEquals(testStat.getAverageScore(), 0.23, 0.01);
+    //    Assert.assertEquals(testStat.getAverageScore(), 0.23, 0.01);
+    //    Assert.assertEquals(
+    //        testStat
+    //            .getAggregateValues()
+    //            .get(new Range(BigDecimal.valueOf(0.2), BigDecimal.valueOf(0.4)))
+    //            .intValue(),
+    //        2);
   }
 
   @Test
@@ -187,9 +184,14 @@ public class CommentAnalysisTest {
 
   @Test
   public void testSumFrequency() {
-    Assert.assertEquals(6, NORMAL_STAT.getAggregateValues().values().stream().mapToInt(i -> i.intValue()).sum());
-    Assert.assertEquals(4, SYMMETRIC_STAT.getAggregateValues().values().stream().mapToInt(i -> i.intValue()).sum());
-    Assert.assertEquals(3, EDGE_STAT.getAggregateValues().values().stream().mapToInt(i -> i.intValue()).sum());
-    Assert.assertEquals(2, ONE_OUSIDE_STAT.getAggregateValues().values().stream().mapToInt(i -> i.intValue()).sum());
+    Assert.assertEquals(
+        6, NORMAL_STAT.getAggregateValues().values().stream().mapToInt(i -> i.intValue()).sum());
+    Assert.assertEquals(
+        4, SYMMETRIC_STAT.getAggregateValues().values().stream().mapToInt(i -> i.intValue()).sum());
+    Assert.assertEquals(
+        3, EDGE_STAT.getAggregateValues().values().stream().mapToInt(i -> i.intValue()).sum());
+    Assert.assertEquals(
+        2,
+        ONE_OUSIDE_STAT.getAggregateValues().values().stream().mapToInt(i -> i.intValue()).sum());
   }
 }
