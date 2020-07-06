@@ -159,16 +159,10 @@ public class CommentAnalysisTest {
     ArrayList<Double> allOutsideScore = new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
     Statistics allOutsideStat = new Statistics(allOutsideScore);
     Assert.assertEquals(
-        allOutsideStat
-            .getAggregateValues()
-            .get(new Range(BigDecimal.valueOf(-1.0), BigDecimal.valueOf(-0.8)))
-            .intValue(),
-        0);
+        initializeMap(new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0))),
+        allOutsideStat.getAggregateValues());
     Assert.assertEquals(
-        allOutsideStat
-            .getAggregateValues()
-            .get(new Range(BigDecimal.valueOf(0.8), BigDecimal.valueOf(1.0)))
-            .intValue(),
-        0);
+        0.0,
+        allOutsideStat.getAverageScore(), 0.1);
   }
 }
