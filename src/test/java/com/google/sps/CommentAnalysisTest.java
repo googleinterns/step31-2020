@@ -141,7 +141,6 @@ public class CommentAnalysisTest {
         1);
     Assert.assertEquals(edgeStat.getAverageScore(), 0.0, 0);
     Assert.assertEquals(3, edgeStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
-    Assert.assertTrue(Math.abs(edgeStat.getAverageScore()) <= 1);
   }
 
   @Test
