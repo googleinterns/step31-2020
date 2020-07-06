@@ -58,7 +58,7 @@ public class YoutubeServlet extends HttpServlet {
 
       CommentAnalysis commentAnalysis = new CommentAnalysis();
       Statistics statistics = commentAnalysis.computeOverallStats(commentResponse);
-      commentAnalysis.closeLanguage(); 
+      commentAnalysis.closeLanguage();
 
       String json = new Gson().toJson(statistics);
       response.setContentType("application/json");

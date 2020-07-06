@@ -15,9 +15,6 @@
 package com.google.sps;
 
 import com.google.sps.servlets.YoutubeServlet;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +36,6 @@ public class YoutubeServletTest {
     servlet = new YoutubeServlet();
     mockRequest = new MockHttpServletRequest();
     mockResponse = new MockHttpServletResponse();
-
   }
 
   @Test
