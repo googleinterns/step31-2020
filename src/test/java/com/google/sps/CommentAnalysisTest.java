@@ -72,9 +72,9 @@ public class CommentAnalysisTest {
     // This is a test method to calculate simulate and test the process in comment analysis language
     // service
     when(mockedlanguageService
-             .analyzeSentiment(any(Document.class))
-             .getDocumentSentiment()
-             .getScore())
+            .analyzeSentiment(any(Document.class))
+            .getDocumentSentiment()
+            .getScore())
         .thenReturn(TEST_SCORE);
     Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
     Assert.assertNotNull(testStat);
@@ -98,8 +98,7 @@ public class CommentAnalysisTest {
   public void testNormalSymmetricCases() {
     ArrayList<Double> scoreInRange =
         new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
-    ArrayList<Double> symmetricScore =
-        new ArrayList<>(Arrays.asList(0.5, 0.9, -0.5, -0.9));
+    ArrayList<Double> symmetricScore = new ArrayList<>(Arrays.asList(0.5, 0.9, -0.5, -0.9));
     Statistics normalStat = new Statistics(scoreInRange);
     Statistics symmetricStat = new Statistics(symmetricScore);
     Assert.assertEquals(
@@ -124,8 +123,7 @@ public class CommentAnalysisTest {
 
   @Test
   public void testEdgeCases() {
-    ArrayList<Double> edgeScore =
-        new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
+    ArrayList<Double> edgeScore = new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
     Statistics edgeStat = new Statistics(edgeScore);
     Assert.assertEquals(
         edgeStat
@@ -145,8 +143,7 @@ public class CommentAnalysisTest {
 
   @Test
   public void testOneOutsiderCases() {
-    ArrayList<Double> oneOutsideScore =
-        new ArrayList<>(Arrays.asList(-2.0, -1.0, 0.0));
+    ArrayList<Double> oneOutsideScore = new ArrayList<>(Arrays.asList(-2.0, -1.0, 0.0));
     Statistics oneOutsideStat = new Statistics(oneOutsideScore);
     Assert.assertEquals(
         oneOutsideStat
