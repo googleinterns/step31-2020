@@ -45,14 +45,6 @@ import org.mockito.Mockito;
 @RunWith(JUnit4.class)
 public class CommentAnalysisTest {
   private static final float TEST_SCORE = 0.23f;
-  private static final ArrayList<Double> SCORE_IN_RANGE =
-      new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
-  private static final ArrayList<Double> EDGE_SCORE =
-      new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
-  private static final ArrayList<Double> SYMMETRIC_SCORE =
-      new ArrayList<>(Arrays.asList(0.5, 0.9, -0.5, -0.9));
-  private static final ArrayList<Double> ONE_OUSIDE_SCORE =
-      new ArrayList<>(Arrays.asList(-2.0, -1.0, 0.0));
   private static Comment testTopComment = new Comment();
   private static CommentSnippet topCommentSnippet = new CommentSnippet();
   private static CommentThread testCommentThread = new CommentThread();
@@ -80,9 +72,9 @@ public class CommentAnalysisTest {
     // This is a test method to calculate simulate and test the process in comment analysis language
     // service
     when(mockedlanguageService
-            .analyzeSentiment(any(Document.class))
-            .getDocumentSentiment()
-            .getScore())
+             .analyzeSentiment(any(Document.class))
+             .getDocumentSentiment()
+             .getScore())
         .thenReturn(TEST_SCORE);
     Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
     Assert.assertNotNull(testStat);
@@ -104,8 +96,12 @@ public class CommentAnalysisTest {
 
   @Test
   public void testNormalSymmetricCases() {
-    Statistics normalStat = new Statistics(SCORE_IN_RANGE);
-    Statistics symmetricStat = new Statistics(SYMMETRIC_SCORE);
+    ArrayList<Double> scoreInRange =
+        new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
+    ArrayList<Double> symmetricScore =
+        new ArrayList<>(Arrays.asList(0.5, 0.9, -0.5, -0.9));
+    Statistics normalStat = new Statistics(scoreInRange);
+    Statistics symmetricStat = new Statistics(symmetricScore);
     Assert.assertEquals(
         normalStat
             .getAggregateValues()
@@ -128,7 +124,9 @@ public class CommentAnalysisTest {
 
   @Test
   public void testEdgeCases() {
-    Statistics edgeStat = new Statistics(EDGE_SCORE);
+    ArrayList<Double> edgeScore =
+        new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
+    Statistics edgeStat = new Statistics(edgeScore);
     Assert.assertEquals(
         edgeStat
             .getAggregateValues()
@@ -148,7 +146,9 @@ public class CommentAnalysisTest {
 
   @Test
   public void testOneOutsiderCases() {
-    Statistics oneOutsideStat = new Statistics(ONE_OUSIDE_SCORE);
+    ArrayList<Double> oneOutsideScore =
+        new ArrayList<>(Arrays.asList(-2.0, -1.0, 0.0));
+    Statistics oneOutsideStat = new Statistics(oneOutsideScore);
     Assert.assertEquals(
         oneOutsideStat
             .getAggregateValues()
