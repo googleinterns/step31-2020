@@ -45,7 +45,6 @@ function extractYouTubeUrl(url) {
       videoId = match[2];
     }     
   }
-  console.log(videoId);
   return videoId;
 }
 
