@@ -1,0 +1,48 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/*
+ * Class to retrieve YouTube comments from a designated URL with certain parameters
+ */
+public class YouTubeCommentRetriever {
+    /**
+   * Applies parameters to comment request, then uses it to extract comments. URL is the only true
+   * variable; for this application we will always want order to be relevance, and max results to be
+   * 100, the API's limit for how many comments can be retrieved via a single request.
+   */
+  private YouTube.CommentThreads.List generateYouTubeRequest(String url)
+      throws GeneralSecurityException, IOException {
+    YouTube youtubeService = getService();
+    YouTube.CommentThreads.List commentRequest =
+        youtubeService.commentThreads().list(SNIPPET_PARAMETERS);
+    return commentRequest
+        .setKey(DEVELOPER_KEY)
+        .setVideoId(url)
+        .setOrder(ORDER_PARAMETER)
+        .setMaxResults(COMMENT_LIMIT);
+  }
+
+  /**
+   * Build and return an authorized API client service.
+   *
+   * @return an authorized API client service
+   * @throws GeneralSecurityException, IOException
+   */
+  private static YouTube getService() throws GeneralSecurityException, IOException {
+    final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
+        .setApplicationName(APPLICATION_NAME)
+        .build();
+  }
+}

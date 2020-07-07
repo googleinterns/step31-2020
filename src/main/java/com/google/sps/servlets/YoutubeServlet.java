@@ -23,6 +23,7 @@ import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.gson.Gson;
 import com.google.sps.servlets.utils.CommentAnalysis;
 import com.google.sps.servlets.utils.Statistics;
+import com.google.sps.servlets.utils.YouTubeCommentRetriever;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import javax.servlet.ServletException;
@@ -69,33 +70,4 @@ public class YoutubeServlet extends HttpServlet {
     }
   }
 
-  /**
-   * Applies parameters to comment request, then uses it to extract comments. URL is the only true
-   * variable; for this application we will always want order to be relevance, and max results to be
-   * 100, the API's limit for how many comments can be retrieved via a single request.
-   */
-  private YouTube.CommentThreads.List generateYouTubeRequest(String url)
-      throws GeneralSecurityException, IOException {
-    YouTube youtubeService = getService();
-    YouTube.CommentThreads.List commentRequest =
-        youtubeService.commentThreads().list(SNIPPET_PARAMETERS);
-    return commentRequest
-        .setKey(DEVELOPER_KEY)
-        .setVideoId(url)
-        .setOrder(ORDER_PARAMETER)
-        .setMaxResults(COMMENT_LIMIT);
-  }
-
-  /**
-   * Build and return an authorized API client service.
-   *
-   * @return an authorized API client service
-   * @throws GeneralSecurityException, IOException
-   */
-  private static YouTube getService() throws GeneralSecurityException, IOException {
-    final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
-        .setApplicationName(APPLICATION_NAME)
-        .build();
-  }
 }
