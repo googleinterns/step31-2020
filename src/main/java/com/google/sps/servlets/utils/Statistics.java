@@ -55,13 +55,19 @@ public class Statistics {
    *
    * @param sentimentScores given score values
    */
-  public Statistics(List<Double> sentimentScores, List<Double> magnitudeScores) throws RuntimeException {
+  public Statistics(List<Double> sentimentScores, List<Double> magnitudeScores)
+      throws RuntimeException {
     sentimentScores =
         sentimentScores.stream()
             .filter(score -> (score >= LOWER_END_VAL && score <= UPPER_END_VAL))
             .collect(Collectors.toList());
     aggregateValues = categorizeToAggregateMap(sentimentScores, LOWER_END, UPPER_END, INTERVAL);
-    aggregateMagnitude = categorizeToAggregateMap(magnitudeScores, BigDecimal.valueOf(0.0), BigDecimal.valueOf(4.0), BigDecimal.valueOf(0.3));
+    aggregateMagnitude =
+        categorizeToAggregateMap(
+            magnitudeScores,
+            BigDecimal.valueOf(0.0),
+            BigDecimal.valueOf(4.0),
+            BigDecimal.valueOf(0.3));
     averageScore = getAggregateAvg(sentimentScores);
     averageMagnitude = getAggregateAvg(sentimentScores);
   }
@@ -72,8 +78,9 @@ public class Statistics {
    *
    * @param sentimentScores a list of score values from -1.0 to 1.0
    */
-  private Map<Range, Integer>  categorizeToAggregateMap(List<Double> sentimentScores, BigDecimal lowerEnd, BigDecimal upperEnd, BigDecimal interval) {
-    Map<Range, Integer>  aggregateValues = new HashMap<>();
+  private Map<Range, Integer> categorizeToAggregateMap(
+      List<Double> sentimentScores, BigDecimal lowerEnd, BigDecimal upperEnd, BigDecimal interval) {
+    Map<Range, Integer> aggregateValues = new HashMap<>();
     // Add score's interval to different ranges two sorting with and two pointers pop-up
     sentimentScores.sort(Comparator.naturalOrder());
     int updatingScoreIdx = 0;

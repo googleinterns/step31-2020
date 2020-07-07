@@ -56,12 +56,20 @@ public class CommentAnalysis {
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
     Stream<Sentiment> documentList =
         youtubeResponse.getItems().stream()
-            .map(UserComment::new).map(comment -> languageService.analyzeSentiment(Document.newBuilder()
-                                                                                       .setContent(comment.getCommentMsg())
-                                                                                       .setType(Document.Type.PLAIN_TEXT)
-                                                                                       .build()).getDocumentSentiment());
-    List<Double> scoreValues =  documentList.map(this::calcualateSentiAnalysisScore).collect(Collectors.toList());
-    List<Double> magnitudeValues =  documentList.map(this::calcualateSentiAnalysisMagnitude).collect(Collectors.toList());
+            .map(UserComment::new)
+            .map(
+                comment ->
+                    languageService
+                        .analyzeSentiment(
+                            Document.newBuilder()
+                                .setContent(comment.getCommentMsg())
+                                .setType(Document.Type.PLAIN_TEXT)
+                                .build())
+                        .getDocumentSentiment());
+    List<Double> scoreValues =
+        documentList.map(this::calcualateSentiAnalysisScore).collect(Collectors.toList());
+    List<Double> magnitudeValues =
+        documentList.map(this::calcualateSentiAnalysisMagnitude).collect(Collectors.toList());
     return new Statistics(scoreValues, magnitudeValues);
   }
 
@@ -78,7 +86,6 @@ public class CommentAnalysis {
       throw new RuntimeException("Failed to build the sentiments");
     }
   }
-
 
   /**
    * Perform sentiment analysis of comment.
