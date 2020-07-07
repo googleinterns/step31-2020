@@ -22,7 +22,7 @@ google.charts.load('current', {'packages':['corechart']});
 google.setOnLoadCallback(getChart)
 
 async function getYouTubeComments() { 
-  const urlInput = document.getElementById('url-entry');
+  const urlInput = document.getElementById('link-input');
   const url = cleanseUrl(urlInput.value);
   const response = await fetch("/YouTubeComments?url="+url);
   const comments = await response.json();
@@ -47,21 +47,21 @@ function cleanseUrl(url) {
 /**
  * Fetches data and adds to html
  */
-function getChart() {
-  $('form').submit(function() {
+async function getChart() {
+  $('form').submit(async function() {
+    commentStats = await getYouTubeComments();
+    averageScore = commentStats.averageScore;
+    aggregateValues = commentStats.aggregateValues; 
+
     const CommentSentimentTable = new google.visualization.DataTable();
+    CommentSentimentTable.addColumn('number', 'InclusiveStart');
     CommentSentimentTable.addColumn('string', 'SentimentRange');
     CommentSentimentTable.addColumn('number', 'CommentCount');
 
-    for (currentLabel = LOWEST_SCORE; currentLabel < HIGHEST_SCORE; currentLabel += INTERVAL) {
-      // TODO: Replace abritrary value 6 with correct aggregation value  
-      CommentSentimentTable.addRows([
-          [(Math.round(currentLabel * 10) / 10).toString(), null],
-          [null, Math.random()*10]
-      ]);
-    }
-
-    CommentSentimentTable.addRows([['1.0', null]]);
+    // The json keys (ranges of scores) are sorted through their starting values
+    Object.keys(aggregateValues).forEach(function(key) {
+      CommentSentimentTable.addRow([key.getInclusiveStart(), toRangeStringRepresentation(key), aggregateValues[key]]);  
+    });
 
     const options = {
       'title': 'Comment Sentiment Range',
@@ -69,12 +69,20 @@ function getChart() {
       'height':CHART_HEIGHT,
       'bar': {groupWidth: "100"}
     };
+
+    CommentSentimentTable.sort({column: 0, desc: false}); 
+    var view = new google.visualization.DataView(CommentSentimentTable);
+    view.setColumns([1, 2]); 
+
     const chart = new google.visualization.ColumnChart(
         document.getElementById('chart-container'));
-    chart.draw(CommentSentimentTable, options);
+    chart.draw(view, options);    
 
     const averageContainer = document.getElementById('average-score-container');
-    averageContainer.innerHTML = "Average Sentiment Score: " + 6;
+    averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
   });
 }
 
+function toRangeStringRepresentation(range) {
+  return range.getInclusiveStart() + " to " + range.getExclusiveEnd();  
+}
