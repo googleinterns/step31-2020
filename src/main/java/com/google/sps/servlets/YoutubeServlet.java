@@ -35,16 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that fetches from Youtube Server. */
 @WebServlet("/YouTubeComments")
 public class YoutubeServlet extends HttpServlet {
-  private static final Long COMMENT_LIMIT = 100L;
-  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   private static final String URL_PARAMETER = "url";
-  // Parameters required by YouTube API to retrieve the comment threads
-  private static final String SNIPPET_PARAMETERS = "snippet,replies";
-  private static final String ORDER_PARAMETER = "relevance";
-
-  private static final String APPLICATION_NAME = "SAY";
-  // TODO: have dev key come from centralized location, rather than being hard-coded.
-  private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
 
   /**
    * Retrieves comments from designated URL, passes them off to CommentAnalysis object to be wrapped
@@ -55,7 +46,8 @@ public class YoutubeServlet extends HttpServlet {
       throws ServletException {
     try {
       String url = request.getParameter(URL_PARAMETER);
-      CommentThreadListResponse commentResponse = generateYouTubeRequest(url).execute();
+      // TODO: extract comments from YouTubeCommentRetriever
+      CommentThreadListResponse commentResponse = null; //= generateYouTubeRequest(url).execute();
 
       CommentAnalysis commentAnalysis = new CommentAnalysis();
       Statistics statistics = commentAnalysis.computeOverallStats(commentResponse);
