@@ -60,7 +60,9 @@ async function getChart() {
 
     // The json keys (ranges of scores) are sorted through their starting values
     Object.keys(aggregateValues).forEach(function(key) {
-      CommentSentimentTable.addRow([key.getInclusiveStart(), toRangeStringRepresentation(key), aggregateValues[key]]);  
+      var inclusiveStart = getRangeInclusiveStart(key);  
+      var exclusiveEnd = getRangeExclusiveEnd(key);
+      CommentSentimentTable.addRow([inclusiveStart, toRangeStringRepresentation(inclusiveStart, exclusiveEnd), aggregateValues[key]]);  
     });
 
     const options = {
@@ -82,4 +84,14 @@ async function getChart() {
 
 function toRangeStringRepresentation(range) {
   return range.getInclusiveStart() + " to " + range.getExclusiveEnd();  
+}
+
+function getRangeExclusiveEnd(rangeString) {
+  rangeString.trim();
+  return Number(rangeString.substring(rangeString.indexOf(',') + 1, rangeString.length - 1));
+}
+ 
+function getRangeInclusiveStart(rangeString) {
+  rangeString.trim();
+  return Number(rangeString.substring(1, rangeString.indexOf(',')));
 }
