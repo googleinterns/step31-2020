@@ -40,24 +40,28 @@ public class YouTubeCommentRetriever {
   private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
 
   
-  public List<Comment> retrieveComments(String url, int maxComments) throws Exception {
+  public static List<CommentThread> retrieveComments(String url, int maxComments) {
     String nextPageToken ="";
     int currentOverallComments = 0;
-    ArrayList<Comment> allComments = new ArrayList<Comment>();
-    do {
-      YouTube.CommentThreads.List commentRequest = generateYouTubeRequest(url);
-      if(nextPageToken != null && nextPageToken != "") {
-        commentRequest.setPageToken(nextPageToken);
-      }
-      CommentThreadListResponse commentResponse = commentRequest.execute();
-      nextPageToken = commentResponse.getNextPageToken();   
-      currentOverallComments += COMMENT_LIMIT;
-      for(CommentThread thread : commentResponse.getItems()) {
-        // Extract relevant comment from CommentThreadListResponse
-        allComments.add(thread.getSnippet().getTopLevelComment());
-      }
-      // Todo: consolidate comments into large list  
-    } while(nextPageToken != null && nextPageToken != "" && currentOverallComments < maxComments);
+    ArrayList<CommentThread> allComments = new ArrayList<CommentThread>();
+    try {  
+      do {
+        YouTube.CommentThreads.List commentRequest = generateYouTubeRequest(url);
+        if(nextPageToken != null && nextPageToken != "") {
+          commentRequest.setPageToken(nextPageToken);
+        }
+        CommentThreadListResponse commentResponse = commentRequest.execute();
+        nextPageToken = commentResponse.getNextPageToken();   
+        currentOverallComments += COMMENT_LIMIT;
+        for(CommentThread thread : commentResponse.getItems()) {
+          // Extract relevant comment from CommentThreadListResponse
+          allComments.add(thread);
+        }
+        // Todo: consolidate comments into large list  
+      } while(nextPageToken != null && nextPageToken != "" && currentOverallComments < maxComments);
+    } catch(Exception e) {
+      // In case of error, simply return what is in allComments, even if empty
+    }
     return allComments;
   } 
 
@@ -66,7 +70,7 @@ public class YouTubeCommentRetriever {
    * variable; for this application we will always want order to be relevance, and max results to be
    * 100, the API's limit for how many comments can be retrieved via a single request.
    */
-  private YouTube.CommentThreads.List generateYouTubeRequest(String url)
+  private static YouTube.CommentThreads.List generateYouTubeRequest(String url)
       throws GeneralSecurityException, IOException {
     YouTube youtubeService = getService();
     YouTube.CommentThreads.List commentRequest =
