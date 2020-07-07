@@ -85,7 +85,7 @@ public class CommentAnalysis {
     if (sentiment != null) {
       return ((double) sentiment.getScore());
     } else {
-      throw new RuntimeException("Failed to build the sentiments");
+      throw new RuntimeException("Failed to get the sentiment score");
     }
   }
 
@@ -99,7 +99,7 @@ public class CommentAnalysis {
     if (sentiment != null) {
       return ((double) sentiment.getMagnitude());
     } else {
-      throw new RuntimeException("Failed to build the sentiments");
+      throw new RuntimeException("Failed to get the sentiment magnitude");
     }
   }
 
