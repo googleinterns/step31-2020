@@ -62,7 +62,7 @@ async function getChart() {
     Object.keys(aggregateValues).forEach(function(key) {
       var inclusiveStart = getRangeInclusiveStart(key);  
       var exclusiveEnd = getRangeExclusiveEnd(key);
-      CommentSentimentTable.addRow([inclusiveStart, toRangeStringRepresentation(inclusiveStart, exclusiveEnd), aggregateValues[key]]);  
+      CommentSentimentTable.addRow([inclusiveStart, inclusiveStart + ' to ' + exclusiveEnd, aggregateValues[key]]);  
     });
 
     const options = {
@@ -80,10 +80,6 @@ async function getChart() {
         document.getElementById('chart-container'));       
     chart.draw(view, options);
   });
-}
-
-function toRangeStringRepresentation(range) {
-  return range.getInclusiveStart() + " to " + range.getExclusiveEnd();  
 }
 
 function getRangeExclusiveEnd(rangeString) {
