@@ -14,70 +14,158 @@
 
 package com.google.sps;
 
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.youtube.YouTube;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import com.google.api.services.youtube.model.Comment;
+import com.google.api.services.youtube.model.CommentSnippet;
+import com.google.api.services.youtube.model.CommentThread;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
+import com.google.api.services.youtube.model.CommentThreadSnippet;
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.sps.servlets.utils.CommentAnalysis;
+import com.google.sps.servlets.utils.Range;
 import com.google.sps.servlets.utils.Statistics;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
 
-/** This is a JUnit test for sentiment analysis */
+/** This is a JUnit test for sentiment mockedAnalysis */
 @RunWith(JUnit4.class)
 public class CommentAnalysisTest {
-  private CommentThreadListResponse youtuberesponse;
-  private CommentAnalysis analysis;
-  private static final String APPLICATION_NAME = "testComment";
-  private static final String DEVELOPER_KEY = "API_KEY";
-  private static final String PLAINTEXT = "plainText";
-  private static final String SNIPPET = "snippet";
-  private static final String TEST_VIDEO_ID = "E_wKLOq-30M";
-  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+  private static final double LOWER_END_VAL = -1.0;
+  private static final double UPPER_END_VAL = 1.0;
+  private static final BigDecimal INTERVAL = BigDecimal.valueOf(0.2);
+  private static final BigDecimal UPPER_END = BigDecimal.valueOf(UPPER_END_VAL);
+  private static final BigDecimal LOWER_END = BigDecimal.valueOf(LOWER_END_VAL);
+  private static final float TEST_SCORE = 0.23f;
 
   /**
-   * Build and return an authorized API client service.
+   * It constructs a HashMap with current range for expected score categorizations for comparisions.
    *
-   * @return an authorized API client service
-   * @throws GeneralSecurityException, IOException
+   * @param frequency a list of frequency corresponding to each interval sorted in ascending order
+   * @return constructed hashmap with keys as ranges based on intervals and values corresponding to
+   *     frequency input
    */
-  public static YouTube getService() throws GeneralSecurityException, IOException {
-    final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
-        .setApplicationName(APPLICATION_NAME)
-        .build();
+  private Map<Range, Integer> constructRangeMapFromFrequencyList(List<Integer> frequency) {
+    if (frequency.size()
+        != UPPER_END.subtract(LOWER_END).divide(INTERVAL, RoundingMode.UP).intValue()) {
+      throw new RuntimeException("Initialize list in test function got wrong size");
+    }
+    int freqIdx = 0;
+    Map<Range, Integer> expectedMap = new HashMap<>();
+    for (BigDecimal tempPoint = LOWER_END;
+        tempPoint.compareTo(UPPER_END) < 0;
+        tempPoint = tempPoint.add(INTERVAL)) {
+      BigDecimal nextPoint = UPPER_END.min(tempPoint.add(INTERVAL));
+      Range currentRange = new Range(tempPoint, nextPoint);
+      expectedMap.put(currentRange, frequency.get(freqIdx));
+      freqIdx += 1;
+    }
+    return expectedMap;
   }
+
+  @Rule public ExpectedException exception = ExpectedException.none();
 
   @Before
-  public void setUp() throws GeneralSecurityException, IOException {
-    YouTube youtubeService = getService();
-    YouTube.CommentThreads.List youtuberequest = youtubeService.commentThreads().list(SNIPPET);
-    youtuberesponse =
-        youtuberequest
-            .setKey(DEVELOPER_KEY)
-            .setVideoId(TEST_VIDEO_ID)
-            .setMaxResults(2L)
-            .setTextFormat(PLAINTEXT)
-            .execute();
-    analysis = new CommentAnalysis();
+  public void setup() {}
+
+  @Test
+  public void testCalculateSentiment() {
+    // This is a test method to calculate simulate and test the process in comment analysis language
+    // service
+
+    // Declarations of mocked variables and set the dependencies between constructed comments and
+    // threads
+    CommentSnippet topCommentSnippet = new CommentSnippet().setTextDisplay("Test Message");
+    Comment testTopComment = new Comment().setSnippet(topCommentSnippet);
+    CommentThreadSnippet testThreadSnippet =
+        new CommentThreadSnippet().setTopLevelComment(testTopComment);
+    CommentThread testCommentThread = new CommentThread().setSnippet(testThreadSnippet);
+    List<CommentThread> testCommentThreadList =
+        new ArrayList<>(Arrays.asList(testCommentThread, testCommentThread));
+    CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
+    youtubeResponse.setItems(testCommentThreadList);
+
+    // Mock the service variables
+    LanguageServiceClient mockedlanguageService =
+        mock(LanguageServiceClient.class, Mockito.RETURNS_DEEP_STUBS);
+    when(mockedlanguageService
+            .analyzeSentiment(any(Document.class))
+            .getDocumentSentiment()
+            .getScore())
+        .thenReturn(TEST_SCORE);
+    CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
+
+    // Compute and test the score from mocked language service
+    Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
+    Assert.assertNotNull(testStat);
+    Assert.assertNotNull(testStat.getAggregateValues());
+    Assert.assertEquals(testStat.getAverageScore(), TEST_SCORE, 0.01);
+    Assert.assertEquals(
+        constructRangeMapFromFrequencyList(
+            new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0))),
+        testStat.getAggregateValues());
   }
 
   @Test
-  public void testSentimentAnalysisInRange() {
-    // Test the Sentiment Analysis Score within range -1 to 1.
-    Statistics result = analysis.computeOverallStats(youtuberesponse);
-    Assert.assertTrue(Math.abs(result.getAverageScore()) <= 1);
+  public void testNormalCases() {
+    ArrayList<Double> scoreInRange =
+        new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
+    Statistics normalStat = new Statistics(scoreInRange);
+    Assert.assertEquals(
+        6, normalStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
+    Assert.assertEquals(-0.048, normalStat.getAverageScore(), 0.01);
+    Assert.assertEquals(
+        constructRangeMapFromFrequencyList(
+            new ArrayList<>(Arrays.asList(0, 0, 0, 0, 2, 4, 0, 0, 0, 0))),
+        normalStat.getAggregateValues());
   }
 
   @Test
-  public void testCategorizationEdgeCases() {
-    // TODO: test for splitting different scores into intervals
+  public void testEdgeCases() {
+    ArrayList<Double> edgeScore = new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
+    Statistics edgeStat = new Statistics(edgeScore);
+    Assert.assertEquals(
+        constructRangeMapFromFrequencyList(
+            new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 1))),
+        edgeStat.getAggregateValues());
+  }
+
+  @Test
+  public void testOneOutsiderCases() {
+    ArrayList<Double> oneOutsideScore = new ArrayList<>(Arrays.asList(-2.0, -1.0, 0.0));
+    Statistics oneOutsideStat = new Statistics(oneOutsideScore);
+    Assert.assertEquals(oneOutsideStat.getAverageScore(), -0.5, 0);
+    Assert.assertEquals(
+        constructRangeMapFromFrequencyList(
+            new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 0))),
+        oneOutsideStat.getAggregateValues());
+  }
+
+  @Test
+  public void testExceptionAllOutsiderScore() {
+    exception.expect(RuntimeException.class);
+    ArrayList<Double> allOutsideScore = new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
+    Statistics allOutsideStat = new Statistics(allOutsideScore);
+    Assert.assertEquals(
+        constructRangeMapFromFrequencyList(
+            new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0))),
+        allOutsideStat.getAggregateValues());
+    Assert.assertEquals(0.0, allOutsideStat.getAverageScore(), 0.1);
   }
 }

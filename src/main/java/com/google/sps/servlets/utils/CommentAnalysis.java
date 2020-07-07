@@ -29,8 +29,22 @@ import java.util.stream.Collectors;
 public class CommentAnalysis {
   private LanguageServiceClient languageService;
 
+  /**
+   * Constructor to create and initialize language service for sentiment analysis
+   *
+   * @throws IOException error when the service cannot be started successfully
+   */
   public CommentAnalysis() throws IOException {
     this.languageService = LanguageServiceClient.create();
+  }
+
+  /**
+   * Constructor for mocked test to pass in mocked language client service.
+   *
+   * @param languageService language service that has been created
+   */
+  public CommentAnalysis(LanguageServiceClient languageService) {
+    this.languageService = languageService;
   }
 
   /**
@@ -39,7 +53,6 @@ public class CommentAnalysis {
    * @return a Statistics object that contains required values to display
    */
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
-
     List<Double> scoreValues =
         youtubeResponse.getItems().stream()
             .map(UserComment::new)
@@ -49,7 +62,7 @@ public class CommentAnalysis {
   }
 
   /**
-   * Calculate the sentiment analysis score for each single comment
+   * Perform sentiment analysis of comment.
    *
    * @return sentiment score
    * @throws RuntimeException if the sentiment analysis API is not working, throw the IOExeption

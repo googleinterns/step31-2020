@@ -14,29 +14,94 @@
 
 package com.google.sps.servlets.utils;
 
-import com.google.sps.servlets.Range;
+import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Statistics {
-  // Aggregated score for a list of comments
+  private static final double LOWER_END_VAL = -1.0;
+  private static final double UPPER_END_VAL = 1.0;
+  private static final BigDecimal INTERVAL = BigDecimal.valueOf(0.2);
+  private static final BigDecimal UPPER_END = BigDecimal.valueOf(UPPER_END_VAL);
+  private static final BigDecimal LOWER_END = BigDecimal.valueOf(LOWER_END_VAL);
+
+  // Contains sentiment scores in the range [-1, 1] with given intervals.
   private Map<Range, Integer> aggregateValues;
   private double averageScore;
 
-  public Statistics(List<Double> sentimentScores) {
+  public Map<Range, Integer> getAggregateValues() {
+    return aggregateValues;
+  }
+
+  public double getAverageScore() {
+    return averageScore;
+  }
+
+  /**
+   * Constructor of Statistics to filter out invalid sentiment scores, set aggregate hash map and
+   * average score.
+   *
+   * @param sentimentScores given score values
+   */
+  public Statistics(List<Double> sentimentScores) throws RuntimeException {
+    sentimentScores =
+        sentimentScores.stream()
+            .filter(score -> (score >= LOWER_END_VAL && score <= UPPER_END_VAL))
+            .collect(Collectors.toList());
     setAggregateScores(sentimentScores);
     setAverageScore(sentimentScores);
   }
 
+  /**
+   * Categorize all score values into different range intervals and count the frequency for each
+   * interval, and set the aggregatedValues.
+   *
+   * @param sentimentScores a list of score values from -1.0 to 1.0
+   */
   private void setAggregateScores(List<Double> sentimentScores) {
-    // TODO(Xin): Add sorting code
     aggregateValues = new HashMap<>();
-    aggregateValues.put(new Range(-1.0, 1), 1);
+    // Add score's interval to different ranges two sorting with and two pointers pop-up
+    sentimentScores.sort(Comparator.naturalOrder());
+    int updatingScoreIdx = 0;
+    for (BigDecimal tempPoint = LOWER_END;
+        tempPoint.compareTo(UPPER_END) < 0;
+        tempPoint = tempPoint.add(INTERVAL)) {
+      BigDecimal nextPoint = UPPER_END.min(tempPoint.add(INTERVAL));
+      Range currentRange = new Range(tempPoint, nextPoint);
+      aggregateValues.put(currentRange, 0);
+      // loop through sorted scores within currentRange from updated score pointer and update its
+      // corresponding appearance frequency in aggregatedValues
+      int scoreIdx;
+      for (scoreIdx = updatingScoreIdx; scoreIdx < sentimentScores.size(); scoreIdx++) {
+        BigDecimal scorePoint = BigDecimal.valueOf(sentimentScores.get(scoreIdx));
+        if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_END) == 0) {
+          aggregateValues.put(currentRange, aggregateValues.get(currentRange) + 1);
+        } else {
+          break;
+        }
+      }
+      // update the score pointer
+      updatingScoreIdx = scoreIdx;
+    }
   }
 
-  private void setAverageScore(List<Double> sentimentScores) {
-    // TODO(Xin): Add average score method
-    averageScore = 0;
+  /**
+   * Set the average score of given sentiment scores. Throws an runtime exception if the average
+   * score is not valid or none of the sentiment scores is valid.
+   *
+   * @param sentimentScores a list of score values from -1.0 to 1.0
+   */
+  private void setAverageScore(List<Double> sentimentScores) throws RuntimeException {
+    averageScore =
+        sentimentScores.stream()
+            .mapToDouble(i -> i)
+            .average()
+            .orElseThrow(
+                () ->
+                    new RuntimeException(
+                        "Unable to calculate sentiment average due to empty input list."));
   }
 }
