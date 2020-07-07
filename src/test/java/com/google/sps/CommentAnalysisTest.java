@@ -61,7 +61,7 @@ public class CommentAnalysisTest {
    * @return constructed hashmap with keys as ranges based on intervals and values corresponding to
    *     frequency input
    */
-  private Map<Range, Integer> initializeMap(List<Integer> frequency) {
+  private Map<Range, Integer> constructRangeMapFromFrequencyList(List<Integer> frequency) {
     if (frequency.size()
         != UPPER_END.subtract(LOWER_END).divide(INTERVAL, RoundingMode.UP).intValue()) {
       throw new RuntimeException("Initialize list in test function got wrong size");
@@ -117,7 +117,7 @@ public class CommentAnalysisTest {
     Assert.assertNotNull(testStat.getAggregateValues());
     Assert.assertEquals(testStat.getAverageScore(), TEST_SCORE, 0.01);
     Assert.assertEquals(
-        initializeMap(new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0))),
+        constructRangeMapFromFrequencyList(new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0))),
         testStat.getAggregateValues());
   }
 
@@ -130,7 +130,7 @@ public class CommentAnalysisTest {
         6, normalStat.getAggregateValues().values().stream().mapToInt(i -> i).sum());
     Assert.assertEquals(-0.048, normalStat.getAverageScore(), 0.01);
     Assert.assertEquals(
-        initializeMap(new ArrayList<>(Arrays.asList(0, 0, 0, 0, 2, 4, 0, 0, 0, 0))),
+        constructRangeMapFromFrequencyList(new ArrayList<>(Arrays.asList(0, 0, 0, 0, 2, 4, 0, 0, 0, 0))),
         normalStat.getAggregateValues());
   }
 
@@ -139,7 +139,7 @@ public class CommentAnalysisTest {
     ArrayList<Double> edgeScore = new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
     Statistics edgeStat = new Statistics(edgeScore);
     Assert.assertEquals(
-        initializeMap(new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 1))),
+        constructRangeMapFromFrequencyList(new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 1))),
         edgeStat.getAggregateValues());
   }
 
@@ -149,7 +149,7 @@ public class CommentAnalysisTest {
     Statistics oneOutsideStat = new Statistics(oneOutsideScore);
     Assert.assertEquals(oneOutsideStat.getAverageScore(), -0.5, 0);
     Assert.assertEquals(
-        initializeMap(new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 0))),
+        constructRangeMapFromFrequencyList(new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 0))),
         oneOutsideStat.getAggregateValues());
   }
 
@@ -159,7 +159,7 @@ public class CommentAnalysisTest {
     ArrayList<Double> allOutsideScore = new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
     Statistics allOutsideStat = new Statistics(allOutsideScore);
     Assert.assertEquals(
-        initializeMap(new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0))),
+        constructRangeMapFromFrequencyList(new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0))),
         allOutsideStat.getAggregateValues());
     Assert.assertEquals(0.0, allOutsideStat.getAverageScore(), 0.1);
   }
