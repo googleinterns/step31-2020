@@ -43,6 +43,7 @@ public class YouTubeCommentRetriever {
   public List<Comment> retrieveComments(String url, int maxComments) throws Exception {
     String nextPageToken ="";
     int currentOverallComments = 0;
+    ArrayList<Comment> allComments = new ArrayList<Comment>();
     do {
       YouTube.CommentThreads.List commentRequest = generateYouTubeRequest(url);
       if(nextPageToken != null && nextPageToken != "") {
@@ -51,9 +52,13 @@ public class YouTubeCommentRetriever {
       CommentThreadListResponse commentResponse = commentRequest.execute();
       nextPageToken = commentResponse.getNextPageToken();   
       currentOverallComments += COMMENT_LIMIT;
+      for(CommentThread thread : commentResponse.getItems()) {
+        // Extract relevant comment from CommentThreadListResponse
+        allComments.add(thread.getSnippet().getTopLevelComment());
+      }
       // Todo: consolidate comments into large list  
     } while(nextPageToken != null && nextPageToken != "" && currentOverallComments < maxComments);
-    return null;
+    return allComments;
   } 
 
     /**
