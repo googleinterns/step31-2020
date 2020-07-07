@@ -40,7 +40,7 @@ function extractYouTubeUrl(url) {
   if (url != undefined || url != '') {
     var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
     var match = url.match(regExp);
-    // Check for proper format 
+    // Check for proper format, focus on segment that contains videoId 
     if (match && match[2].length == idLength) {
       videoId = match[2];
     }     
