@@ -21,7 +21,6 @@ import com.google.cloud.language.v1.Sentiment;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * This class encapsulates each element in json comment array into separate user comment object and
@@ -56,13 +55,23 @@ public class CommentAnalysis {
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
     List<Sentiment> documentList =
         youtubeResponse.getItems().stream()
-            .map(UserComment::new).map(comment -> languageService.analyzeSentiment(Document.newBuilder()
-                                                                                       .setContent(comment.getCommentMsg())
-                                                                                       .setType(Document.Type.PLAIN_TEXT)
-                                                                                       .build()).getDocumentSentiment())
+            .map(UserComment::new)
+            .map(
+                comment ->
+                    languageService
+                        .analyzeSentiment(
+                            Document.newBuilder()
+                                .setContent(comment.getCommentMsg())
+                                .setType(Document.Type.PLAIN_TEXT)
+                                .build())
+                        .getDocumentSentiment())
             .collect(Collectors.toList());
-    List<Double> scoreValues =  documentList.stream().map(this::calcualateSentiAnalysisScore).collect(Collectors.toList());
-    List<Double> magnitudeValues =  documentList.stream().map(this::calcualateSentiAnalysisMagnitude).collect(Collectors.toList());
+    List<Double> scoreValues =
+        documentList.stream().map(this::calcualateSentiAnalysisScore).collect(Collectors.toList());
+    List<Double> magnitudeValues =
+        documentList.stream()
+            .map(this::calcualateSentiAnalysisMagnitude)
+            .collect(Collectors.toList());
     return new Statistics(scoreValues, magnitudeValues);
   }
 
@@ -79,7 +88,6 @@ public class CommentAnalysis {
       throw new RuntimeException("Failed to build the sentiments");
     }
   }
-
 
   /**
    * Perform sentiment analysis of comment.
