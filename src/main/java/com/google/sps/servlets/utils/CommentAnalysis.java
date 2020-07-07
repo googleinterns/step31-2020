@@ -21,6 +21,7 @@ import com.google.cloud.language.v1.Sentiment;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class encapsulates each element in json comment array into separate user comment object and
@@ -53,12 +54,15 @@ public class CommentAnalysis {
    * @return a Statistics object that contains required values to display
    */
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
-    List<Double> scoreValues =
+    Stream<Sentiment> documentList =
         youtubeResponse.getItems().stream()
-            .map(UserComment::new)
-            .map(this::calcualateSentiAnalysisScore)
-            .collect(Collectors.toList());
-    return new Statistics(scoreValues);
+            .map(UserComment::new).map(comment -> languageService.analyzeSentiment(Document.newBuilder()
+                                                                                       .setContent(comment.getCommentMsg())
+                                                                                       .setType(Document.Type.PLAIN_TEXT)
+                                                                                       .build()).getDocumentSentiment());
+    List<Double> scoreValues =  documentList.map(this::calcualateSentiAnalysisScore).collect(Collectors.toList());
+    List<Double> magnitudeValues =  documentList.map(this::calcualateSentiAnalysisMagnitude).collect(Collectors.toList());
+    return new Statistics(scoreValues, magnitudeValues);
   }
 
   /**
@@ -67,15 +71,24 @@ public class CommentAnalysis {
    * @return sentiment score
    * @throws RuntimeException if the sentiment analysis API is not working, throw the IOExeption
    */
-  private double calcualateSentiAnalysisScore(UserComment comment) {
-    Document doc =
-        Document.newBuilder()
-            .setContent(comment.getCommentMsg())
-            .setType(Document.Type.PLAIN_TEXT)
-            .build();
-    Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
+  private double calcualateSentiAnalysisScore(Sentiment sentiment) {
     if (sentiment != null) {
       return ((double) sentiment.getScore());
+    } else {
+      throw new RuntimeException("Failed to build the sentiments");
+    }
+  }
+
+
+  /**
+   * Perform sentiment analysis of comment.
+   *
+   * @return sentiment score
+   * @throws RuntimeException if the sentiment analysis API is not working, throw the IOExeption
+   */
+  private double calcualateSentiAnalysisMagnitude(Sentiment sentiment) {
+    if (sentiment != null) {
+      return ((double) sentiment.getMagnitude());
     } else {
       throw new RuntimeException("Failed to build the sentiments");
     }
