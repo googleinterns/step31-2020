@@ -54,14 +54,15 @@ public class CommentAnalysis {
    * @return a Statistics object that contains required values to display
    */
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
-    Stream<Sentiment> documentList =
+    List<Sentiment> documentList =
         youtubeResponse.getItems().stream()
             .map(UserComment::new).map(comment -> languageService.analyzeSentiment(Document.newBuilder()
                                                                                        .setContent(comment.getCommentMsg())
                                                                                        .setType(Document.Type.PLAIN_TEXT)
-                                                                                       .build()).getDocumentSentiment());
-    List<Double> scoreValues =  documentList.map(this::calcualateSentiAnalysisScore).collect(Collectors.toList());
-    List<Double> magnitudeValues =  documentList.map(this::calcualateSentiAnalysisMagnitude).collect(Collectors.toList());
+                                                                                       .build()).getDocumentSentiment())
+            .collect(Collectors.toList());
+    List<Double> scoreValues =  documentList.stream().map(this::calcualateSentiAnalysisScore).collect(Collectors.toList());
+    List<Double> magnitudeValues =  documentList.stream().map(this::calcualateSentiAnalysisMagnitude).collect(Collectors.toList());
     return new Statistics(scoreValues, magnitudeValues);
   }
 

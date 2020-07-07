@@ -22,16 +22,21 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Statistics {
-  private static final double LOWER_END_VAL = -1.0;
-  private static final double UPPER_END_VAL = 1.0;
-  private static final double ZERO_MAGNITUE_VAL = 0.0;
-  private static final BigDecimal INTERVAL = BigDecimal.valueOf(0.2);
-  private static final BigDecimal UPPER_END = BigDecimal.valueOf(UPPER_END_VAL);
-  private static final BigDecimal LOWER_END = BigDecimal.valueOf(LOWER_END_VAL);
-  private static final BigDecimal ZERO_MAGNITUDE = BigDecimal.valueOf(ZERO_MAGNITUE_VAL);
+  private static final double LOWER_SCORE_VAL = -1.0;
+  private static final double UPPER_SCORE_VAL = 1.0;
+  private static final double LOWER_MAGNITUDE_VAL = 0.0;
+  private static final double UPPER_MAGNITUDE_VAL = 2.0;
+  private static final double SCORE_INTERVAL_VAL = 0.2;
+  private static final double MAGNITUDE_INTERVAL_VAL = 0.3;
+  private static final BigDecimal SCORE_INTERVAL = BigDecimal.valueOf(SCORE_INTERVAL_VAL);
+  private static final BigDecimal UPPER_SCORE = BigDecimal.valueOf(UPPER_SCORE_VAL);
+  private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
+  private static final BigDecimal MAGNITUDE_INTERVAL = BigDecimal.valueOf(MAGNITUDE_INTERVAL_VAL);
+  private static final BigDecimal LOWER_MAGNITUDE = BigDecimal.valueOf(LOWER_MAGNITUDE_VAL);
+  private static final BigDecimal UPPER_MAGNITUDE = BigDecimal.valueOf(UPPER_MAGNITUDE_VAL);
 
-  // Contains sentiment scores in the range [-1, 1] with given intervals.
-  private Map<Range, Integer> aggregateValues;
+  // Contains sentiment scores and magnitudes with given intervals.
+  private Map<Range, Integer> aggregateScores;
   private Map<Range, Integer> aggregateMagnitude;
   private double averageScore;
 
@@ -41,44 +46,68 @@ public class Statistics {
 
   private double averageMagnitude;
 
-  public Map<Range, Integer> getAggregateValues() {
-    return aggregateValues;
+  public Map<Range, Integer> getAggregateScores() {
+    return aggregateScores;
   }
 
   public double getAverageScore() {
     return averageScore;
   }
 
+  public Map<Range, Integer> getAggregateMagnitude() {
+    return aggregateMagnitude;
+  }
+
   /**
-   * Constructor of Statistics to filter out invalid sentiment scores, set aggregate hash map and
-   * average score.
+   * Constructor of Statistics to filter out invalid sentiment scores and magnitude, set aggregate hash map and
+   * average score and magnitude.
    *
-   * @param sentimentScores given score values
+   * @param sentimentScores
+   *     given score values
+   * @param magnitudeScores
+   *     given magnitude values
    */
-  public Statistics(List<Double> sentimentScores, List<Double> magnitudeScores) throws RuntimeException {
+  public Statistics(List<Double> sentimentScores, List<Double> magnitudeScores) {
     sentimentScores =
-        sentimentScores.stream()
-            .filter(score -> (score >= LOWER_END_VAL && score <= UPPER_END_VAL))
+        sentimentScores.parallelStream()
+            .filter(score -> (score >= LOWER_SCORE_VAL && score <= UPPER_SCORE_VAL))
             .collect(Collectors.toList());
-    aggregateValues = categorizeToAggregateMap(sentimentScores, LOWER_END, UPPER_END, INTERVAL);
-    aggregateMagnitude = categorizeToAggregateMap(magnitudeScores, BigDecimal.valueOf(0.0), BigDecimal.valueOf(4.0), BigDecimal.valueOf(0.3));
+    magnitudeScores = magnitudeScores.parallelStream()
+                          .filter(score -> (score >= LOWER_MAGNITUDE_VAL))
+                          .collect(Collectors.toList());
+    aggregateScores = categorizeToAggregateMap(sentimentScores, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL, false);
+    aggregateMagnitude =
+        categorizeToAggregateMap(magnitudeScores, LOWER_MAGNITUDE, UPPER_MAGNITUDE, MAGNITUDE_INTERVAL, true);
     averageScore = getAggregateAvg(sentimentScores);
-    averageMagnitude = getAggregateAvg(sentimentScores);
+    averageMagnitude = getAggregateAvg(magnitudeScores);
   }
 
   /**
    * Categorize all score values into different range intervals and count the frequency for each
    * interval, and set the aggregatedValues.
    *
-   * @param sentimentScores a list of score values from -1.0 to 1.0
+   * @param sentimentValues
+   *     a list of score values from lowerEnd to upperEnd
+   * @param lowerEnd
+   *     lower end boundary of the map
+   * @param upperEnd
+   * upper end boundary of the map
+   * @param interval interval for the range
+   * @param overFlow True if the value is not bound by upperEnd; false otherwise
+   * @return a categorized map based on sentimentValues from lowerEnd to upperEnd with interval
    */
-  private Map<Range, Integer>  categorizeToAggregateMap(List<Double> sentimentScores, BigDecimal lowerEnd, BigDecimal upperEnd, BigDecimal interval) {
-    Map<Range, Integer>  aggregateValues = new HashMap<>();
+  private Map<Range, Integer> categorizeToAggregateMap(List<Double> sentimentValues,
+                                                       BigDecimal lowerEnd,
+                                                       BigDecimal upperEnd,
+                                                       BigDecimal interval,
+                                                       Boolean overFlow) {
+    Map<Range, Integer> aggregateValues = new HashMap<>();
     // Add score's interval to different ranges two sorting with and two pointers pop-up
-    sentimentScores.sort(Comparator.naturalOrder());
+    sentimentValues.sort(Comparator.naturalOrder());
     int updatingScoreIdx = 0;
-    for (BigDecimal tempPoint = lowerEnd;
-        tempPoint.compareTo(UPPER_END) < 0;
+    BigDecimal tempPoint;
+    for (tempPoint = lowerEnd;
+        tempPoint.compareTo(upperEnd) < 0;
         tempPoint = tempPoint.add(interval)) {
       BigDecimal nextPoint = upperEnd.min(tempPoint.add(interval));
       Range currentRange = new Range(tempPoint, nextPoint);
@@ -86,8 +115,8 @@ public class Statistics {
       // loop through sorted scores within currentRange from updated score pointer and update its
       // corresponding appearance frequency in aggregatedValues
       int scoreIdx;
-      for (scoreIdx = updatingScoreIdx; scoreIdx < sentimentScores.size(); scoreIdx++) {
-        BigDecimal scorePoint = BigDecimal.valueOf(sentimentScores.get(scoreIdx));
+      for (scoreIdx = updatingScoreIdx; scoreIdx < sentimentValues.size(); scoreIdx++) {
+        BigDecimal scorePoint = BigDecimal.valueOf(sentimentValues.get(scoreIdx));
         if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(upperEnd) == 0) {
           aggregateValues.put(currentRange, aggregateValues.get(currentRange) + 1);
         } else {
@@ -97,24 +126,29 @@ public class Statistics {
       // update the score pointer
       updatingScoreIdx = scoreIdx;
     }
+
+    // If the categorization allows overflow, add the value larger than upper end to the last interval
+    if (overFlow && updatingScoreIdx < sentimentValues.size()) {
+      aggregateValues.put(new Range(tempPoint.subtract(interval), tempPoint),
+          aggregateValues.get(new Range(tempPoint.subtract(interval), tempPoint)) + (sentimentValues.size() - updatingScoreIdx));
+    }
     return aggregateValues;
   }
 
   /**
-   * Set the average score of given sentiment scores. Throws an runtime exception if the average
-   * score is not valid or none of the sentiment scores is valid.
+   * Set the average value of given sentiment values. 
    *
-   * @param sentimentScores a list of score values from -1.0 to 1.0
+   * @param sentimentValues
+   *     a list of values to calculate the average for
+   * @return the average value of sentimentValues
    */
-  private double getAggregateAvg(List<Double> sentimentScores) throws RuntimeException {
-    double averageVal =
-        sentimentScores.stream()
-            .mapToDouble(i -> i)
-            .average()
-            .orElseThrow(
-                () ->
-                    new RuntimeException(
-                        "Unable to calculate sentiment average due to empty input list."));
-    return averageVal;
+  private double getAggregateAvg(List<Double> sentimentValues) {
+    return sentimentValues.parallelStream()
+               .mapToDouble(i -> i)
+               .average()
+               .orElseThrow(
+                   () ->
+                       new RuntimeException(
+                           "Unable to calculate sentiment average due to empty input list."));
   }
 }
