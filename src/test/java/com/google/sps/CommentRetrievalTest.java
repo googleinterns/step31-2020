@@ -38,17 +38,31 @@ public void setup() {}
 
 // The simplest case: extract 100 comments from a video with more than 100 comments
 @Test 
-public void testDefaultBehaviour() {}
+public void testDefaultBehaviour() {
+  List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments("dQw4w9WgXcQ",100);
+  Assert.assertEquals(comments.size(), 100);
+}
 
 // Test that class properly consolidates a list of comments greater than the max allowed per thread
 @Test 
-public void testExcessHundredComments() {}
+public void testExcessHundredComments() {
+  List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments("dQw4w9WgXcQ",200);
+  Assert.assertEquals(comments.size(), 200);
+}
 
 // Ensure that a crash does not occur when loading more comments than there are on a video
 @Test
-public void doesNotAttemptRetrieveExcess() {}
+public void doesNotAttemptRetrieveExcess() {
+  // This url leads to a video that doesn't have >200 comments and probably won't ever.
+  List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments("cA-arJ0T6L4",200);
+  Assert.assertTrue(comments.size() < 200);
+}
 
 // When a URL that is not real is inputted, an empty list is returned.
 @Test 
-public void handlesErrantVideoId() {}
+public void handlesErrantVideoId() {
+    List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments("NOT_A_URL",200);
+  Assert.assertEquals(comments.size(), 0);
+}
+
 }
