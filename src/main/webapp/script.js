@@ -51,23 +51,17 @@ async function getChart() {
   $('form').submit(async function() {
     commentStats = await getYouTubeComments();
     averageScore = commentStats.averageScore;
-    aggregatedValues = commentStats.aggregateValues; 
+    aggregateValues = commentStats.aggregateValues; 
 
     const CommentSentimentTable = new google.visualization.DataTable();
+    CommentSentimentTable.addColumn('number', 'InclusiveStart');
     CommentSentimentTable.addColumn('string', 'SentimentRange');
     CommentSentimentTable.addColumn('number', 'CommentCount');
 
-    currentLabel = LOWEST_SCORE;
     // The json keys (ranges of scores) are sorted through their starting values
-    // using subtraction comparison  
-    Object.keys(aggregatedValues).sort((a, b) => a - b).forEach(function(key) {
-      CommentSentimentTable.addRows([
-          [key, null],
-          [null, aggregatedValues[key]]
-      ]);
-      currentLabel += INTERVAL;
+    Object.keys(aggregateValues).forEach(function(key) {
+      CommentSentimentTable.addRow([key.getInclusiveStart(), toRangeStringRepresentation(key), aggregateValues[key]]);  
     });
-    CommentSentimentTable.addRow([HIGHEST_SCORE.toString(), null]);
 
     const options = {
       'title': 'Comment Sentiment Range',
@@ -75,9 +69,17 @@ async function getChart() {
       'height':CHART_HEIGHT,
       'bar': {groupWidth: "100"}
     };
+
+    CommentSentimentTable.sort({column: 0, desc: false}); 
+    var view = new google.visualization.DataView(CommentSentimentTable);
+    view.setColumns([1, 2]); 
+
     const chart = new google.visualization.ColumnChart(
-        document.getElementById('chart-container'));
-    chart.draw(CommentSentimentTable, options);
+        document.getElementById('chart-container'));       
+    chart.draw(view, options);
   });
 }
 
+function toRangeStringRepresentation(range) {
+  return range.getInclusiveStart() + " to " + range.getExclusiveEnd();  
+}
