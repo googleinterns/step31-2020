@@ -73,7 +73,7 @@ function getChart() {
         document.getElementById('chart-container'));
     chart.draw(CommentSentimentTable, options);
 
-    const averageContainer = document.getElementById('average-container');
+    const averageContainer = document.getElementById('average-score-container');
     averageContainer.innerHTML = "Average Sentiment Score: " + 6;
   });
 }
