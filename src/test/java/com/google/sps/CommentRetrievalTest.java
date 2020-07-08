@@ -36,11 +36,12 @@ public class CommentRetrievalTest {
   private final String POPULAR_VIDEO_URL = "dQw4w9WgXcQ";
   // A video with very few comments
   private final String UNPOPULAR_VIDEO_URL = "cA-arJ0T6L4";
-  
+
   // The simplest case: extract 100 comments from a video with more than 100 comments
   @Test
   public void testDefaultBehaviour() {
-    List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments(POPULAR_VIDEO_URL, HUNDRED);
+    List<CommentThread> comments =
+        YouTubeCommentRetriever.retrieveComments(POPULAR_VIDEO_URL, HUNDRED);
     Assert.assertEquals(comments.size(), 100);
   }
 
@@ -48,21 +49,24 @@ public class CommentRetrievalTest {
   // thread
   @Test
   public void testExcessHundredComments() {
-    List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments(POPULAR_VIDEO_URL, EXCESS_HUNDRED );
+    List<CommentThread> comments =
+        YouTubeCommentRetriever.retrieveComments(POPULAR_VIDEO_URL, EXCESS_HUNDRED);
     Assert.assertEquals(comments.size(), 200);
   }
 
   // Ensure that a crash does not occur when loading more comments than there are on a video
   @Test
   public void doesNotAttemptRetrieveExcess() {
-    List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments(UNPOPULAR_VIDEO_URL, EXCESS_HUNDRED );
+    List<CommentThread> comments =
+        YouTubeCommentRetriever.retrieveComments(UNPOPULAR_VIDEO_URL, EXCESS_HUNDRED);
     Assert.assertTrue(comments.size() < 200);
   }
 
   // When a URL that is not real is inputted, an empty list is returned.
   @Test
   public void handlesErrantVideoId() {
-    List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments("NOT_A_URL", EXCESS_HUNDRED);
+    List<CommentThread> comments =
+        YouTubeCommentRetriever.retrieveComments("NOT_A_URL", EXCESS_HUNDRED);
     Assert.assertEquals(comments.size(), 0);
   }
 
