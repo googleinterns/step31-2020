@@ -49,6 +49,7 @@ function cleanseUrl(url) {
  */
 async function getChart() {
   $('form').submit(async function() {
+    document.getElementById('loading-img').style.display = "block";  
     commentStats = await getYouTubeComments();
     averageScore = commentStats.averageScore;
     aggregateValues = commentStats.aggregateValues; 
@@ -71,6 +72,8 @@ async function getChart() {
       'height':CHART_HEIGHT,
       'bar': {groupWidth: "100"}
     };
+
+    document.getElementById('loading-img').style.display = "none";  
 
     CommentSentimentTable.sort({column: 0, desc: false}); 
     var view = new google.visualization.DataView(CommentSentimentTable);
