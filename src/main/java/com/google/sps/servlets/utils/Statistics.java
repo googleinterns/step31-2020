@@ -36,8 +36,8 @@ public class Statistics {
   private static final BigDecimal UPPER_MAGNITUDE = BigDecimal.valueOf(UPPER_MAGNITUDE_VAL);
 
   // Contains sentiment scores and magnitudes with given intervals.
-  private Map<Range, Integer> aggregateScores;
-  private Map<Range, Integer> aggregateMagnitude;
+  private Map<Range, Integer> aggregateScores; // the score indicates the overall emotion of a document.
+  private Map<Range, Integer> aggregateMagnitude; // the magnitude
   private double averageScore;
 
   public double getAverageMagnitude() {
