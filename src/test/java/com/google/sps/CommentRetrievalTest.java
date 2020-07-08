@@ -32,9 +32,9 @@ public class CommentRetrievalTest {
   private final int HUNDRED = 100;
   private final int EXCESS_HUNDRED = 200;
 
-  // A video that has sufficient comments for any test.
+  // A video that has sufficient comments for any test (>900,000).
   private final String POPULAR_VIDEO_URL = "dQw4w9WgXcQ";
-  // A video with very few comments
+  // A video with very few comments (Unlikely to ever reach even 100)
   private final String UNPOPULAR_VIDEO_URL = "cA-arJ0T6L4";
   
   // The simplest case: extract 100 comments from a video with more than 100 comments
