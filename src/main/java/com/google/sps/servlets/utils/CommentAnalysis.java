@@ -72,7 +72,7 @@ public class CommentAnalysis {
         documentList.stream().map(this::calcualateSentiAnalysisScore).collect(Collectors.toList());
     List<Double> magnitudeValues =
         documentList.stream()
-            .map(this::calcualateSentiAnalysisMagnitude)
+            .map(this::calculateSentiAnalysisMagnitude)
             .collect(Collectors.toList());
     return new Statistics(scoreValues, magnitudeValues);
   }
@@ -80,6 +80,7 @@ public class CommentAnalysis {
   /**
    * Perform sentiment analysis of comment.
    *
+   * @param sentiment object retrieved from document for each comment
    * @return sentiment score
    * @throws RuntimeException if the sentiment analysis API is not working, throw the IOExeption
    */
@@ -97,7 +98,7 @@ public class CommentAnalysis {
    * @return sentiment score
    * @throws RuntimeException if the sentiment analysis API is not working, throw the IOExeption
    */
-  private double calcualateSentiAnalysisMagnitude(Sentiment sentiment) {
+  private double calculateSentiAnalysisMagnitude(Sentiment sentiment) {
     if (sentiment != null) {
       return ((double) sentiment.getMagnitude());
     } else {
