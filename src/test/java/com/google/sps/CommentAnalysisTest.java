@@ -62,7 +62,7 @@ public class CommentAnalysisTest {
 
   private static final float TEST_SCORE = 0.23f;
   private static final float TEST_MAGNITUDE = 1.5f;
-  private static final List<Double> MAGNITDE_PLACEHOLDER =
+  private static final List<Double> MAGNITUDE_PLACEHOLDER =
       new ArrayList<>(Arrays.asList(0.1, 0.2, 0.3));
   private static final List<Double> SCORE_PLACEHOLDER =
       new ArrayList<>(Arrays.asList(0.1, -0.1, 0.2));
@@ -149,7 +149,7 @@ public class CommentAnalysisTest {
   public void testNormalScoreCases() {
     ArrayList<Double> scoreInRange =
         new ArrayList<>(Arrays.asList(0.001, 0.002, 0.003, 0.005, -0.1, -0.2));
-    Statistics normalStat = new Statistics(scoreInRange, MAGNITDE_PLACEHOLDER);
+    Statistics normalStat = new Statistics(scoreInRange, MAGNITUDE_PLACEHOLDER);
     Assert.assertEquals(
         6, normalStat.getAggregateScores().values().stream().mapToInt(i -> i).sum());
     Assert.assertEquals(-0.048, normalStat.getAverageScore(), 0.01);
@@ -165,7 +165,7 @@ public class CommentAnalysisTest {
   @Test
   public void testEdgeScoreCases() {
     ArrayList<Double> edgeScore = new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
-    Statistics edgeStat = new Statistics(edgeScore, MAGNITDE_PLACEHOLDER);
+    Statistics edgeStat = new Statistics(edgeScore, MAGNITUDE_PLACEHOLDER);
     Assert.assertEquals(
         constructRangeMapFromFrequencyList(
             new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 1)),
@@ -178,7 +178,7 @@ public class CommentAnalysisTest {
   @Test
   public void testOneOutsiderScoreCases() {
     ArrayList<Double> oneOutsideScore = new ArrayList<>(Arrays.asList(-2.0, -1.0, 0.0));
-    Statistics oneOutsideStat = new Statistics(oneOutsideScore, MAGNITDE_PLACEHOLDER);
+    Statistics oneOutsideStat = new Statistics(oneOutsideScore, MAGNITUDE_PLACEHOLDER);
     Assert.assertEquals(oneOutsideStat.getAverageScore(), -0.5, 0);
     Assert.assertEquals(
         constructRangeMapFromFrequencyList(
@@ -193,7 +193,7 @@ public class CommentAnalysisTest {
   public void testExceptionAllOutsiderScoreCases() {
     exception.expect(RuntimeException.class);
     ArrayList<Double> allOutsideScore = new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
-    Statistics allOutsideStat = new Statistics(allOutsideScore, MAGNITDE_PLACEHOLDER);
+    Statistics allOutsideStat = new Statistics(allOutsideScore, MAGNITUDE_PLACEHOLDER);
     Assert.assertEquals(
         constructRangeMapFromFrequencyList(
             new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
