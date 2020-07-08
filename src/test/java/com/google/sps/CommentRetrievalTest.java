@@ -61,8 +61,22 @@ public void doesNotAttemptRetrieveExcess() {
 // When a URL that is not real is inputted, an empty list is returned.
 @Test 
 public void handlesErrantVideoId() {
-    List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments("NOT_A_URL",200);
+  List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments("NOT_A_URL",200);
   Assert.assertEquals(comments.size(), 0);
+}
+
+// Retrieve a specific amount of comments less than 100
+@Test
+public void retrievesSpecificNumComments() {
+  List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments("dQw4w9WgXcQ",12);
+  Assert.assertEquals(comments.size(), 12);
+}
+
+// Retrieve a specific amount of comments more than 100
+@Test
+public void retrievesSpecificNumCommentsExcessHundred() {
+  List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments("dQw4w9WgXcQ",120);
+  Assert.assertEquals(comments.size(), 120);
 }
 
 }

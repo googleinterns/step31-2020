@@ -43,10 +43,12 @@ public class YouTubeCommentRetriever {
   public static List<CommentThread> retrieveComments(String url, int maxComments) {
     String nextPageToken ="";
     int currentOverallComments = 0;
+    long commentQueryLimit = 0;
     ArrayList<CommentThread> allComments = new ArrayList<CommentThread>();
     try {  
       do {
-        YouTube.CommentThreads.List commentRequest = generateYouTubeRequest(url);
+        commentQueryLimit = Math.min(COMMENT_LIMIT, maxComments - currentOverallComments);
+        YouTube.CommentThreads.List commentRequest = generateYouTubeRequest(url, commentQueryLimit);
         if(nextPageToken != null && nextPageToken != "") {
           commentRequest.setPageToken(nextPageToken);
         }
@@ -70,7 +72,7 @@ public class YouTubeCommentRetriever {
    * variable; for this application we will always want order to be relevance, and max results to be
    * 100, the API's limit for how many comments can be retrieved via a single request.
    */
-  private static YouTube.CommentThreads.List generateYouTubeRequest(String url)
+  private static YouTube.CommentThreads.List generateYouTubeRequest(String url, long maxResults)
       throws GeneralSecurityException, IOException {
     YouTube youtubeService = getService();
     YouTube.CommentThreads.List commentRequest =
@@ -79,7 +81,7 @@ public class YouTubeCommentRetriever {
         .setKey(DEVELOPER_KEY)
         .setVideoId(url)
         .setOrder(ORDER_PARAMETER)
-        .setMaxResults(COMMENT_LIMIT);
+        .setMaxResults(maxResults);
   }
 
   /**
