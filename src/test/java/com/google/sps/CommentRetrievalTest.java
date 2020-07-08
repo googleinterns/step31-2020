@@ -56,6 +56,7 @@ public class CommentRetrievalTest {
   public void doesNotAttemptRetrieveExcess() {
     List<CommentThread> comments =
         YouTubeCommentRetriever.retrieveComments(UNPOPULAR_VIDEO_URL, EXCESS_HUNDRED);
+    // Assert uses < rather than == so that if additional comments are left it won't break the test.
     Assert.assertTrue(comments.size() < 200);
   }
 

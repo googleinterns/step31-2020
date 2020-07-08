@@ -43,7 +43,7 @@ public class YouTubeCommentRetriever {
     String nextPageToken = "";
     int currentOverallComments = 0;
     long commentQueryLimit = 0;
-    ArrayList<CommentThread> allComments = new ArrayList<CommentThread>();
+    ArrayList allComments = new ArrayList<>();
     try {
       do {
         commentQueryLimit = Math.min(COMMENT_LIMIT, maxComments - currentOverallComments);
