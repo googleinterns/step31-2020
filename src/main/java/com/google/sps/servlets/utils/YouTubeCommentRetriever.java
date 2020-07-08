@@ -69,9 +69,10 @@ public class YouTubeCommentRetriever {
   }
 
   /**
-   * Applies parameters to comment request, then uses it to extract comments. URL is the only true
-   * variable; for this application we will always want order to be relevance, and max results to be
-   * 100, the API's limit for how many comments can be retrieved via a single request.
+   * @param url video id of the video to have its comments analyzed
+   * @param maxResults is how many comments to be retrieved;
+   * Capped out at 100 per request but may be reduced for specific queries.
+   * @return A list of comment threads to be aggregated to the overall list.
    */
   private static YouTube.CommentThreads.List generateYouTubeRequest(String url, long maxResults)
       throws GeneralSecurityException, IOException {

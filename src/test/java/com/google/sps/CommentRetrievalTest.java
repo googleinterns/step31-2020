@@ -26,9 +26,6 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class CommentRetrievalTest {
 
-  @Before
-  public void setup() {}
-
   private final int HUNDRED = 100;
   private final int EXCESS_HUNDRED = 200;
 
