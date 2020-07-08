@@ -31,13 +31,12 @@ async function getYouTubeComments() {
 
 /*
  * Extracts video ID from the full URL
- * Method derived from: 
- * https://stackoverflow.com/questions/28735459/how-to-validate-youtube-url-in-client-side-in-text-box
  */
 function extractYouTubeUrl(url) {
   var videoId = "";
   var idLength = 11; // Length of video Id's in YouTube videos
   if (url != undefined || url != '') {
+    // This regular expression represents the different patterns that may occur in a YouTube URL
     var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
     var match = url.match(regExp);
     // Check for proper format, focus on segment that contains videoId 
