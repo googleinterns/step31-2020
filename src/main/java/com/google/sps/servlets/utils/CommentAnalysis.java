@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets.utils;
 
+import com.google.api.services.youtube.model.CommentThread;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
@@ -52,9 +53,9 @@ public class CommentAnalysis {
    *
    * @return a Statistics object that contains required values to display
    */
-  public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
+  public Statistics computeOverallStats(List<CommentThread> youtubeResponse) {
     List<Double> scoreValues =
-        youtubeResponse.getItems().stream()
+        youtubeResponse.stream()
             .map(UserComment::new)
             .map(this::calcualateSentiAnalysisScore)
             .collect(Collectors.toList());

@@ -19,6 +19,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.CommentThread;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.gson.Gson;
 import com.google.sps.servlets.utils.CommentAnalysis;
@@ -26,6 +27,7 @@ import com.google.sps.servlets.utils.Statistics;
 import com.google.sps.servlets.utils.YouTubeCommentRetriever;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -46,11 +48,11 @@ public class YoutubeServlet extends HttpServlet {
       throws ServletException {
     try {
       String url = request.getParameter(URL_PARAMETER);
-      // TODO: extract comments from YouTubeCommentRetriever
-      CommentThreadListResponse commentResponse = null; //= generateYouTubeRequest(url).execute();
+      // TODO: add numComments parameter. Comment count will be hard-coded until then.
+      List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments(url, 100);
 
       CommentAnalysis commentAnalysis = new CommentAnalysis();
-      Statistics statistics = commentAnalysis.computeOverallStats(commentResponse);
+      Statistics statistics = commentAnalysis.computeOverallStats(comments);
       commentAnalysis.closeLanguage();
 
       String json = new Gson().toJson(statistics);
