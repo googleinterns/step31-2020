@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>YouTube Sentiment Analysis</title>
-    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="icon" type="image/png" href="images/favicon4.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <script src="https://www.gstatic.com/charts/loader.js"></script>
@@ -13,9 +13,10 @@
   <body>  
     <ul class="nav justify-content-center">
       <li class="nav-item">
-        <a class="nav-link" href="#">Home</a>
+        <a class="nav-link" href="index.html">Home</a>
       </li>
       <li class="nav-item">
+        <!-- TODO: Create new html page about the project  -->
         <a class="nav-link" href="#">About</a>
       </li>  
     </ul>  
@@ -23,7 +24,7 @@
       <div class="form-group">  
         <form onsubmit="return false">
           <p>Enter a YouTube video link:</p>
-          <input name="link-input" required pattern="https?://www.youtube.com/watch\?v=.+"/>
+          <input id="link-input" name="link-input" required pattern="https?://www.youtube.com/watch\?v=.+"/>
           <small id="emailHelp" class="form-text text-muted">Format: https://youtube.com/watch?v=...</small>
           </br>
           <input type="submit" id="submit-btn"/>
