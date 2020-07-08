@@ -53,6 +53,7 @@ public class CommentAnalysis {
    * @return a Statistics object that contains required values to display
    */
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
+    // all sentiments built by comment content retrieved from youtubeResponse
     List<Sentiment> documentList =
         youtubeResponse.getItems().stream()
             .map(UserComment::new)
@@ -66,6 +67,7 @@ public class CommentAnalysis {
                                 .build())
                         .getDocumentSentiment())
             .collect(Collectors.toList());
+    // List of scores and magnitude for all comments
     List<Double> scoreValues =
         documentList.stream().map(this::calcualateSentiAnalysisScore).collect(Collectors.toList());
     List<Double> magnitudeValues =
