@@ -21,9 +21,9 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.*;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.List;
 import java.util.ArrayList;
-import javax.servlet.ServletException;
+import java.util.List;
+
 /*
  * Class to retrieve YouTube comments from a designated URL with certain parameters
  */
@@ -34,40 +34,41 @@ public class YouTubeCommentRetriever {
   // Parameters required by YouTube API to retrieve the comment threads
   private static final String SNIPPET_PARAMETERS = "snippet,replies";
   private static final String ORDER_PARAMETER = "relevance";
-  
+
   private static final String APPLICATION_NAME = "SAY";
   // TODO: have dev key come from centralized location, rather than being hard-coded.
   private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
 
-  
   public static List<CommentThread> retrieveComments(String url, int maxComments) {
-    String nextPageToken ="";
+    String nextPageToken = "";
     int currentOverallComments = 0;
     long commentQueryLimit = 0;
     ArrayList<CommentThread> allComments = new ArrayList<CommentThread>();
-    try {  
+    try {
       do {
         commentQueryLimit = Math.min(COMMENT_LIMIT, maxComments - currentOverallComments);
         YouTube.CommentThreads.List commentRequest = generateYouTubeRequest(url, commentQueryLimit);
-        if(nextPageToken != null && nextPageToken != "") {
+        if (nextPageToken != null && nextPageToken != "") {
           commentRequest.setPageToken(nextPageToken);
         }
         CommentThreadListResponse commentResponse = commentRequest.execute();
-        nextPageToken = commentResponse.getNextPageToken();   
+        nextPageToken = commentResponse.getNextPageToken();
         currentOverallComments += COMMENT_LIMIT;
-        for(CommentThread thread : commentResponse.getItems()) {
+        for (CommentThread thread : commentResponse.getItems()) {
           // Extract relevant comment from CommentThreadListResponse
           allComments.add(thread);
         }
-        // Todo: consolidate comments into large list  
-      } while(nextPageToken != null && nextPageToken != "" && currentOverallComments < maxComments);
-    } catch(Exception e) {
+        // Todo: consolidate comments into large list
+      } while (nextPageToken != null
+          && nextPageToken != ""
+          && currentOverallComments < maxComments);
+    } catch (Exception e) {
       // In case of error, simply return what is in allComments, even if empty
     }
     return allComments;
-  } 
+  }
 
-    /**
+  /**
    * Applies parameters to comment request, then uses it to extract comments. URL is the only true
    * variable; for this application we will always want order to be relevance, and max results to be
    * 100, the API's limit for how many comments can be retrieved via a single request.
