@@ -39,32 +39,24 @@ public class YouTubeCommentRetriever {
   // TODO: have dev key come from centralized location, rather than being hard-coded.
   private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
 
-  public static List<CommentThread> retrieveComments(String url, int maxComments) {
+  public static List<CommentThread> retrieveComments(String url, int maxComments) throws Exception{
     String nextPageToken = "";
-    int currentOverallComments = 0;
+    int numCommentsLeft = maxComments;
     long commentQueryLimit = 0;
     ArrayList allComments = new ArrayList<>();
-    try {
       do {
-        commentQueryLimit = Math.min(COMMENT_LIMIT, maxComments - currentOverallComments);
+        commentQueryLimit = Math.min(COMMENT_LIMIT, numCommentsLeft);
+        numCommentsLeft -= COMMENT_LIMIT;
         YouTube.CommentThreads.List commentRequest = generateYouTubeRequest(url, commentQueryLimit);
         if (nextPageToken != null && nextPageToken != "") {
           commentRequest.setPageToken(nextPageToken);
         }
         CommentThreadListResponse commentResponse = commentRequest.execute();
         nextPageToken = commentResponse.getNextPageToken();
-        currentOverallComments += COMMENT_LIMIT;
-        for (CommentThread thread : commentResponse.getItems()) {
-          // Extract relevant comment from CommentThreadListResponse
-          allComments.add(thread);
-        }
-        // Todo: consolidate comments into large list
+        // Add comment threads to big list
+        allComments.addAll(commentResponse.getItems());
       } while (nextPageToken != null
-          && nextPageToken != ""
-          && currentOverallComments < maxComments);
-    } catch (Exception e) {
-      // In case of error, simply return what is in allComments, even if empty
-    }
+          && numCommentsLeft > 0);
     return allComments;
   }
 

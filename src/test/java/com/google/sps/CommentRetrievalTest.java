@@ -36,7 +36,7 @@ public class CommentRetrievalTest {
 
   // The simplest case: extract 100 comments from a video with more than 100 comments
   @Test
-  public void testDefaultBehaviour() {
+  public void testDefaultBehaviour() throws Exception {
     List<CommentThread> comments =
         YouTubeCommentRetriever.retrieveComments(POPULAR_VIDEO_URL, HUNDRED);
     Assert.assertEquals(comments.size(), 100);
@@ -45,7 +45,7 @@ public class CommentRetrievalTest {
   // Test that class properly consolidates a list of comments greater than the max allowed per
   // thread
   @Test
-  public void testExcessHundredComments() {
+  public void testExcessHundredComments() throws Exception {
     List<CommentThread> comments =
         YouTubeCommentRetriever.retrieveComments(POPULAR_VIDEO_URL, EXCESS_HUNDRED);
     Assert.assertEquals(comments.size(), 200);
@@ -53,31 +53,23 @@ public class CommentRetrievalTest {
 
   // Ensure that a crash does not occur when loading more comments than there are on a video
   @Test
-  public void doesNotAttemptRetrieveExcess() {
+  public void doesNotAttemptRetrieveExcess() throws Exception {
     List<CommentThread> comments =
         YouTubeCommentRetriever.retrieveComments(UNPOPULAR_VIDEO_URL, EXCESS_HUNDRED);
     // Assert uses < rather than == so that if additional comments are left it won't break the test.
     Assert.assertTrue(comments.size() < 200);
   }
 
-  // When a URL that is not real is inputted, an empty list is returned.
-  @Test
-  public void handlesErrantVideoId() {
-    List<CommentThread> comments =
-        YouTubeCommentRetriever.retrieveComments("NOT_A_URL", EXCESS_HUNDRED);
-    Assert.assertEquals(comments.size(), 0);
-  }
-
   // Retrieve a specific amount of comments less than 100
   @Test
-  public void retrievesSpecificNumComments() {
+  public void retrievesSpecificNumComments() throws Exception {
     List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments(POPULAR_VIDEO_URL, 12);
     Assert.assertEquals(comments.size(), 12);
   }
 
   // Retrieve a specific amount of comments more than 100
   @Test
-  public void retrievesSpecificNumCommentsExcessHundred() {
+  public void retrievesSpecificNumCommentsExcessHundred() throws Exception {
     List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments(POPULAR_VIDEO_URL, 120);
     Assert.assertEquals(comments.size(), 120);
   }
