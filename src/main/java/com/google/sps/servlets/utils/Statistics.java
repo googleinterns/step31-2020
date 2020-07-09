@@ -14,8 +14,10 @@
 
 package com.google.sps.servlets.utils;
 
+import com.google.appengine.api.users.User;
 import com.google.cloud.language.v1.Sentiment;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -25,21 +27,24 @@ import java.util.stream.Collectors;
 public class Statistics {
   private static final double LOWER_SCORE_VAL = -1.0;
   private static final double UPPER_SCORE_VAL = 1.0;
-  private static final double LOWER_MAGNITUDE_VAL = 0.0;
-  private static final double UPPER_MAGNITUDE_VAL = 2.0;
   private static final double SCORE_INTERVAL_VAL = 0.2;
-  private static final double MAGNITUDE_INTERVAL_VAL = 0.3;
   private static final BigDecimal SCORE_INTERVAL = BigDecimal.valueOf(SCORE_INTERVAL_VAL);
   private static final BigDecimal UPPER_SCORE = BigDecimal.valueOf(UPPER_SCORE_VAL);
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
-  private static final BigDecimal MAGNITUDE_INTERVAL = BigDecimal.valueOf(MAGNITUDE_INTERVAL_VAL);
-  private static final BigDecimal LOWER_MAGNITUDE = BigDecimal.valueOf(LOWER_MAGNITUDE_VAL);
-  private static final BigDecimal UPPER_MAGNITUDE = BigDecimal.valueOf(UPPER_MAGNITUDE_VAL);
+  private static final Comparator ascendingScoreCompare = new Comparator<UserComment>() {
+    @Override
+    public int compare(UserComment o1, UserComment o2) {
+      return Double.compare(o1.getScore(),o2.getScore());
+    }
+  };
+  
+  // Contains sentiment bucket information for all intervals
+  private List<SentimentBucket> sentimentBucketList;
 
-  // Contains sentiment scores and magnitudes with given intervals.
-  private Map<Range, Integer>
-      aggregateScores; // the score indicates the overall emotion of a document.
-  private Map<Range, Integer> aggregateMagnitude; // the magnitude
+  public List<SentimentBucket> getSentimentBucketList() {
+    return sentimentBucketList;
+  }
+
   private double averageScore;
 
   public double getAverageMagnitude() {
@@ -47,62 +52,43 @@ public class Statistics {
   }
 
   private double averageMagnitude;
-
-  public Map<Range, Integer> getAggregateScores() {
-    return aggregateScores;
-  }
+  
 
   public double getAverageScore() {
     return averageScore;
-  }
-
-  public Map<Range, Integer> getAggregateMagnitude() {
-    return aggregateMagnitude;
   }
 
   /**
    * Constructor of Statistics to get score and magnitude, filter out invalid data, set aggregate
    * hash map and average score and magnitude.
    *
-   * @param sentimentList given sentiment objects
+   * @param userCommentList given list of userComment objects
    */
-  public Statistics(List<Sentiment> sentimentList) {
-    // List of scores and magnitude for all comments
-    List<Double> scoreValues =
-        sentimentList.parallelStream().map(sentiment -> (double)sentiment.getScore()).filter(score -> (score >= LOWER_SCORE_VAL && score <= UPPER_SCORE_VAL)).collect(Collectors.toList());
-    List<Double> magnitudeValues =
-        sentimentList.parallelStream()
-            .map(sentiment -> (double)sentiment.getMagnitude()).filter(score -> (score >= LOWER_MAGNITUDE_VAL))
-            .collect(Collectors.toList());
-    aggregateScores =
-        categorizeToAggregateMap(scoreValues, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL, false);
-    aggregateMagnitude =
-        categorizeToAggregateMap(
-            magnitudeValues, LOWER_MAGNITUDE, UPPER_MAGNITUDE, MAGNITUDE_INTERVAL, true);
-    averageScore = getAggregateAverage(scoreValues);
-    averageMagnitude = getAggregateAverage(magnitudeValues);
+  public Statistics(List<UserComment> userCommentList) {
+    sentimentBucketList =
+        categorizeToAggregateMap(userCommentList, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL);
+    averageScore = getAverageScore(userCommentList);
+    averageMagnitude = getAverageMagnitude(userCommentList);
   }
 
   /**
    * Categorize all score values into different range intervals and count the frequency for each
    * interval, and set the aggregatedValues.
    *
-   * @param sentimentValues a list of score values from lowerEnd to upperEnd
+   * @param userCommentList a list of score values from lowerEnd to upperEnd
    * @param lowerEnd lower end boundary of the map
    * @param upperEnd upper end boundary of the map
    * @param interval interval for the range
-   * @param overFlow True if the value is not bound by upperEnd; false otherwise
-   * @return a categorized map based on sentimentValues from lowerEnd to upperEnd with interval
+   * @return a categorized map based on userCommentList from lowerEnd to upperEnd with interval
    */
-  private Map<Range, Integer> categorizeToAggregateMap(
-      List<Double> sentimentValues,
+  private List<SentimentBucket> categorizeToAggregateMap(
+      List<UserComment> userCommentList,
       BigDecimal lowerEnd,
       BigDecimal upperEnd,
-      BigDecimal interval,
-      Boolean overFlow) {
-    Map<Range, Integer> aggregateValues = new HashMap<>();
+      BigDecimal interval) {
+    List<SentimentBucket> sentimentBucketList = new ArrayList<>();
     // Add score's interval to different ranges two sorting with and two pointers pop-up
-    sentimentValues.sort(Comparator.naturalOrder());
+    userCommentList.sort(ascendingScoreCompare);
     int updatingScoreIdx = 0;
     BigDecimal tempPoint;
     for (tempPoint = lowerEnd;
@@ -110,46 +96,58 @@ public class Statistics {
         tempPoint = tempPoint.add(interval)) {
       BigDecimal nextPoint = upperEnd.min(tempPoint.add(interval));
       Range currentRange = new Range(tempPoint, nextPoint);
-      aggregateValues.put(currentRange, 0);
+      int currentFrequency = 0;
+      UserComment highestUserComment = null;
       // loop through sorted scores within currentRange from updated score pointer and update its
       // corresponding appearance frequency in aggregatedValues
       int scoreIdx;
-      for (scoreIdx = updatingScoreIdx; scoreIdx < sentimentValues.size(); scoreIdx++) {
-        BigDecimal scorePoint = BigDecimal.valueOf(sentimentValues.get(scoreIdx));
+      for (scoreIdx = updatingScoreIdx; scoreIdx < userCommentList.size(); scoreIdx++) {
+        BigDecimal scorePoint = BigDecimal.valueOf(userCommentList.get(scoreIdx).getScore());
         if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(upperEnd) == 0) {
-          aggregateValues.put(currentRange, aggregateValues.get(currentRange) + 1);
+          currentFrequency += 1;
+          highestUserComment = (highestUserComment == null)
+                                   ? userCommentList.get(scoreIdx)
+                                   : highestUserComment.findHigherMagnitude(userCommentList.get(scoreIdx));
         } else {
           break;
         }
       }
       // update the score pointer
       updatingScoreIdx = scoreIdx;
+      sentimentBucketList.add(new SentimentBucket(highestUserComment, currentFrequency, currentRange));
     }
-
-    // If the categorization allows overflow, add the value larger than upper end to the last
-    // interval
-    if (overFlow && updatingScoreIdx < sentimentValues.size()) {
-      aggregateValues.put(
-          new Range(tempPoint.subtract(interval), tempPoint),
-          aggregateValues.get(new Range(tempPoint.subtract(interval), tempPoint))
-              + (sentimentValues.size() - updatingScoreIdx));
-    }
-    return aggregateValues;
+    return sentimentBucketList;
   }
 
   /**
    * Set the average value of given sentiment values.
    *
-   * @param sentimentValues a list of values to calculate the average for
-   * @return the average value of sentimentValues
+   * @param userCommentList a list of userComment to calculate the average score for
+   * @return the average score of userCommentList
    */
-  private double getAggregateAverage(List<Double> sentimentValues) {
-    return sentimentValues.parallelStream()
-        .mapToDouble(i -> i)
+  private double getAverageScore(List<UserComment> userCommentList) {
+    return userCommentList.parallelStream()
+        .mapToDouble(UserComment::getScore)
         .average()
         .orElseThrow(
             () ->
                 new RuntimeException(
                     "Unable to calculate sentiment average due to empty input list."));
+  }
+
+  /**
+   * Set the average value of given sentiment values.
+   *
+   * @param userCommentList a list of userComment to calculate the average score for
+   * @return the average score of userCommentList
+   */
+  private double getAverageMagnitude(List<UserComment> userCommentList) {
+    return userCommentList.parallelStream()
+               .mapToDouble(UserComment::getMagnitude)
+               .average()
+               .orElseThrow(
+                   () ->
+                       new RuntimeException(
+                           "Unable to calculate sentiment average due to empty input list."));
   }
 }

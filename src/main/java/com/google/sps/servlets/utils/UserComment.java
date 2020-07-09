@@ -17,11 +17,15 @@ package com.google.sps.servlets.utils;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.youtube.model.Comment;
 import com.google.api.services.youtube.model.CommentThread;
+import com.google.cloud.language.v1.Sentiment;
 
 public class UserComment {
   private String commentId;
   private String commentMsg;
   private DateTime publishDate;
+  private double magnitude;
+  private double score;
+
 
   /**
    * Encapsulate a comment Thread into an User Comment object.
@@ -35,15 +39,57 @@ public class UserComment {
     this.publishDate = topLevelComment.getSnippet().getPublishedAt();
   }
 
-  public String getCommentId() {
-    return commentId;
+
+  public double getMagnitude() {
+    return magnitude;
+  }
+
+  public double getScore() {
+    return score;
+  }
+
+  public void setSentiment(Sentiment sentiment) {
+    setMagnitude(sentiment.getMagnitude());
+    setScore(sentiment.getScore());
+  }
+
+  public UserComment findHigherMagnitude(UserComment commentHigherMagnitude) {
+    return magnitude <= commentHigherMagnitude.magnitude ? commentHigherMagnitude :this;
   }
 
   public String getCommentMsg() {
     return commentMsg;
   }
 
+  public void setMagnitude(double magnitude) {
+    this.magnitude = magnitude;
+  }
+
+  public void setScore(double score) {
+    this.score = score;
+  }
+
   public DateTime getPublishDate() {
     return publishDate;
+  }
+
+  public void setCommentId(String commentId) {
+    this.commentId = commentId;
+  }
+
+  public String toString() {
+    return commentMsg;
+  }
+
+  @Override
+  public boolean equals(Object commentObject) {
+    if (commentObject == this) {
+      return true;
+    }
+    if (!(commentObject instanceof UserComment)) {
+      return false;
+    }
+    UserComment commentToCompare = (UserComment) commentObject;
+    return commentId == commentToCompare.commentId;
   }
 }

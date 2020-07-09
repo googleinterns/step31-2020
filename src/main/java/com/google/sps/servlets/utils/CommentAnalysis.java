@@ -54,14 +54,14 @@ public class CommentAnalysis {
    */
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
     // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
-    List<Sentiment> sentimentList =
+    List<UserComment> usercommentList =
         youtubeResponse.getItems().stream()
             .map(UserComment::new)
             .map(
-                this::calculateSentimentForComment
+                this::updateSentimentForComment
             )
             .collect(Collectors.toList());
-    return new Statistics(sentimentList);
+    return new Statistics(usercommentList);
   }
 
   /**
@@ -69,14 +69,15 @@ public class CommentAnalysis {
    * @param comment a comment object to retrieve the content
    * @return a Sentiment with sentiment scores & magnitude
    */
-  private Sentiment calculateSentimentForComment(UserComment comment) {
-    return languageService
+  private UserComment updateSentimentForComment(UserComment comment) {
+    comment.setSentiment(languageService
                .analyzeSentiment(
                    Document.newBuilder()
                        .setContent(comment.getCommentMsg())
                        .setType(Document.Type.PLAIN_TEXT)
                        .build())
-               .getDocumentSentiment();
+               .getDocumentSentiment());
+    return comment;
   }
   
 
