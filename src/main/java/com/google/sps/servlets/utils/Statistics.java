@@ -14,17 +14,18 @@
 
 package com.google.sps.servlets.utils;
 
-import com.google.appengine.api.users.User;
-import com.google.cloud.language.v1.Sentiment;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 public class Statistics {
   private static final double LOWER_SCORE_VAL = -1.0;
   private static final double UPPER_SCORE_VAL = 1.0;
   private static final double SCORE_INTERVAL_VAL = 0.2;
+  //TODO: set the current Top n comment as 1; will be updated once we have the input from front-end
+  private static final int TOP_N_COMMENTS = 1;
   private static final BigDecimal SCORE_INTERVAL = BigDecimal.valueOf(SCORE_INTERVAL_VAL);
   private static final BigDecimal UPPER_SCORE = BigDecimal.valueOf(UPPER_SCORE_VAL);
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
@@ -56,14 +57,14 @@ public class Statistics {
   }
 
   /**
-   * Constructor of Statistics to get score and magnitude, filter out invalid data, set aggregate
-   * hash map and average score and magnitude.
+   * Constructor of Statistics to get average score and magnitude and create aggregate
+   * sentiment bucket list to store each interval's information
    *
    * @param userCommentList given list of userComment objects
    */
   public Statistics(List<UserComment> userCommentList) {
     sentimentBucketList =
-        categorizeToAggregateMap(userCommentList, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL);
+        categorizeToBucketList(userCommentList, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL, TOP_N_COMMENTS);
     averageScore = getAverageScore(userCommentList);
     averageMagnitude = getAverageMagnitude(userCommentList);
   }
@@ -72,17 +73,17 @@ public class Statistics {
    * Categorize all score values into different range intervals and count the frequency for each
    * interval, and set the aggregatedValues.
    *
-   * @param userCommentList a list of score values from lowerEnd to upperEnd
+   * @param userCommentList a list of userComment analyzed from sentiment analysis with upadted score and magnitude
    * @param lowerEnd lower end boundary of the map
    * @param upperEnd upper end boundary of the map
    * @param interval interval for the range
    * @return a categorized map based on userCommentList from lowerEnd to upperEnd with interval
    */
-  private List<SentimentBucket> categorizeToAggregateMap(
+  private List<SentimentBucket> categorizeToBucketList(
       List<UserComment> userCommentList,
       BigDecimal lowerEnd,
       BigDecimal upperEnd,
-      BigDecimal interval) {
+      BigDecimal interval, int topNumComments) {
     List<SentimentBucket> sentimentBucketList = new ArrayList<>();
     // Add score's interval to different ranges two sorting with and two pointers pop-up
     userCommentList.sort(ascendingScoreCompare);
@@ -94,24 +95,22 @@ public class Statistics {
       BigDecimal nextPoint = upperEnd.min(tempPoint.add(interval));
       Range currentRange = new Range(tempPoint, nextPoint);
       int currentFrequency = 0;
-      UserComment highestUserComment = null;
+      PriorityQueue<UserComment> highMagnitudeComments = new PriorityQueue<>();
       // loop through sorted scores within currentRange from updated score pointer and update its
-      // corresponding appearance frequency in aggregatedValues
+      // corresponding appearance frequency
       int scoreIdx;
       for (scoreIdx = updatingScoreIdx; scoreIdx < userCommentList.size(); scoreIdx++) {
         BigDecimal scorePoint = BigDecimal.valueOf(userCommentList.get(scoreIdx).getScore());
         if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(upperEnd) == 0) {
           currentFrequency += 1;
-          highestUserComment = (highestUserComment == null)
-                                   ? userCommentList.get(scoreIdx)
-                                   : highestUserComment.findHigherMagnitude(userCommentList.get(scoreIdx));
+          // TODO: add topNumComments to the priority queue highMagnitudeList
         } else {
           break;
         }
       }
       // update the score pointer
       updatingScoreIdx = scoreIdx;
-      sentimentBucketList.add(new SentimentBucket(highestUserComment, currentFrequency, currentRange));
+      sentimentBucketList.add(new SentimentBucket(new ArrayList<>(highMagnitudeComments), currentFrequency, currentRange));
     }
     return sentimentBucketList;
   }

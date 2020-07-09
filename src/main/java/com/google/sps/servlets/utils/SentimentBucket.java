@@ -15,13 +15,16 @@
 package com.google.sps.servlets.utils;
 
 
+import java.util.List;
+
 public class SentimentBucket {
-  private UserComment highestUserComment;
-  private Integer frequency;
+  
+  private List<UserComment> topNComments; // userComment with top N magnitude within this interval
+  private Integer frequency; // number of comments whose sentiment score is in this interval
   private Range intervalRange;
 
-  public UserComment getHighestUserComment() {
-    return highestUserComment;
+  public List<UserComment> gettopNComments() {
+    return topNComments;
   }
 
   public Range getIntervalRange() {
@@ -32,17 +35,26 @@ public class SentimentBucket {
     return frequency;
   }
 
-  public SentimentBucket(UserComment highestUserComment, int frequency, Range intervalRange) {
-    this.highestUserComment = highestUserComment;
+  public SentimentBucket(List<UserComment> topNComments, int frequency, Range intervalRange) {
+    this.topNComments = topNComments;
     this.frequency = frequency;
     this.intervalRange = intervalRange;
   }
 
+  /**
+   * This is currently for debugging purpose to show what each sentiment bucket returns
+   * @return debugging result for each sentiment bucket
+   */
   @Override
   public String toString() {
-    return "(highestUserComment: " + highestUserComment + " frequency: " + frequency + " intervalRange" + intervalRange + ")\n";
+    return "(topNComments: " + topNComments + " frequency: " + frequency + " intervalRange" + intervalRange + ")\n";
   }
 
+  /**
+   * This is for testing purpose: if two sentiment bucket have same frequency, range and topNComments, we consider them as same sentiment bucket
+   * @param bucketObject sentiment bucket object to compare
+   * @return true if two sentiment buckets are identical; false otherwise
+   */
   @Override
   public boolean equals(Object bucketObject) {
     if (bucketObject == this) {
@@ -52,7 +64,7 @@ public class SentimentBucket {
       return false;
     }
     SentimentBucket bucketToCompare = (SentimentBucket) bucketObject;
-    return (highestUserComment == null ||highestUserComment.equals(bucketToCompare.getHighestUserComment()))
+    return (topNComments == null ||topNComments.equals(bucketToCompare.gettopNComments()))
                && frequency == bucketToCompare.getFrequency()
                && intervalRange.equals(getIntervalRange());
   }
