@@ -14,7 +14,6 @@
 
 package com.google.sps.servlets.utils;
 
-
 import java.util.List;
 
 public class SentimentBucket {
@@ -43,15 +42,24 @@ public class SentimentBucket {
 
   /**
    * This is currently for debugging purpose to show what each sentiment bucket returns
+   *
    * @return debugging result for each sentiment bucket
    */
   @Override
   public String toString() {
-    return "(topNComments: " + topNComments + " frequency: " + frequency + " intervalRange" + intervalRange + ")\n";
+    return "(topNComments: "
+        + topNComments
+        + " frequency: "
+        + frequency
+        + " intervalRange"
+        + intervalRange
+        + ")\n";
   }
 
   /**
-   * This is for testing purpose: if two sentiment bucket have same frequency, range and topNComments, we consider them as same sentiment bucket
+   * This is for testing purpose: if two sentiment bucket have same frequency, range and
+   * topNComments, we consider them as same sentiment bucket
+   *
    * @param bucketObject sentiment bucket object to compare
    * @return true if two sentiment buckets are identical; false otherwise
    */
@@ -64,8 +72,8 @@ public class SentimentBucket {
       return false;
     }
     SentimentBucket bucketToCompare = (SentimentBucket) bucketObject;
-    return (topNComments == null ||topNComments.equals(bucketToCompare.gettopNComments()))
-               && frequency == bucketToCompare.getFrequency()
-               && intervalRange.equals(getIntervalRange());
+    return (topNComments == null || topNComments.equals(bucketToCompare.gettopNComments()))
+        && frequency == bucketToCompare.getFrequency()
+        && intervalRange.equals(getIntervalRange());
   }
 }

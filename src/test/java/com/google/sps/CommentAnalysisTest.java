@@ -14,9 +14,6 @@
 
 package com.google.sps;
 
-import com.google.sps.servlets.utils.SentimentBucket;
-import com.google.sps.servlets.utils.UserComment;
-import java.util.AbstractList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -31,7 +28,9 @@ import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
 import com.google.sps.servlets.utils.CommentAnalysis;
 import com.google.sps.servlets.utils.Range;
+import com.google.sps.servlets.utils.SentimentBucket;
 import com.google.sps.servlets.utils.Statistics;
+import com.google.sps.servlets.utils.UserComment;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -77,15 +76,21 @@ public class CommentAnalysisTest {
   /**
    * It constructs a HashMap with current range for expected score categorizations for comparisions.
    *
-   * @param userCommentList a list of userComment corresponding to each interval that have top N magnitude
+   * @param userCommentList a list of userComment corresponding to each interval that have top N
+   *     magnitude
    * @param frequency a list of frequency corresponding to each interval sorted in ascending order
    * @return constructed hashmap with keys as ranges based on intervals and values corresponding to
    *     frequency input
    */
   private List<SentimentBucket> constructRangeMapFromFrequencyList(
-      List<List<UserComment>> userCommentList,List<Integer> frequency, BigDecimal lowerEnd, BigDecimal upperEnd, BigDecimal interval) {
-    if (userCommentList.size() != frequency.size() || (frequency.size()
-                                                           != upperEnd.subtract(lowerEnd).divide(interval, 0, RoundingMode.UP).intValue())) {
+      List<List<UserComment>> userCommentList,
+      List<Integer> frequency,
+      BigDecimal lowerEnd,
+      BigDecimal upperEnd,
+      BigDecimal interval) {
+    if (userCommentList.size() != frequency.size()
+        || (frequency.size()
+            != upperEnd.subtract(lowerEnd).divide(interval, 0, RoundingMode.UP).intValue())) {
       throw new RuntimeException("Initialize list in test function got wrong size");
     }
     int listPointer = 0;
@@ -95,7 +100,9 @@ public class CommentAnalysisTest {
         tempPoint = tempPoint.add(interval)) {
       BigDecimal nextPoint = upperEnd.min(tempPoint.add(interval));
       Range currentRange = new Range(tempPoint, nextPoint);
-      expectedBucketList.add(new SentimentBucket(userCommentList.get(listPointer),frequency.get(listPointer),currentRange));
+      expectedBucketList.add(
+          new SentimentBucket(
+              userCommentList.get(listPointer), frequency.get(listPointer), currentRange));
       listPointer = listPointer + 1;
     }
     return expectedBucketList;
@@ -127,20 +134,18 @@ public class CommentAnalysisTest {
 
     // Compute and test the sentiment bucket from mocked language service
     Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
-    List<List<UserComment>> expectedUserComment = new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
+    List<List<UserComment>> expectedUserComment =
+        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0));
     Assert.assertNotNull(testStat);
     Assert.assertNotNull(testStat.getSentimentBucketList());
-    Assert.assertEquals( TEST_SCORE, testStat.getAverageScore(), 0.01);
+    Assert.assertEquals(TEST_SCORE, testStat.getAverageScore(), 0.01);
     Assert.assertEquals(TEST_MAGNITUDE, testStat.getAverageMagnitude(), 0.01);
     Assert.assertEquals(
         constructRangeMapFromFrequencyList(
-            expectedUserComment,
-            expectedFrequency,
-            LOWER_SCORE,
-            UPPER_SCORE,
-            SCORE_INTERVAL),
-        testStat.getSentimentBucketList());  }
+            expectedUserComment, expectedFrequency, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL),
+        testStat.getSentimentBucketList());
+  }
 
   @Test
   public void testNormalScoreCases() {
@@ -154,18 +159,16 @@ public class CommentAnalysisTest {
     comment2.setMagnitude(0.5);
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
-    //TODO: currently we have not added the top magnitude comment message in list. The expectedUserComment is all empty.
-    List<List<UserComment>> expectedUserComment = new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
+    // TODO: currently we have not added the top magnitude comment message in list. The
+    // expectedUserComment is all empty.
+    List<List<UserComment>> expectedUserComment =
+        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
     Statistics normalStat = new Statistics(inputUserComment);
     Assert.assertEquals(0.105, normalStat.getAverageScore(), 0.01);
     Assert.assertEquals(
         constructRangeMapFromFrequencyList(
-            expectedUserComment,
-            expectedFrequency,
-            LOWER_SCORE,
-            UPPER_SCORE,
-            SCORE_INTERVAL),
+            expectedUserComment, expectedFrequency, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL),
         normalStat.getSentimentBucketList());
   }
 }
