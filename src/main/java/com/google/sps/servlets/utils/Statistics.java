@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets.utils;
 
+import com.google.cloud.language.v1.Sentiment;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -60,28 +61,26 @@ public class Statistics {
   }
 
   /**
-   * Constructor of Statistics to filter out invalid sentiment scores and magnitude, set aggregate
+   * Constructor of Statistics to get score and magnitude, filter out invalid data, set aggregate
    * hash map and average score and magnitude.
    *
-   * @param sentimentScores given score values
-   * @param magnitudeScores given magnitude values
+   * @param sentimentList given sentiment objects
    */
-  public Statistics(List<Double> sentimentScores, List<Double> magnitudeScores) {
-    sentimentScores =
-        sentimentScores.parallelStream()
-            .filter(score -> (score >= LOWER_SCORE_VAL && score <= UPPER_SCORE_VAL))
-            .collect(Collectors.toList());
-    magnitudeScores =
-        magnitudeScores.parallelStream()
-            .filter(score -> (score >= LOWER_MAGNITUDE_VAL))
+  public Statistics(List<Sentiment> sentimentList) {
+    // List of scores and magnitude for all comments
+    List<Double> scoreValues =
+        sentimentList.parallelStream().map(sentiment -> (double)sentiment.getScore()).filter(score -> (score >= LOWER_SCORE_VAL && score <= UPPER_SCORE_VAL)).collect(Collectors.toList());
+    List<Double> magnitudeValues =
+        sentimentList.parallelStream()
+            .map(sentiment -> (double)sentiment.getMagnitude()).filter(score -> (score >= LOWER_MAGNITUDE_VAL))
             .collect(Collectors.toList());
     aggregateScores =
-        categorizeToAggregateMap(sentimentScores, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL, false);
+        categorizeToAggregateMap(scoreValues, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL, false);
     aggregateMagnitude =
         categorizeToAggregateMap(
-            magnitudeScores, LOWER_MAGNITUDE, UPPER_MAGNITUDE, MAGNITUDE_INTERVAL, true);
-    averageScore = getAggregateAvg(sentimentScores);
-    averageMagnitude = getAggregateAvg(magnitudeScores);
+            magnitudeValues, LOWER_MAGNITUDE, UPPER_MAGNITUDE, MAGNITUDE_INTERVAL, true);
+    averageScore = getAggregateAverage(scoreValues);
+    averageMagnitude = getAggregateAverage(magnitudeValues);
   }
 
   /**
@@ -144,7 +143,7 @@ public class Statistics {
    * @param sentimentValues a list of values to calculate the average for
    * @return the average value of sentimentValues
    */
-  private double getAggregateAvg(List<Double> sentimentValues) {
+  private double getAggregateAverage(List<Double> sentimentValues) {
     return sentimentValues.parallelStream()
         .mapToDouble(i -> i)
         .average()

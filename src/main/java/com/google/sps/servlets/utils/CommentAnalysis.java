@@ -48,63 +48,37 @@ public class CommentAnalysis {
   }
 
   /**
-   * It computes an overall statistics score from the retrieved youtube comments.
+   * It computes an overall statistics object from the retrieved youtube comments.
    *
    * @return a Statistics object that contains required values to display
    */
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
-    // all sentiments built by comment content retrieved from youtubeResponse
-    List<Sentiment> documentList =
+    // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
+    List<Sentiment> sentimentList =
         youtubeResponse.getItems().stream()
             .map(UserComment::new)
             .map(
-                comment ->
-                    languageService
-                        .analyzeSentiment(
-                            Document.newBuilder()
-                                .setContent(comment.getCommentMsg())
-                                .setType(Document.Type.PLAIN_TEXT)
-                                .build())
-                        .getDocumentSentiment())
+                this::calculateSentimentForComment
+            )
             .collect(Collectors.toList());
-    // List of scores and magnitude for all comments
-    List<Double> scoreValues =
-        documentList.stream().map(this::calcualateSentiAnalysisScore).collect(Collectors.toList());
-    List<Double> magnitudeValues =
-        documentList.stream()
-            .map(this::calculateSentiAnalysisMagnitude)
-            .collect(Collectors.toList());
-    return new Statistics(scoreValues, magnitudeValues);
+    return new Statistics(sentimentList);
   }
 
   /**
-   * Perform sentiment analysis of comment.
-   *
-   * @param sentiment object retrieved from document for each comment
-   * @return sentiment score
-   * @throws RuntimeException if the sentiment analysis API is not working, throw the IOExeption
+   * Perform sentiment analysis from language service for a single usercomment
+   * @param comment a comment object to retrieve the content
+   * @return a Sentiment with sentiment scores & magnitude
    */
-  private double calcualateSentiAnalysisScore(Sentiment sentiment) {
-    if (sentiment != null) {
-      return ((double) sentiment.getScore());
-    } else {
-      throw new RuntimeException("Failed to get the sentiment score");
-    }
+  private Sentiment calculateSentimentForComment(UserComment comment) {
+    return languageService
+               .analyzeSentiment(
+                   Document.newBuilder()
+                       .setContent(comment.getCommentMsg())
+                       .setType(Document.Type.PLAIN_TEXT)
+                       .build())
+               .getDocumentSentiment();
   }
-
-  /**
-   * Perform sentiment analysis of comment.
-   *
-   * @return sentiment score
-   * @throws RuntimeException if the sentiment analysis API is not working, throw the IOExeption
-   */
-  private double calculateSentiAnalysisMagnitude(Sentiment sentiment) {
-    if (sentiment != null) {
-      return ((double) sentiment.getMagnitude());
-    } else {
-      throw new RuntimeException("Failed to get the sentiment magnitude");
-    }
-  }
+  
 
   public void closeLanguage() {
     languageService.close();
