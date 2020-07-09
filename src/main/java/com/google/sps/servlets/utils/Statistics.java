@@ -69,10 +69,14 @@ public class Statistics {
   public Statistics(List<Sentiment> sentimentList) {
     // List of scores and magnitude for all comments
     List<Double> scoreValues =
-        sentimentList.parallelStream().map(sentiment -> (double)sentiment.getScore()).filter(score -> (score >= LOWER_SCORE_VAL && score <= UPPER_SCORE_VAL)).collect(Collectors.toList());
+        sentimentList.parallelStream()
+            .map(sentiment -> (double) sentiment.getScore())
+            .filter(score -> (score >= LOWER_SCORE_VAL && score <= UPPER_SCORE_VAL))
+            .collect(Collectors.toList());
     List<Double> magnitudeValues =
         sentimentList.parallelStream()
-            .map(sentiment -> (double)sentiment.getMagnitude()).filter(score -> (score >= LOWER_MAGNITUDE_VAL))
+            .map(sentiment -> (double) sentiment.getMagnitude())
+            .filter(score -> (score >= LOWER_MAGNITUDE_VAL))
             .collect(Collectors.toList());
     aggregateScores =
         categorizeToAggregateMap(scoreValues, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL, false);

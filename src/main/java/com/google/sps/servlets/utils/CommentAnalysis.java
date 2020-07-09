@@ -57,28 +57,26 @@ public class CommentAnalysis {
     List<Sentiment> sentimentList =
         youtubeResponse.getItems().stream()
             .map(UserComment::new)
-            .map(
-                this::calculateSentimentForComment
-            )
+            .map(this::calculateSentimentForComment)
             .collect(Collectors.toList());
     return new Statistics(sentimentList);
   }
 
   /**
    * Perform sentiment analysis from language service for a single usercomment
+   *
    * @param comment a comment object to retrieve the content
    * @return a Sentiment with sentiment scores & magnitude
    */
   private Sentiment calculateSentimentForComment(UserComment comment) {
     return languageService
-               .analyzeSentiment(
-                   Document.newBuilder()
-                       .setContent(comment.getCommentMsg())
-                       .setType(Document.Type.PLAIN_TEXT)
-                       .build())
-               .getDocumentSentiment();
+        .analyzeSentiment(
+            Document.newBuilder()
+                .setContent(comment.getCommentMsg())
+                .setType(Document.Type.PLAIN_TEXT)
+                .build())
+        .getDocumentSentiment();
   }
-  
 
   public void closeLanguage() {
     languageService.close();
