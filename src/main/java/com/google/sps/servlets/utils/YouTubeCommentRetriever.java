@@ -62,8 +62,8 @@ public class YouTubeCommentRetriever {
 
   /**
    * @param url video id of the video to have its comments analyzed
-   * @param maxResults is how many comments to be retrieved;
-   * Capped out at 100 per request but may be reduced for specific queries.
+   * @param maxResults is how many comments to be retrieved; Capped out at 100 per request but may
+   *     be reduced for specific queries.
    * @return A list of comment threads to be aggregated to the overall list.
    */
   private static YouTube.CommentThreads.List generateYouTubeRequest(String url, long maxResults)
