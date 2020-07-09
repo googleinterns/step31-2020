@@ -71,15 +71,15 @@ public class CommentAnalysis {
    */
   private UserComment updateSentimentForComment(UserComment comment) {
     comment.setSentiment(languageService
-               .analyzeSentiment(
-                   Document.newBuilder()
-                       .setContent(comment.getCommentMsg())
-                       .setType(Document.Type.PLAIN_TEXT)
-                       .build())
-               .getDocumentSentiment());
+                             .analyzeSentiment(
+                                 Document.newBuilder()
+                                     .setContent(comment.getCommentMsg())
+                                     .setType(Document.Type.PLAIN_TEXT)
+                                     .build())
+                             .getDocumentSentiment());
     return comment;
   }
-  
+
 
   public void closeLanguage() {
     languageService.close();

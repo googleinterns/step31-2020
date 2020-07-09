@@ -19,10 +19,7 @@ import com.google.cloud.language.v1.Sentiment;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Statistics {
   private static final double LOWER_SCORE_VAL = -1.0;
