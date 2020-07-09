@@ -26,7 +26,6 @@ public class UserComment {
   private double magnitude;
   private double score;
 
-
   /**
    * Encapsulate a comment Thread into an User Comment object.
    *
@@ -38,7 +37,6 @@ public class UserComment {
     this.commentMsg = topLevelComment.getSnippet().getTextDisplay();
     this.publishDate = topLevelComment.getSnippet().getPublishedAt();
   }
-
 
   public double getMagnitude() {
     return magnitude;
@@ -54,7 +52,7 @@ public class UserComment {
   }
 
   public UserComment findHigherMagnitude(UserComment commentHigherMagnitude) {
-    return magnitude <= commentHigherMagnitude.magnitude ? commentHigherMagnitude :this;
+    return magnitude <= commentHigherMagnitude.magnitude ? commentHigherMagnitude : this;
   }
 
   public String getCommentMsg() {

@@ -36,9 +36,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -87,7 +85,7 @@ public class CommentAnalysisTest {
   private List<SentimentBucket> constructRangeMapFromFrequencyList(
       List<List<UserComment>> userCommentList,List<Integer> frequency, BigDecimal lowerEnd, BigDecimal upperEnd, BigDecimal interval) {
     if (userCommentList.size() != frequency.size() || (frequency.size()
-        != upperEnd.subtract(lowerEnd).divide(interval, 0, RoundingMode.UP).intValue())) {
+                                                           != upperEnd.subtract(lowerEnd).divide(interval, 0, RoundingMode.UP).intValue())) {
       throw new RuntimeException("Initialize list in test function got wrong size");
     }
     int listPointer = 0;
@@ -127,7 +125,7 @@ public class CommentAnalysisTest {
         .thenReturn(mockedSentiment);
     CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
 
-    // Compute and test the score from mocked language service
+    // Compute and test the sentiment bucket from mocked language service
     Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
     List<List<UserComment>> expectedUserComment = new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0));

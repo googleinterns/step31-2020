@@ -29,13 +29,14 @@ public class Statistics {
   private static final BigDecimal SCORE_INTERVAL = BigDecimal.valueOf(SCORE_INTERVAL_VAL);
   private static final BigDecimal UPPER_SCORE = BigDecimal.valueOf(UPPER_SCORE_VAL);
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
-  private static final Comparator ascendingScoreCompare = new Comparator<UserComment>() {
-    @Override
-    public int compare(UserComment o1, UserComment o2) {
-      return Double.compare(o1.getScore(),o2.getScore());
-    }
-  };
-  
+  private static final Comparator ascendingScoreCompare =
+      new Comparator<UserComment>() {
+        @Override
+        public int compare(UserComment o1, UserComment o2) {
+          return Double.compare(o1.getScore(), o2.getScore());
+        }
+      };
+
   // Contains sentiment bucket information for all intervals
   private List<SentimentBucket> sentimentBucketList;
 
@@ -50,7 +51,6 @@ public class Statistics {
   }
 
   private double averageMagnitude;
-  
 
   public double getAverageScore() {
     return averageScore;
@@ -139,11 +139,11 @@ public class Statistics {
    */
   private double getAverageMagnitude(List<UserComment> userCommentList) {
     return userCommentList.parallelStream()
-               .mapToDouble(UserComment::getMagnitude)
-               .average()
-               .orElseThrow(
-                   () ->
-                       new RuntimeException(
-                           "Unable to calculate sentiment average due to empty input list."));
+        .mapToDouble(UserComment::getMagnitude)
+        .average()
+        .orElseThrow(
+            () ->
+                new RuntimeException(
+                    "Unable to calculate sentiment average due to empty input list."));
   }
 }

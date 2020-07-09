@@ -18,7 +18,7 @@ package com.google.sps.servlets.utils;
 import java.util.List;
 
 public class SentimentBucket {
-  
+
   private List<UserComment> topNComments; // userComment with top N magnitude within this interval
   private Integer frequency; // number of comments whose sentiment score is in this interval
   private Range intervalRange;
