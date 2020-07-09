@@ -17,7 +17,6 @@ package com.google.sps.servlets.utils;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
-import com.google.cloud.language.v1.Sentiment;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,29 +56,28 @@ public class CommentAnalysis {
     List<UserComment> usercommentList =
         youtubeResponse.getItems().stream()
             .map(UserComment::new)
-            .map(
-                this::updateSentimentForComment
-            )
+            .map(this::updateSentimentForComment)
             .collect(Collectors.toList());
     return new Statistics(usercommentList);
   }
 
   /**
    * Perform sentiment analysis from language service for a single usercomment
+   *
    * @param comment a comment object to retrieve the content
    * @return a Sentiment with sentiment scores & magnitude
    */
   private UserComment updateSentimentForComment(UserComment comment) {
-    comment.setSentiment(languageService
-                             .analyzeSentiment(
-                                 Document.newBuilder()
-                                     .setContent(comment.getCommentMsg())
-                                     .setType(Document.Type.PLAIN_TEXT)
-                                     .build())
-                             .getDocumentSentiment());
+    comment.setSentiment(
+        languageService
+            .analyzeSentiment(
+                Document.newBuilder()
+                    .setContent(comment.getCommentMsg())
+                    .setType(Document.Type.PLAIN_TEXT)
+                    .build())
+            .getDocumentSentiment());
     return comment;
   }
-
 
   public void closeLanguage() {
     languageService.close();

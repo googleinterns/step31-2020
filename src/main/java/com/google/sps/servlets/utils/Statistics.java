@@ -14,8 +14,6 @@
 
 package com.google.sps.servlets.utils;
 
-import com.google.appengine.api.users.User;
-import com.google.cloud.language.v1.Sentiment;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -28,13 +26,14 @@ public class Statistics {
   private static final BigDecimal SCORE_INTERVAL = BigDecimal.valueOf(SCORE_INTERVAL_VAL);
   private static final BigDecimal UPPER_SCORE = BigDecimal.valueOf(UPPER_SCORE_VAL);
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
-  private static final Comparator ascendingScoreCompare = new Comparator<UserComment>() {
-    @Override
-    public int compare(UserComment o1, UserComment o2) {
-      return Double.compare(o1.getScore(),o2.getScore());
-    }
-  };
-  
+  private static final Comparator ascendingScoreCompare =
+      new Comparator<UserComment>() {
+        @Override
+        public int compare(UserComment o1, UserComment o2) {
+          return Double.compare(o1.getScore(), o2.getScore());
+        }
+      };
+
   // Contains sentiment bucket information for all intervals
   private List<SentimentBucket> sentimentBucketList;
 
@@ -49,7 +48,6 @@ public class Statistics {
   }
 
   private double averageMagnitude;
-  
 
   public double getAverageScore() {
     return averageScore;
@@ -102,16 +100,18 @@ public class Statistics {
         BigDecimal scorePoint = BigDecimal.valueOf(userCommentList.get(scoreIdx).getScore());
         if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(upperEnd) == 0) {
           currentFrequency += 1;
-          highestUserComment = (highestUserComment == null)
-                                   ? userCommentList.get(scoreIdx)
-                                   : highestUserComment.findHigherMagnitude(userCommentList.get(scoreIdx));
+          highestUserComment =
+              (highestUserComment == null)
+                  ? userCommentList.get(scoreIdx)
+                  : highestUserComment.findHigherMagnitude(userCommentList.get(scoreIdx));
         } else {
           break;
         }
       }
       // update the score pointer
       updatingScoreIdx = scoreIdx;
-      sentimentBucketList.add(new SentimentBucket(highestUserComment, currentFrequency, currentRange));
+      sentimentBucketList.add(
+          new SentimentBucket(highestUserComment, currentFrequency, currentRange));
     }
     return sentimentBucketList;
   }
@@ -140,11 +140,11 @@ public class Statistics {
    */
   private double getAverageMagnitude(List<UserComment> userCommentList) {
     return userCommentList.parallelStream()
-               .mapToDouble(UserComment::getMagnitude)
-               .average()
-               .orElseThrow(
-                   () ->
-                       new RuntimeException(
-                           "Unable to calculate sentiment average due to empty input list."));
+        .mapToDouble(UserComment::getMagnitude)
+        .average()
+        .orElseThrow(
+            () ->
+                new RuntimeException(
+                    "Unable to calculate sentiment average due to empty input list."));
   }
 }

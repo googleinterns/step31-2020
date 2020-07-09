@@ -14,9 +14,6 @@
 
 package com.google.sps;
 
-import com.google.sps.servlets.utils.SentimentBucket;
-import com.google.sps.servlets.utils.UserComment;
-import java.util.AbstractList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -31,14 +28,14 @@ import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
 import com.google.sps.servlets.utils.CommentAnalysis;
 import com.google.sps.servlets.utils.Range;
+import com.google.sps.servlets.utils.SentimentBucket;
 import com.google.sps.servlets.utils.Statistics;
+import com.google.sps.servlets.utils.UserComment;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -84,9 +81,14 @@ public class CommentAnalysisTest {
    *     frequency input
    */
   private List<SentimentBucket> constructRangeMapFromFrequencyList(
-      List<UserComment> userCommentList,List<Integer> frequency, BigDecimal lowerEnd, BigDecimal upperEnd, BigDecimal interval) {
-    if (userCommentList.size() != frequency.size() || (frequency.size()
-        != upperEnd.subtract(lowerEnd).divide(interval, 0, RoundingMode.UP).intValue())) {
+      List<UserComment> userCommentList,
+      List<Integer> frequency,
+      BigDecimal lowerEnd,
+      BigDecimal upperEnd,
+      BigDecimal interval) {
+    if (userCommentList.size() != frequency.size()
+        || (frequency.size()
+            != upperEnd.subtract(lowerEnd).divide(interval, 0, RoundingMode.UP).intValue())) {
       throw new RuntimeException("Initialize list in test function got wrong size");
     }
     int listPointer = 0;
@@ -96,7 +98,9 @@ public class CommentAnalysisTest {
         tempPoint = tempPoint.add(interval)) {
       BigDecimal nextPoint = upperEnd.min(tempPoint.add(interval));
       Range currentRange = new Range(tempPoint, nextPoint);
-      expectedBucketList.add(new SentimentBucket(userCommentList.get(listPointer),frequency.get(listPointer),currentRange));
+      expectedBucketList.add(
+          new SentimentBucket(
+              userCommentList.get(listPointer), frequency.get(listPointer), currentRange));
       listPointer = listPointer + 1;
     }
     return expectedBucketList;
@@ -130,9 +134,9 @@ public class CommentAnalysisTest {
     Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
     Assert.assertNotNull(testStat);
     Assert.assertNotNull(testStat.getSentimentBucketList());
-    Assert.assertEquals( TEST_SCORE, testStat.getAverageScore(), 0.01);
+    Assert.assertEquals(TEST_SCORE, testStat.getAverageScore(), 0.01);
     Assert.assertEquals(TEST_MAGNITUDE, testStat.getAverageMagnitude(), 0.01);
-    Assert.assertEquals( 2, (int)testStat.getSentimentBucketList().get(6).getFrequency());
+    Assert.assertEquals(2, (int) testStat.getSentimentBucketList().get(6).getFrequency());
   }
 
   @Test
@@ -147,89 +151,87 @@ public class CommentAnalysisTest {
     comment2.setMagnitude(0.5);
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
-    List<UserComment> expectedUserComment = new ArrayList<>(Arrays.asList(null, null, null, null, null, comment2, null, null, null, null));
+    List<UserComment> expectedUserComment =
+        new ArrayList<>(
+            Arrays.asList(null, null, null, null, null, comment2, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
     Statistics normalStat = new Statistics(inputUserComment);
     Assert.assertEquals(0.105, normalStat.getAverageScore(), 0.01);
     Assert.assertEquals(
         constructRangeMapFromFrequencyList(
-            expectedUserComment,
-            expectedFrequency,
-            LOWER_SCORE,
-            UPPER_SCORE,
-            SCORE_INTERVAL),
+            expectedUserComment, expectedFrequency, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL),
         normalStat.getSentimentBucketList());
   }
-//
-//  @Test
-//  public void testEdgeScoreCases() {
-//    ArrayList<Double> edgeScore = new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
-//    Statistics edgeStat = new Statistics(edgeScore, MAGNITUDE_PLACEHOLDER);
-//    Assert.assertEquals(
-//        constructRangeMapFromFrequencyList(
-//            new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 1)),
-//            LOWER_SCORE,
-//            UPPER_SCORE,
-//            SCORE_INTERVAL),
-//        edgeStat.getAggregateScores());
-//  }
-//
-//  @Test
-//  public void testOneOutsiderScoreCases() {
-//    ArrayList<Double> oneOutsideScore = new ArrayList<>(Arrays.asList(-2.0, -1.0, 0.0));
-//    Statistics oneOutsideStat = new Statistics(oneOutsideScore, MAGNITUDE_PLACEHOLDER);
-//    Assert.assertEquals(oneOutsideStat.getAverageScore(), -0.5, 0);
-//    Assert.assertEquals(
-//        constructRangeMapFromFrequencyList(
-//            new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 0)),
-//            LOWER_SCORE,
-//            UPPER_SCORE,
-//            SCORE_INTERVAL),
-//        oneOutsideStat.getAggregateScores());
-//  }
-//
-//  @Test
-//  public void testExceptionAllOutsiderScoreCases() {
-//    exception.expect(RuntimeException.class);
-//    ArrayList<Double> allOutsideScore = new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
-//    Statistics allOutsideStat = new Statistics(allOutsideScore, MAGNITUDE_PLACEHOLDER);
-//    Assert.assertEquals(
-//        constructRangeMapFromFrequencyList(
-//            new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
-//            LOWER_SCORE,
-//            UPPER_SCORE,
-//            SCORE_INTERVAL),
-//        allOutsideStat.getAggregateScores());
-//    Assert.assertEquals(0.0, allOutsideStat.getAverageScore(), 0.1);
-//  }
-//
-//  @Test
-//  public void testNormalMagnitudeCases() {
-//    ArrayList<Double> normalMagnitude =
-//        new ArrayList<>(Arrays.asList(0.0, 0.2, 0.8, 1.2, 1.8, 2.0, 3.0, 5.0));
-//    Statistics normalStat = new Statistics(SCORE_PLACEHOLDER, normalMagnitude);
-//    Assert.assertEquals(
-//        constructRangeMapFromFrequencyList(
-//            new ArrayList<>(Arrays.asList(2, 0, 1, 0, 1, 0, 4)),
-//            LOWER_MAGNITUDE,
-//            UPPER_MAGNITUDE,
-//            MAGNITUDE_INTERVAL),
-//        normalStat.getAggregateMagnitude());
-//    Assert.assertEquals(1.74, normalStat.getAverageMagnitude(), 0.1);
-//  }
-//
-//  @Test
-//  public void testAllOutsiderMagnitudeCases() {
-//    exception.expect(RuntimeException.class);
-//    ArrayList<Double> allOutsidersMagnitude = new ArrayList<>(Arrays.asList(-0.1, -0.2, -3.0));
-//    Statistics allOutsiderStat = new Statistics(SCORE_PLACEHOLDER, allOutsidersMagnitude);
-//    Assert.assertEquals(
-//        constructRangeMapFromFrequencyList(
-//            new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0)),
-//            LOWER_MAGNITUDE,
-//            UPPER_MAGNITUDE,
-//            MAGNITUDE_INTERVAL),
-//        allOutsiderStat.getAggregateMagnitude());
-//    Assert.assertEquals(0.0, allOutsiderStat.getAverageScore(), 0.1);
-//  }
+  //
+  //  @Test
+  //  public void testEdgeScoreCases() {
+  //    ArrayList<Double> edgeScore = new ArrayList<>(Arrays.asList(1.0, -1.0, 0.0));
+  //    Statistics edgeStat = new Statistics(edgeScore, MAGNITUDE_PLACEHOLDER);
+  //    Assert.assertEquals(
+  //        constructRangeMapFromFrequencyList(
+  //            new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 1)),
+  //            LOWER_SCORE,
+  //            UPPER_SCORE,
+  //            SCORE_INTERVAL),
+  //        edgeStat.getAggregateScores());
+  //  }
+  //
+  //  @Test
+  //  public void testOneOutsiderScoreCases() {
+  //    ArrayList<Double> oneOutsideScore = new ArrayList<>(Arrays.asList(-2.0, -1.0, 0.0));
+  //    Statistics oneOutsideStat = new Statistics(oneOutsideScore, MAGNITUDE_PLACEHOLDER);
+  //    Assert.assertEquals(oneOutsideStat.getAverageScore(), -0.5, 0);
+  //    Assert.assertEquals(
+  //        constructRangeMapFromFrequencyList(
+  //            new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 1, 0, 0, 0, 0)),
+  //            LOWER_SCORE,
+  //            UPPER_SCORE,
+  //            SCORE_INTERVAL),
+  //        oneOutsideStat.getAggregateScores());
+  //  }
+  //
+  //  @Test
+  //  public void testExceptionAllOutsiderScoreCases() {
+  //    exception.expect(RuntimeException.class);
+  //    ArrayList<Double> allOutsideScore = new ArrayList<>(Arrays.asList(-2.0, -3.0, 3.0, -100.2));
+  //    Statistics allOutsideStat = new Statistics(allOutsideScore, MAGNITUDE_PLACEHOLDER);
+  //    Assert.assertEquals(
+  //        constructRangeMapFromFrequencyList(
+  //            new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+  //            LOWER_SCORE,
+  //            UPPER_SCORE,
+  //            SCORE_INTERVAL),
+  //        allOutsideStat.getAggregateScores());
+  //    Assert.assertEquals(0.0, allOutsideStat.getAverageScore(), 0.1);
+  //  }
+  //
+  //  @Test
+  //  public void testNormalMagnitudeCases() {
+  //    ArrayList<Double> normalMagnitude =
+  //        new ArrayList<>(Arrays.asList(0.0, 0.2, 0.8, 1.2, 1.8, 2.0, 3.0, 5.0));
+  //    Statistics normalStat = new Statistics(SCORE_PLACEHOLDER, normalMagnitude);
+  //    Assert.assertEquals(
+  //        constructRangeMapFromFrequencyList(
+  //            new ArrayList<>(Arrays.asList(2, 0, 1, 0, 1, 0, 4)),
+  //            LOWER_MAGNITUDE,
+  //            UPPER_MAGNITUDE,
+  //            MAGNITUDE_INTERVAL),
+  //        normalStat.getAggregateMagnitude());
+  //    Assert.assertEquals(1.74, normalStat.getAverageMagnitude(), 0.1);
+  //  }
+  //
+  //  @Test
+  //  public void testAllOutsiderMagnitudeCases() {
+  //    exception.expect(RuntimeException.class);
+  //    ArrayList<Double> allOutsidersMagnitude = new ArrayList<>(Arrays.asList(-0.1, -0.2, -3.0));
+  //    Statistics allOutsiderStat = new Statistics(SCORE_PLACEHOLDER, allOutsidersMagnitude);
+  //    Assert.assertEquals(
+  //        constructRangeMapFromFrequencyList(
+  //            new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0)),
+  //            LOWER_MAGNITUDE,
+  //            UPPER_MAGNITUDE,
+  //            MAGNITUDE_INTERVAL),
+  //        allOutsiderStat.getAggregateMagnitude());
+  //    Assert.assertEquals(0.0, allOutsiderStat.getAverageScore(), 0.1);
+  //  }
 }

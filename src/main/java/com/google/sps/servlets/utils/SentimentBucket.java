@@ -14,7 +14,6 @@
 
 package com.google.sps.servlets.utils;
 
-
 public class SentimentBucket {
   private UserComment highestUserComment;
   private Integer frequency;
@@ -40,7 +39,13 @@ public class SentimentBucket {
 
   @Override
   public String toString() {
-    return "(highestUserComment: " + highestUserComment + " frequency: " + frequency + " intervalRange" + intervalRange + ")\n";
+    return "(highestUserComment: "
+        + highestUserComment
+        + " frequency: "
+        + frequency
+        + " intervalRange"
+        + intervalRange
+        + ")\n";
   }
 
   @Override
@@ -52,8 +57,9 @@ public class SentimentBucket {
       return false;
     }
     SentimentBucket bucketToCompare = (SentimentBucket) bucketObject;
-    return (highestUserComment == null ||highestUserComment.equals(bucketToCompare.getHighestUserComment()))
-               && frequency == bucketToCompare.getFrequency()
-               && intervalRange.equals(getIntervalRange());
+    return (highestUserComment == null
+            || highestUserComment.equals(bucketToCompare.getHighestUserComment()))
+        && frequency == bucketToCompare.getFrequency()
+        && intervalRange.equals(getIntervalRange());
   }
 }
