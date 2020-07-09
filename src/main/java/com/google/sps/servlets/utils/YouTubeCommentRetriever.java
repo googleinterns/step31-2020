@@ -39,24 +39,23 @@ public class YouTubeCommentRetriever {
   // TODO: have dev key come from centralized location, rather than being hard-coded.
   private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
 
-  public static List<CommentThread> retrieveComments(String url, int maxComments) throws Exception{
+  public static List<CommentThread> retrieveComments(String url, int maxComments) throws Exception {
     String nextPageToken = "";
     int numCommentsLeft = maxComments;
     long commentQueryLimit = 0;
     ArrayList allComments = new ArrayList<>();
-      do {
-        commentQueryLimit = Math.min(COMMENT_LIMIT, numCommentsLeft);
-        numCommentsLeft -= COMMENT_LIMIT;
-        YouTube.CommentThreads.List commentRequest = generateYouTubeRequest(url, commentQueryLimit);
-        if (nextPageToken != null && nextPageToken != "") {
-          commentRequest.setPageToken(nextPageToken);
-        }
-        CommentThreadListResponse commentResponse = commentRequest.execute();
-        nextPageToken = commentResponse.getNextPageToken();
-        // Add comment threads to big list
-        allComments.addAll(commentResponse.getItems());
-      } while (nextPageToken != null
-          && numCommentsLeft > 0);
+    do {
+      commentQueryLimit = Math.min(COMMENT_LIMIT, numCommentsLeft);
+      numCommentsLeft -= COMMENT_LIMIT;
+      YouTube.CommentThreads.List commentRequest = generateYouTubeRequest(url, commentQueryLimit);
+      if (nextPageToken != null && nextPageToken != "") {
+        commentRequest.setPageToken(nextPageToken);
+      }
+      CommentThreadListResponse commentResponse = commentRequest.execute();
+      nextPageToken = commentResponse.getNextPageToken();
+      // Add comment threads to big list
+      allComments.addAll(commentResponse.getItems());
+    } while (nextPageToken != null && numCommentsLeft > 0);
     return allComments;
   }
 
