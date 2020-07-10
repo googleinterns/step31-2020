@@ -139,8 +139,38 @@ public class CommentAnalysisTest {
   }
 
   @Test
-  public void testNormalScoreCases() {
-    // cases: two user comments with sentiment score in the same interval
+  public void testTopOneMagnitude() {
+    // cases: two user comments with sentiment score in the same interval and only reuqire top 1 comment
+    UserComment comment1 =
+        new UserComment("001", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4);
+    UserComment comment2 =
+        new UserComment("002", "Second Normal Comment", new DateTime(new Date()), 0.11, 0.5);
+
+    List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
+    List<List<UserComment>> expectedUserComment =
+        new ArrayList<>(
+            Arrays.asList(
+                null,
+                null,
+                null,
+                null,
+                null,
+                new ArrayList<>(Arrays.asList(comment2)),
+                null,
+                null,
+                null,
+                null));
+    List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
+    Statistics highestStat = new Statistics(inputUserComment, 1);
+    Assert.assertEquals(
+        constructRangeMapFromFrequencyList(
+            expectedUserComment, expectedFrequency, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL),
+        highestStat.getSentimentBucketList());
+  }
+
+  @Test
+  public void testMoreThanOneMagnitude() {
+    // cases: two user comments with sentiment score in the same interval and require more than 1 top comments
     UserComment comment1 =
         new UserComment("001", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4);
     UserComment comment2 =
@@ -161,11 +191,42 @@ public class CommentAnalysisTest {
                 null,
                 null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
-    Statistics normalStat = new Statistics(inputUserComment, 2);
-    Assert.assertEquals(0.105, normalStat.getAverageScore(), 0.01);
+    Statistics twohighestStat = new Statistics(inputUserComment, 2);
+    Assert.assertEquals(0.105, twohighestStat.getAverageScore(), 0.01);
     Assert.assertEquals(
         constructRangeMapFromFrequencyList(
             expectedUserComment, expectedFrequency, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL),
-        normalStat.getSentimentBucketList());
+        twohighestStat.getSentimentBucketList());
+  }
+
+  @Test
+  public void testDistributeScore() {
+    // cases: two user comments with sentiment score in the same interval
+    UserComment comment1 =
+        new UserComment("003", "First Normal Comment", new DateTime(new Date()), -1.0, 0.4);
+    UserComment comment2 =
+        new UserComment("004", "Second Normal Comment", new DateTime(new Date()), 0.8, 0.5);
+
+    List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
+    List<List<UserComment>> expectedUserComment =
+        new ArrayList<>(
+            Arrays.asList(
+                new ArrayList<>(Arrays.asList(comment1)),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                new ArrayList<>(Arrays.asList(comment2))
+                ));
+    List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 0, 0, 0, 0, 1));
+    Statistics distStat = new Statistics(inputUserComment, 2);
+    Assert.assertEquals(
+        constructRangeMapFromFrequencyList(
+            expectedUserComment, expectedFrequency, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL),
+        distStat.getSentimentBucketList());
   }
 }
