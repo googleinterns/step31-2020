@@ -125,6 +125,8 @@ public class CommentAnalysisTest {
 
     // Compute and test the sentiment bucket from mocked language service
     Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
+    // TODO: currently we have not added the top magnitude comment message in list. The
+    // expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
         new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0));
