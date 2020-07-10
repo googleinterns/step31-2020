@@ -23,8 +23,8 @@ public class UserComment {
   private String commentId;
   private String commentMsg;
   private DateTime publishDate;
-  private double magnitude;
-  private double score;
+  private double magnitudeScore;
+  private double sentimentScore;
 
   /**
    * Encapsulate a comment Thread into an User Comment object.
@@ -40,20 +40,20 @@ public class UserComment {
 
   /** This is a easy way to construct a new userComment object for testing purpose. */
   public UserComment(
-      String commentId, String commentMsg, DateTime publishDate, double score, double magnitude) {
+      String commentId, String commentMsg, DateTime publishDate, double sentimentScore, double magnitudeScore) {
     this.commentId = commentId;
     this.commentMsg = commentMsg;
     this.publishDate = publishDate;
-    this.magnitude = magnitude;
-    this.score = score;
+    this.magnitudeScore = magnitudeScore;
+    this.sentimentScore = sentimentScore;
   }
 
   public double getMagnitude() {
-    return magnitude;
+    return magnitudeScore;
   }
 
   public double getScore() {
-    return score;
+    return sentimentScore;
   }
 
   public void setSentiment(Sentiment sentiment) {
@@ -61,20 +61,16 @@ public class UserComment {
     setScore(sentiment.getScore());
   }
 
-  public UserComment findHigherMagnitude(UserComment commentHigherMagnitude) {
-    return magnitude <= commentHigherMagnitude.magnitude ? commentHigherMagnitude : this;
-  }
-
   public String getCommentMsg() {
     return commentMsg;
   }
 
   public void setMagnitude(double magnitude) {
-    this.magnitude = magnitude;
+    this.magnitudeScore = magnitude;
   }
 
   public void setScore(double score) {
-    this.score = score;
+    this.sentimentScore = score;
   }
 
   public DateTime getPublishDate() {
