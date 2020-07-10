@@ -38,18 +38,16 @@ public class Statistics {
 
   // Contains sentiment bucket information for all intervals
   private List<SentimentBucket> sentimentBucketList;
+  private double averageMagnitude;
+  private double averageScore;
 
   public List<SentimentBucket> getSentimentBucketList() {
     return sentimentBucketList;
   }
 
-  private double averageScore;
-
   public double getAverageMagnitude() {
     return averageMagnitude;
   }
-
-  private double averageMagnitude;
 
   public double getAverageScore() {
     return averageScore;
@@ -60,7 +58,7 @@ public class Statistics {
    * bucket list to store each interval's information
    *
    * @param userCommentList given list of userComment objects
-   * @param
+   * @param topNComments the number of highest magnitudes to retrieve
    */
   public Statistics(List<UserComment> userCommentList, int topNComments) {
     sentimentBucketList =
