@@ -40,7 +40,11 @@ public class UserComment {
 
   /** This is a easy way to construct a new userComment object for testing purpose. */
   public UserComment(
-      String commentId, String commentMsg, DateTime publishDate, double sentimentScore, double magnitudeScore) {
+      String commentId,
+      String commentMsg,
+      DateTime publishDate,
+      double sentimentScore,
+      double magnitudeScore) {
     this.commentId = commentId;
     this.commentMsg = commentMsg;
     this.publishDate = publishDate;
