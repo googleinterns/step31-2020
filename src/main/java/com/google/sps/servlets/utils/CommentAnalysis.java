@@ -53,7 +53,8 @@ public class CommentAnalysis {
    *
    * @return a Statistics object that contains required values to display
    */
-  public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse, Optional<Integer> topNComments) {
+  public Statistics computeOverallStats(
+      CommentThreadListResponse youtubeResponse, Optional<Integer> topNComments) {
     // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
     List<UserComment> usercommentList =
         youtubeResponse.getItems().stream()
