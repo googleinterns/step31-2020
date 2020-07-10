@@ -14,13 +14,22 @@
 
 package com.google.sps;
 
+import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.*;
 import com.google.sps.servlets.utils.YouTubeCommentRetriever;
+import java.io.IOException;
 import java.util.List;
+import jdk.nashorn.internal.runtime.ECMAException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(JUnit4.class)
 public class CommentRetrievalTest {
@@ -32,6 +41,13 @@ public class CommentRetrievalTest {
   private final String POPULAR_VIDEO_URL = "dQw4w9WgXcQ";
   // A video with very few comments (Unlikely to ever reach even 100)
   private final String UNPOPULAR_VIDEO_URL = "cA-arJ0T6L4";
+
+  @Before
+  public void testYoutubeGenerate() throws Exception {
+    YouTube mockedYoutube = mock(YouTube.class);
+    YouTubeCommentRetriever mockedRetriever = mock(YouTubeCommentRetriever.class);
+    Mockito.when(mockedRetriever.getService()).thenReturn(mockedYoutube);
+  }
 
   // The simplest case: extract 100 comments from a video with more than 100 comments
   @Test

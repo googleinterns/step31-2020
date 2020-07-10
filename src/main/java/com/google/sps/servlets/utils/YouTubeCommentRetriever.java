@@ -87,7 +87,7 @@ public class YouTubeCommentRetriever {
    * @return an authorized API client service
    * @throws GeneralSecurityException, IOException
    */
-  private static YouTube getService() throws GeneralSecurityException, IOException {
+  public static YouTube getService() throws GeneralSecurityException, IOException {
     final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
         .setApplicationName(APPLICATION_NAME)

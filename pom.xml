@@ -15,6 +15,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <failOnMissingWebXml>false</failOnMissingWebXml>
+	<powermock.version>2.0.0-beta.5</powermock.version>
   </properties>
 
   <dependencies>
@@ -43,6 +44,27 @@
       <artifactId>mockito-core</artifactId>
       <version>2.3.4</version>
     </dependency>
+    <!-- PowerMock TestNG Module -->
+	<dependency>
+	  <groupId>org.powermock</groupId>
+	  <artifactId>powermock-module-testng</artifactId>
+	  <version>${powermock.version}</version>
+	  <scope>test</scope>
+	</dependency>
+	<!-- PowerMock JUnit 4.4+ Module -->
+	<dependency>
+	  <groupId>org.powermock</groupId>
+	  <artifactId>powermock-module-junit4</artifactId>
+	  <version>${powermock.version}</version>
+	  <scope>test</scope>
+	</dependency>
+	<!-- PowerMock Mockito2 API -->
+	<dependency>
+	  <groupId>org.powermock</groupId>
+	  <artifactId>powermock-api-mockito2</artifactId>
+	  <version>${powermock.version}</version>
+	  <scope>test</scope>
+	</dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
