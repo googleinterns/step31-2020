@@ -19,6 +19,7 @@ import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
  */
 public class CommentAnalysis {
   private LanguageServiceClient languageService;
+  int DEFAULT_TOP_N = 1;
 
   /**
    * Constructor to create and initialize language service for sentiment analysis
@@ -51,14 +53,15 @@ public class CommentAnalysis {
    *
    * @return a Statistics object that contains required values to display
    */
-  public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
+  public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse, Optional<Integer> topNComments) {
     // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
     List<UserComment> usercommentList =
         youtubeResponse.getItems().stream()
             .map(UserComment::new)
             .map(this::updateSentimentForComment)
             .collect(Collectors.toList());
-    return new Statistics(usercommentList);
+    int topNCommentsVal = topNComments.isPresent() ? topNComments.get() : DEFAULT_TOP_N;
+    return new Statistics(usercommentList, topNCommentsVal);
   }
 
   /**

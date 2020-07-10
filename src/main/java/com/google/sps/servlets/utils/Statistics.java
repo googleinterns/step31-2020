@@ -25,7 +25,6 @@ public class Statistics {
   private static final double UPPER_SCORE_VAL = 1.0;
   private static final double SCORE_INTERVAL_VAL = 0.2;
   // TODO: set the current Top n comment as 1; will be updated once we have the input from front-end
-  private static final int TOP_N_COMMENTS = 1;
   private static final BigDecimal SCORE_INTERVAL = BigDecimal.valueOf(SCORE_INTERVAL_VAL);
   private static final BigDecimal UPPER_SCORE = BigDecimal.valueOf(UPPER_SCORE_VAL);
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
@@ -61,11 +60,12 @@ public class Statistics {
    * bucket list to store each interval's information
    *
    * @param userCommentList given list of userComment objects
+   * @param
    */
-  public Statistics(List<UserComment> userCommentList) {
+  public Statistics(List<UserComment> userCommentList, int topNComments) {
     sentimentBucketList =
         categorizeToBucketList(
-            userCommentList, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL, TOP_N_COMMENTS);
+            userCommentList, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL, topNComments);
     averageScore = getAverageScore(userCommentList);
     averageMagnitude = getAverageMagnitude(userCommentList);
   }

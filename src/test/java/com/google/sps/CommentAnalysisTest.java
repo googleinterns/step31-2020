@@ -49,32 +49,17 @@ import org.mockito.Mockito;
 public class CommentAnalysisTest {
   private static final double LOWER_SCORE_VAL = -1.0;
   private static final double UPPER_SCORE_VAL = 1.0;
-  private static final double LOWER_MAGNITUDE_VAL = 0.0;
-  private static final double UPPER_MAGNITUDE_VAL = 2.0;
   private static final double SCORE_INTERVAL_VAL = 0.2;
-  private static final double MAGNITUDE_INTERVAL_VAL = 0.3;
   private static final BigDecimal SCORE_INTERVAL = BigDecimal.valueOf(SCORE_INTERVAL_VAL);
   private static final BigDecimal UPPER_SCORE = BigDecimal.valueOf(UPPER_SCORE_VAL);
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
-  private static final BigDecimal MAGNITUDE_INTERVAL = BigDecimal.valueOf(MAGNITUDE_INTERVAL_VAL);
-  private static final BigDecimal LOWER_MAGNITUDE = BigDecimal.valueOf(LOWER_MAGNITUDE_VAL);
-  private static final BigDecimal UPPER_MAGNITUDE = BigDecimal.valueOf(UPPER_MAGNITUDE_VAL);
 
   private static final float TEST_SCORE = 0.23f;
   private static final float TEST_MAGNITUDE = 1.5f;
-  private static final List<Double> MAGNITUDE_PLACEHOLDER =
-      new ArrayList<>(Arrays.asList(0.1, 0.2, 0.3));
-  private static final List<Double> SCORE_PLACEHOLDER =
-      new ArrayList<>(Arrays.asList(0.1, -0.1, 0.2));
 
-  CommentSnippet topCommentSnippet = new CommentSnippet().setTextDisplay("Test Message");
-  Comment testTopComment = new Comment().setSnippet(topCommentSnippet);
-  CommentThreadSnippet testThreadSnippet =
-      new CommentThreadSnippet().setTopLevelComment(testTopComment);
-  CommentThread testCommentThread = new CommentThread().setSnippet(testThreadSnippet);
 
   /**
-   * It constructs a HashMap with current range for expected score categorizations for comparisions.
+   * It constructs a List with sentiment bucket for expected score categorizations, frequency and top comments for testing
    *
    * @param userCommentList a list of userComment corresponding to each interval that have top N
    *     magnitude
@@ -112,11 +97,15 @@ public class CommentAnalysisTest {
 
   @Test
   public void testCalculateSentiment() {
-    // This is a test method to calculate simulate and test the process in comment analysis language
-    // service
+    // Simulate and test the process in comment analysis language service
 
     // Declarations of mocked variables and set the dependencies between constructed comments and
     // threads
+    CommentSnippet topCommentSnippet = new CommentSnippet().setTextDisplay("Test Message");
+    Comment testTopComment = new Comment().setSnippet(topCommentSnippet);
+    CommentThreadSnippet testThreadSnippet =
+        new CommentThreadSnippet().setTopLevelComment(testTopComment);
+    CommentThread testCommentThread = new CommentThread().setSnippet(testThreadSnippet);
     List<CommentThread> testCommentThreadList =
         new ArrayList<>(Arrays.asList(testCommentThread, testCommentThread));
     CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
@@ -149,11 +138,12 @@ public class CommentAnalysisTest {
 
   @Test
   public void testNormalScoreCases() {
-    UserComment comment1 = new UserComment(testCommentThread);
+    // cases: two user comments with sentiment score in the same interval
+    UserComment comment1 = new UserComment(new CommentThread());
+    UserComment comment2 = new UserComment(new CommentThread());
     comment1.setCommentId("001");
     comment1.setScore(0.1);
     comment1.setMagnitude(0.4);
-    UserComment comment2 = new UserComment(testCommentThread);
     comment2.setCommentId("002");
     comment2.setScore(0.11);
     comment2.setMagnitude(0.5);
