@@ -74,7 +74,6 @@ public class Statistics {
     averageMagnitude = getAverageMagnitude(userCommentList);
   }
 
-
   /**
    * Categorize all score values into different range intervals and count the frequency for each
    * interval, and set the aggregatedValues.
@@ -103,7 +102,8 @@ public class Statistics {
       BigDecimal nextPoint = upperEnd.min(tempPoint.add(interval));
       Range currentRange = new Range(tempPoint, nextPoint);
       int currentFrequency = 0;
-      PriorityQueue<UserComment> highMagnitudeComments = new PriorityQueue<>(topNumComments, descendingMagnitudeCompare);
+      PriorityQueue<UserComment> highMagnitudeComments =
+          new PriorityQueue<>(topNumComments, descendingMagnitudeCompare);
       // loop through sorted scores within currentRange from updated score pointer and update its
       // corresponding appearance frequency
       int scoreIdx;
@@ -156,12 +156,13 @@ public class Statistics {
                     "Unable to calculate average magnitude due to empty input list."));
   }
 
-  private void addToFixedQueue(UserComment newComment, PriorityQueue<UserComment> currentQueue, int queueSize) {
+  private void addToFixedQueue(
+      UserComment newComment, PriorityQueue<UserComment> currentQueue, int queueSize) {
     if (currentQueue.size() < queueSize) {
       currentQueue.add(newComment);
     } else if (newComment.getMagnitude() >= currentQueue.peek().getMagnitude()) {
-     currentQueue.poll();
-     currentQueue.add(newComment);
+      currentQueue.poll();
+      currentQueue.add(newComment);
     }
   }
 }
