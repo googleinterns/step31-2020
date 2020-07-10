@@ -130,8 +130,7 @@ public class Statistics {
         .average()
         .orElseThrow(
             () ->
-                new RuntimeException(
-                    "Unable to calculate average score due to empty input list."));
+                new RuntimeException("Unable to calculate average score due to empty input list."));
   }
 
   /**
