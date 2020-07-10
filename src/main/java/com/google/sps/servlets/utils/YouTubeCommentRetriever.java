@@ -39,6 +39,8 @@ public class YouTubeCommentRetriever {
   // TODO: have dev key come from centralized location, rather than being hard-coded.
   private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
 
+  private static YouTube youtubeService = null;
+
   public static List<CommentThread> retrieveComments(String url, int maxComments) throws Exception {
     String nextPageToken = "";
     int numCommentsLeft = maxComments;
@@ -67,7 +69,9 @@ public class YouTubeCommentRetriever {
    */
   private static YouTube.CommentThreads.List generateYouTubeRequest(String url, long maxResults)
       throws GeneralSecurityException, IOException {
-    YouTube youtubeService = getService();
+    if(youtubeService == null) {
+     youtubeService = getService();
+    }
     YouTube.CommentThreads.List commentRequest =
         youtubeService.commentThreads().list(SNIPPET_PARAMETERS);
     return commentRequest
