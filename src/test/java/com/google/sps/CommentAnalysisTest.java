@@ -142,15 +142,13 @@ public class CommentAnalysisTest {
   public void testNormalScoreCases() {
     // cases: two user comments with sentiment score in the same interval
     UserComment comment1 =
-        new UserComment("0.01", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4);
+        new UserComment("001", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4);
     UserComment comment2 =
-        new UserComment("0.02", "Second Normal Comment", new DateTime(new Date()), 0.11, 0.5);
+        new UserComment("002", "Second Normal Comment", new DateTime(new Date()), 0.11, 0.5);
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
-    // TODO: currently we have not added the top magnitude comment message in list. The
-    // expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
+        new ArrayList<>(Arrays.asList(null, null, null, null, null, new ArrayList<>(Arrays.asList(comment1, comment2)), null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
     Statistics normalStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(0.105, normalStat.getAverageScore(), 0.01);
