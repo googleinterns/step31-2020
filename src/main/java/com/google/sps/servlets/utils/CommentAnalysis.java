@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 public class CommentAnalysis {
   private LanguageServiceClient languageService;
-  int DEFAULT_TOP_N = 1;
+  private int DEFAULT_TOP_N = 1;
 
   /**
    * Constructor to create and initialize language service for sentiment analysis
