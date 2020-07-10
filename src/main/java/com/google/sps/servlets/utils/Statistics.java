@@ -24,7 +24,6 @@ public class Statistics {
   private static final double LOWER_SCORE_VAL = -1.0;
   private static final double UPPER_SCORE_VAL = 1.0;
   private static final double SCORE_INTERVAL_VAL = 0.2;
-  // TODO: set the current Top n comment as 1; will be updated once we have the input from front-end
   private static final BigDecimal SCORE_INTERVAL = BigDecimal.valueOf(SCORE_INTERVAL_VAL);
   private static final BigDecimal UPPER_SCORE = BigDecimal.valueOf(UPPER_SCORE_VAL);
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
@@ -33,6 +32,13 @@ public class Statistics {
         @Override
         public int compare(UserComment o1, UserComment o2) {
           return Double.compare(o1.getScore(), o2.getScore());
+        }
+      };
+  private static final Comparator descendingMagnitudeCompare =
+      new Comparator<UserComment>() {
+        @Override
+        public int compare(UserComment o1, UserComment o2) {
+          return Double.compare(o1.getMagnitude(), o2.getMagnitude());
         }
       };
 
@@ -68,6 +74,7 @@ public class Statistics {
     averageMagnitude = getAverageMagnitude(userCommentList);
   }
 
+
   /**
    * Categorize all score values into different range intervals and count the frequency for each
    * interval, and set the aggregatedValues.
@@ -96,7 +103,7 @@ public class Statistics {
       BigDecimal nextPoint = upperEnd.min(tempPoint.add(interval));
       Range currentRange = new Range(tempPoint, nextPoint);
       int currentFrequency = 0;
-      PriorityQueue<UserComment> highMagnitudeComments = new PriorityQueue<>();
+      PriorityQueue<UserComment> highMagnitudeComments = new PriorityQueue<>(topNumComments, descendingMagnitudeCompare);
       // loop through sorted scores within currentRange from updated score pointer and update its
       // corresponding appearance frequency
       int scoreIdx;
@@ -104,7 +111,7 @@ public class Statistics {
         BigDecimal scorePoint = BigDecimal.valueOf(userCommentList.get(scoreIdx).getScore());
         if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(upperEnd) == 0) {
           currentFrequency += 1;
-          // TODO: add topNumComments to the priority queue highMagnitudeList
+          addToFixedQueue(userCommentList.get(scoreIdx), highMagnitudeComments, topNumComments);
         } else {
           break;
         }
@@ -147,5 +154,14 @@ public class Statistics {
             () ->
                 new RuntimeException(
                     "Unable to calculate average magnitude due to empty input list."));
+  }
+
+  private void addToFixedQueue(UserComment newComment, PriorityQueue<UserComment> currentQueue, int queueSize) {
+    if (currentQueue.size() < queueSize) {
+      currentQueue.add(newComment);
+    } else if (newComment.getMagnitude() >= currentQueue.peek().getMagnitude()) {
+     currentQueue.poll();
+     currentQueue.add(newComment);
+    }
   }
 }
