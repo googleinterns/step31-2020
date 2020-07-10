@@ -131,14 +131,14 @@ public class Statistics {
         .orElseThrow(
             () ->
                 new RuntimeException(
-                    "Unable to calculate sentiment average due to empty input list."));
+                    "Unable to calculate average score due to empty input list."));
   }
 
   /**
-   * Set the average value of given sentiment values.
+   * Set the average value of given sentiment magnitude.
    *
-   * @param userCommentList a list of userComment to calculate the average score for
-   * @return the average score of userCommentList
+   * @param userCommentList a list of userComment to calculate the average magnitude for
+   * @return the average magnitude of userCommentList
    */
   private double getAverageMagnitude(List<UserComment> userCommentList) {
     return userCommentList.parallelStream()
@@ -147,6 +147,6 @@ public class Statistics {
         .orElseThrow(
             () ->
                 new RuntimeException(
-                    "Unable to calculate sentiment average due to empty input list."));
+                    "Unable to calculate average magnitude due to empty input list."));
   }
 }
