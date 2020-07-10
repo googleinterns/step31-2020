@@ -140,7 +140,8 @@ public class CommentAnalysisTest {
 
   @Test
   public void testTopOneMagnitude() {
-    // cases: two user comments with sentiment score in the same interval and only reuqire top 1 comment
+    // cases: two user comments with sentiment score in the same interval and only reuqire top 1
+    // comment
     UserComment comment1 =
         new UserComment("001", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4);
     UserComment comment2 =
@@ -170,7 +171,8 @@ public class CommentAnalysisTest {
 
   @Test
   public void testMoreThanOneMagnitude() {
-    // cases: two user comments with sentiment score in the same interval and require more than 1 top comments
+    // cases: two user comments with sentiment score in the same interval and require more than 1
+    // top comments
     UserComment comment1 =
         new UserComment("001", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4);
     UserComment comment2 =
@@ -220,8 +222,7 @@ public class CommentAnalysisTest {
                 null,
                 null,
                 null,
-                new ArrayList<>(Arrays.asList(comment2))
-                ));
+                new ArrayList<>(Arrays.asList(comment2))));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 0, 0, 0, 0, 1));
     Statistics distStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(
