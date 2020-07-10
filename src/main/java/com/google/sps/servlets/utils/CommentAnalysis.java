@@ -19,9 +19,7 @@ import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 
 /**
  * This class encapsulates each element in json comment array into separate user comment object and
@@ -54,7 +52,8 @@ public class CommentAnalysis {
    *
    * @return a Statistics object that contains required values to display
    */
-  public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse, int ... parameters) {
+  public Statistics computeOverallStats(
+      CommentThreadListResponse youtubeResponse, int... parameters) {
     // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
     List<UserComment> usercommentList =
         youtubeResponse.getItems().stream()

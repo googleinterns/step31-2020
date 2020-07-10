@@ -38,10 +38,9 @@ public class UserComment {
     this.publishDate = topLevelComment.getSnippet().getPublishedAt();
   }
 
-  /**
-   * This is a easy way to construct a new userComment object for testing purpose.
-   */
-  public UserComment(String commentId, String commentMsg, DateTime publishDate, double score, double magnitude) {
+  /** This is a easy way to construct a new userComment object for testing purpose. */
+  public UserComment(
+      String commentId, String commentMsg, DateTime publishDate, double score, double magnitude) {
     this.commentId = commentId;
     this.commentMsg = commentMsg;
     this.publishDate = publishDate;

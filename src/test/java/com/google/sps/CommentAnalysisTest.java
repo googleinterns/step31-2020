@@ -14,12 +14,11 @@
 
 package com.google.sps;
 
-import com.google.api.client.util.DateTime;
-import java.util.Date;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.api.client.util.DateTime;
 import com.google.api.services.youtube.model.Comment;
 import com.google.api.services.youtube.model.CommentSnippet;
 import com.google.api.services.youtube.model.CommentThread;
@@ -37,6 +36,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -141,8 +141,10 @@ public class CommentAnalysisTest {
   @Test
   public void testNormalScoreCases() {
     // cases: two user comments with sentiment score in the same interval
-    UserComment comment1 = new UserComment("0.01", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4 );
-    UserComment comment2 = new UserComment("0.02", "Second Normal Comment", new DateTime(new Date()), 0.11, 0.5);
+    UserComment comment1 =
+        new UserComment("0.01", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4);
+    UserComment comment2 =
+        new UserComment("0.02", "Second Normal Comment", new DateTime(new Date()), 0.11, 0.5);
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
     // TODO: currently we have not added the top magnitude comment message in list. The
