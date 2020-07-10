@@ -69,8 +69,8 @@ public class YouTubeCommentRetriever {
    */
   private static YouTube.CommentThreads.List generateYouTubeRequest(String url, long maxResults)
       throws GeneralSecurityException, IOException {
-    if(youtubeService == null) {
-     youtubeService = getService();
+    if (youtubeService == null) {
+      youtubeService = getService();
     }
     YouTube.CommentThreads.List commentRequest =
         youtubeService.commentThreads().list(SNIPPET_PARAMETERS);
