@@ -17,7 +17,6 @@ package com.google.sps.servlets.utils;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
-import com.google.cloud.language.v1.Sentiment;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +27,7 @@ import java.util.stream.Collectors;
  */
 public class CommentAnalysis {
   private LanguageServiceClient languageService;
+  private int DEFAULT_TOP_N = 1;
 
   /**
    * Constructor to create and initialize language service for sentiment analysis
@@ -48,37 +48,38 @@ public class CommentAnalysis {
   }
 
   /**
-   * It computes an overall statistics score from the retrieved youtube comments.
+   * It computes an overall statistics object from the retrieved youtube comments.
    *
    * @return a Statistics object that contains required values to display
    */
-  public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
-    List<Double> scoreValues =
+  public Statistics computeOverallStats(
+      CommentThreadListResponse youtubeResponse, int... parameters) {
+    // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
+    List<UserComment> usercommentList =
         youtubeResponse.getItems().stream()
             .map(UserComment::new)
-            .map(this::calcualateSentiAnalysisScore)
+            .map(this::updateSentimentForComment)
             .collect(Collectors.toList());
-    return new Statistics(scoreValues);
+    int topNCommentsVal = parameters.length == 0 ? DEFAULT_TOP_N : parameters[0];
+    return new Statistics(usercommentList, topNCommentsVal);
   }
 
   /**
-   * Perform sentiment analysis of comment.
+   * Perform sentiment analysis from language service for a single usercomment
    *
-   * @return sentiment score
-   * @throws RuntimeException if the sentiment analysis API is not working, throw the IOExeption
+   * @param comment a comment object to retrieve the content
+   * @return a Sentiment with sentiment scores & magnitude
    */
-  private double calcualateSentiAnalysisScore(UserComment comment) {
-    Document doc =
-        Document.newBuilder()
-            .setContent(comment.getCommentMsg())
-            .setType(Document.Type.PLAIN_TEXT)
-            .build();
-    Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
-    if (sentiment != null) {
-      return ((double) sentiment.getScore());
-    } else {
-      throw new RuntimeException("Failed to build the sentiments");
-    }
+  private UserComment updateSentimentForComment(UserComment comment) {
+    comment.setSentiment(
+        languageService
+            .analyzeSentiment(
+                Document.newBuilder()
+                    .setContent(comment.getCommentMsg())
+                    .setType(Document.Type.PLAIN_TEXT)
+                    .build())
+            .getDocumentSentiment());
+    return comment;
   }
 
   public void closeLanguage() {
