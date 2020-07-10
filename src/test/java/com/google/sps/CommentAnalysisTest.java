@@ -14,6 +14,8 @@
 
 package com.google.sps;
 
+import com.google.api.client.util.DateTime;
+import java.util.Date;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -139,14 +141,8 @@ public class CommentAnalysisTest {
   @Test
   public void testNormalScoreCases() {
     // cases: two user comments with sentiment score in the same interval
-    UserComment comment1 = new UserComment(new CommentThread());
-    UserComment comment2 = new UserComment(new CommentThread());
-    comment1.setCommentId("001");
-    comment1.setScore(0.1);
-    comment1.setMagnitude(0.4);
-    comment2.setCommentId("002");
-    comment2.setScore(0.11);
-    comment2.setMagnitude(0.5);
+    UserComment comment1 = new UserComment("0.01", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4 );
+    UserComment comment2 = new UserComment("0.02", "Second Normal Comment", new DateTime(new Date()), 0.11, 0.5);
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
     // TODO: currently we have not added the top magnitude comment message in list. The
@@ -154,7 +150,7 @@ public class CommentAnalysisTest {
     List<List<UserComment>> expectedUserComment =
         new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
-    Statistics normalStat = new Statistics(inputUserComment);
+    Statistics normalStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(0.105, normalStat.getAverageScore(), 0.01);
     Assert.assertEquals(
         constructRangeMapFromFrequencyList(

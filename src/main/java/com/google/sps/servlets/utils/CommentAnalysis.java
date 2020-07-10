@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 /**
  * This class encapsulates each element in json comment array into separate user comment object and
@@ -53,14 +54,14 @@ public class CommentAnalysis {
    *
    * @return a Statistics object that contains required values to display
    */
-  public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse, Optional<Integer> topNComments) {
+  public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse, int ... parameters) {
     // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
     List<UserComment> usercommentList =
         youtubeResponse.getItems().stream()
             .map(UserComment::new)
             .map(this::updateSentimentForComment)
             .collect(Collectors.toList());
-    int topNCommentsVal = topNComments.isPresent() ? topNComments.get() : DEFAULT_TOP_N;
+    int topNCommentsVal = parameters.length == 0 ? DEFAULT_TOP_N : parameters[0];
     return new Statistics(usercommentList, topNCommentsVal);
   }
 
