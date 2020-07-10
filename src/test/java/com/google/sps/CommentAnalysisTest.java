@@ -59,9 +59,9 @@ public class CommentAnalysisTest {
   private static final float TEST_SCORE = 0.23f;
   private static final float TEST_MAGNITUDE = 1.5f;
 
-
   /**
-   * It constructs a List with sentiment bucket for expected score categorizations, frequency and top comments for testing
+   * It constructs a List with sentiment bucket for expected score categorizations, frequency and
+   * top comments for testing
    *
    * @param userCommentList a list of userComment corresponding to each interval that have top N
    *     magnitude
