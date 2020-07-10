@@ -133,11 +133,11 @@ public class Statistics {
    */
   private double getAverageScore(List<UserComment> userCommentList) {
     return userCommentList.parallelStream()
-               .mapToDouble(UserComment::getScore)
-               .average()
-               .orElseThrow(
-                   () ->
-                       new RuntimeException("Unable to calculate average score due to empty input list."));
+        .mapToDouble(UserComment::getScore)
+        .average()
+        .orElseThrow(
+            () ->
+                new RuntimeException("Unable to calculate average score due to empty input list."));
   }
 
   /**
@@ -148,12 +148,12 @@ public class Statistics {
    */
   private double getAverageMagnitude(List<UserComment> userCommentList) {
     return userCommentList.parallelStream()
-               .mapToDouble(UserComment::getMagnitude)
-               .average()
-               .orElseThrow(
-                   () ->
-                       new RuntimeException(
-                           "Unable to calculate average magnitude due to empty input list."));
+        .mapToDouble(UserComment::getMagnitude)
+        .average()
+        .orElseThrow(
+            () ->
+                new RuntimeException(
+                    "Unable to calculate average magnitude due to empty input list."));
   }
 
   private void addToFixedQueue(

@@ -148,7 +148,18 @@ public class CommentAnalysisTest {
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(Arrays.asList(null, null, null, null, null, new ArrayList<>(Arrays.asList(comment1, comment2)), null, null, null, null));
+        new ArrayList<>(
+            Arrays.asList(
+                null,
+                null,
+                null,
+                null,
+                null,
+                new ArrayList<>(Arrays.asList(comment1, comment2)),
+                null,
+                null,
+                null,
+                null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
     Statistics normalStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(0.105, normalStat.getAverageScore(), 0.01);
