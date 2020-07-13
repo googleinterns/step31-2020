@@ -65,16 +65,15 @@ public class ContextServlet extends HttpServlet {
 
   /**
    * Connect to Youtube Server and generate request to retrieve video information
+   *
    * @param url Youtube video id to retrieve information
    */
   private YouTube.Videos.List generateYouTubeRequest(String url)
       throws GeneralSecurityException, IOException {
     YouTube youtubeService = getService();
-    YouTube.Videos.List videoRequest =
-        youtubeService.videos().list(REQUEST_INFO);
+    YouTube.Videos.List videoRequest = youtubeService.videos().list(REQUEST_INFO);
     return videoRequest.setKey(DEVELOPER_KEY).setId(url);
   }
-
 
   /**
    * Build and return an authorized API client service.
@@ -83,7 +82,8 @@ public class ContextServlet extends HttpServlet {
    * @throws GeneralSecurityException, IOException
    */
   private YouTube getService() throws GeneralSecurityException, IOException {
-    //TODO: Encapsulate this getService() method with comment retrieving service once refactored YoutubeServlet gets merged
+    // TODO: Encapsulate this getService() method with comment retrieving service once refactored
+    // YoutubeServlet gets merged
     final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
         .setApplicationName(APPLICATION_NAME)
