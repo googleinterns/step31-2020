@@ -42,8 +42,9 @@ public class ContextServlet extends HttpServlet {
   private static final String REQUEST_INFO = "snippet,contentDetails,statistics";
 
   /**
-   * Retrieves video information from designated URL, wraps them into information object,
-   * then writes the Information object to the frontend.
+   * Retrieves video information from designated URL, wraps them into information object, then
+   * writes the Information object to the frontend.
+   *
    * @param request request from our web server
    * @param response empty response to write json object
    */
