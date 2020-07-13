@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 public class CommentAnalysis {
   private LanguageServiceClient languageService;
-  private int DEFAULT_TOP_N = 1;
+  private static final int DEFAULT_TOP_N = 1;
 
   /**
    * Constructor to create and initialize language service for sentiment analysis
@@ -50,18 +50,36 @@ public class CommentAnalysis {
   /**
    * It computes an overall statistics object from the retrieved youtube comments.
    *
+   * @param youtubeResponse a list of commentThread retreived from youtube server
    * @return a Statistics object that contains required values to display
    */
-  public Statistics computeOverallStats(
-      CommentThreadListResponse youtubeResponse, int... parameters) {
+  public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
     // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
     List<UserComment> usercommentList =
-        youtubeResponse.getItems().stream()
+        youtubeResponse.getItems().parallelStream()
             .map(UserComment::new)
             .map(this::updateSentimentForComment)
             .collect(Collectors.toList());
-    int topNCommentsVal = parameters.length == 0 ? DEFAULT_TOP_N : parameters[0];
-    return new Statistics(usercommentList, topNCommentsVal);
+    return new Statistics(usercommentList, DEFAULT_TOP_N);
+  }
+
+  /**
+   * It computes an overall statistics object from the retrieved youtube comments with user-defined
+   * number of top comments.
+   *
+   * @param youtubeResponse a list of commentThread retreived from youtube server
+   * @param numTopComments number of top comments to display for each interval
+   * @return a Statistics object that contains required values to display
+   */
+  public Statistics computeOverallStats(
+      CommentThreadListResponse youtubeResponse, int numTopComments) {
+    // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
+    List<UserComment> usercommentList =
+        youtubeResponse.getItems().parallelStream()
+            .map(UserComment::new)
+            .map(this::updateSentimentForComment)
+            .collect(Collectors.toList());
+    return new Statistics(usercommentList, numTopComments);
   }
 
   /**

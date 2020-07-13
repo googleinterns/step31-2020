@@ -27,20 +27,10 @@ public class Statistics {
   private static final BigDecimal SCORE_INTERVAL = BigDecimal.valueOf(SCORE_INTERVAL_VAL);
   private static final BigDecimal UPPER_SCORE = BigDecimal.valueOf(UPPER_SCORE_VAL);
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
-  private static final Comparator ascendingScoreCompare =
-      new Comparator<UserComment>() {
-        @Override
-        public int compare(UserComment o1, UserComment o2) {
-          return Double.compare(o1.getScore(), o2.getScore());
-        }
-      };
-  private static final Comparator descendingMagnitudeCompare =
-      new Comparator<UserComment>() {
-        @Override
-        public int compare(UserComment o1, UserComment o2) {
-          return Double.compare(o1.getMagnitude(), o2.getMagnitude());
-        }
-      };
+  private static final Comparator<UserComment> ascendingScoreCompare =
+      (UserComment o1, UserComment o2) -> Double.compare(o1.getScore(), o2.getScore());
+  private static final Comparator<UserComment> descendingMagnitudeCompare =
+      (UserComment o1, UserComment o2) -> Double.compare(o1.getMagnitude(), o2.getMagnitude());
 
   // Contains sentiment bucket information for all intervals
   private List<SentimentBucket> sentimentBucketList;
@@ -120,9 +110,17 @@ public class Statistics {
       updatingScoreIdx = scoreIdx;
       sentimentBucketList.add(
           new SentimentBucket(
-              new ArrayList<>(highMagnitudeComments), currentFrequency, currentRange));
+              convertQueueToList(highMagnitudeComments), currentFrequency, currentRange));
     }
     return sentimentBucketList;
+  }
+
+  private ArrayList convertQueueToList(PriorityQueue<UserComment> inputQueue) {
+    ArrayList<UserComment> returnList = new ArrayList<>();
+    while (!inputQueue.isEmpty()) {
+      returnList.add(inputQueue.poll());
+    }
+    return returnList;
   }
 
   /**
@@ -132,7 +130,7 @@ public class Statistics {
    * @return the average score of userCommentList
    */
   private double getAverageScore(List<UserComment> userCommentList) {
-    return userCommentList.parallelStream()
+    return userCommentList.stream()
         .mapToDouble(UserComment::getScore)
         .average()
         .orElseThrow(
@@ -147,7 +145,7 @@ public class Statistics {
    * @return the average magnitude of userCommentList
    */
   private double getAverageMagnitude(List<UserComment> userCommentList) {
-    return userCommentList.parallelStream()
+    return userCommentList.stream()
         .mapToDouble(UserComment::getMagnitude)
         .average()
         .orElseThrow(
