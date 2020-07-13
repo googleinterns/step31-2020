@@ -98,8 +98,6 @@ public class CommentAnalysisTest {
     CommentThread testCommentThread = new CommentThread().setSnippet(testThreadSnippet);
     List<CommentThread> testCommentThreadList =
         new ArrayList<>(Arrays.asList(testCommentThread, testCommentThread));
-    CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
-    youtubeResponse.setItems(testCommentThreadList);
 
     // Mock the service variables
     LanguageServiceClient mockedlanguageService =
@@ -112,7 +110,7 @@ public class CommentAnalysisTest {
     CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
 
     // Compute and test the score from mocked language service
-    Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
+    Statistics testStat = commentAnalysis.computeOverallStats(testCommentThreadList);
     Assert.assertNotNull(testStat);
     Assert.assertNotNull(testStat.getAggregateValues());
     Assert.assertEquals(testStat.getAverageScore(), TEST_SCORE, 0.01);
