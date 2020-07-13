@@ -69,28 +69,25 @@ public class CommentAnalysisTest {
    * @return constructed hashmap with keys as ranges based on intervals and values corresponding to
    *     frequency input
    */
-  private List<SentimentBucket> constructRangeMapFromFrequencyList(
+  private List<SentimentBucket> constructSentimentBucketListFromCommentList(
       List<List<UserComment>> userCommentList,
-      List<Integer> frequency,
-      BigDecimal lowerEnd,
-      BigDecimal upperEnd,
-      BigDecimal interval) {
+      List<Integer> frequency){
     if (userCommentList.size() != frequency.size()
         || (frequency.size()
-            != upperEnd.subtract(lowerEnd).divide(interval, 0, RoundingMode.UP).intValue())) {
+            != UPPER_SCORE.subtract(LOWER_SCORE).divide(SCORE_INTERVAL, 0, RoundingMode.UP).intValue())) {
       throw new RuntimeException("Initialize list in test function got wrong size");
     }
-    int listPointer = 0;
+    int listIndex = 0;
     List<SentimentBucket> expectedBucketList = new ArrayList<>();
-    for (BigDecimal tempPoint = lowerEnd;
-        tempPoint.compareTo(upperEnd) < 0;
-        tempPoint = tempPoint.add(interval)) {
-      BigDecimal nextPoint = upperEnd.min(tempPoint.add(interval));
+    for (BigDecimal tempPoint = LOWER_SCORE;
+        tempPoint.compareTo(UPPER_SCORE) < 0;
+        tempPoint = tempPoint.add(SCORE_INTERVAL)) {
+      BigDecimal nextPoint = UPPER_SCORE.min(tempPoint.add(SCORE_INTERVAL));
       Range currentRange = new Range(tempPoint, nextPoint);
       expectedBucketList.add(
           new SentimentBucket(
-              userCommentList.get(listPointer), frequency.get(listPointer), currentRange));
-      listPointer = listPointer + 1;
+              userCommentList.get(listIndex), frequency.get(listIndex), currentRange));
+      listIndex = listIndex + 1;
     }
     return expectedBucketList;
   }
@@ -135,8 +132,8 @@ public class CommentAnalysisTest {
     Assert.assertEquals(TEST_SCORE, testStat.getAverageScore(), 0.01);
     Assert.assertEquals(TEST_MAGNITUDE, testStat.getAverageMagnitude(), 0.01);
     Assert.assertEquals(
-        constructRangeMapFromFrequencyList(
-            expectedUserComment, expectedFrequency, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL),
+        constructSentimentBucketListFromCommentList(
+            expectedUserComment, expectedFrequency),
         testStat.getSentimentBucketList());
   }
 
@@ -157,8 +154,8 @@ public class CommentAnalysisTest {
     Statistics normalStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(0.105, normalStat.getAverageScore(), 0.01);
     Assert.assertEquals(
-        constructRangeMapFromFrequencyList(
-            expectedUserComment, expectedFrequency, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL),
+        constructSentimentBucketListFromCommentList(
+            expectedUserComment, expectedFrequency),
         normalStat.getSentimentBucketList());
   }
 }

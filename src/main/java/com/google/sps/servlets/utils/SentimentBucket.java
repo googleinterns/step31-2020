@@ -19,10 +19,10 @@ import java.util.List;
 public class SentimentBucket {
 
   private List<UserComment> topNComments; // userComment with top N magnitude within this interval
-  private Integer frequency; // number of comments whose sentiment score is in this interval
+  private int frequency; // number of comments whose sentiment score is in this interval
   private Range intervalRange;
 
-  public List<UserComment> gettopNComments() {
+  public List<UserComment> getTopNComments() {
     return topNComments;
   }
 
@@ -72,7 +72,7 @@ public class SentimentBucket {
       return false;
     }
     SentimentBucket bucketToCompare = (SentimentBucket) bucketObject;
-    return (topNComments == null || topNComments.equals(bucketToCompare.gettopNComments()))
+    return (topNComments == null || topNComments.equals(bucketToCompare.getTopNComments()))
         && frequency == bucketToCompare.getFrequency()
         && intervalRange.equals(getIntervalRange());
   }
