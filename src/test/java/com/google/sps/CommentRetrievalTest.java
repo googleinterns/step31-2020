@@ -50,8 +50,7 @@ public class CommentRetrievalTest {
   // The simplest case: extract 100 comments from a video with more than 100 comments
   @Test
   public void testDefaultBehaviour() throws Exception {
-    List<CommentThread> comments =
-        mockedRetriever.retrieveComments(POPULAR_VIDEO_URL, HUNDRED);
+    List<CommentThread> comments = mockedRetriever.retrieveComments(POPULAR_VIDEO_URL, HUNDRED);
     Assert.assertEquals(comments.size(), 100);
   }
 
