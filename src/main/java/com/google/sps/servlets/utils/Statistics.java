@@ -77,7 +77,7 @@ public class Statistics {
   }
 
 
-  public Map<String, Integer> countWordFrequencyMap(List<UserComment> userCommentList) {
+  private Map<String, Integer> countWordFrequencyMap(List<UserComment> userCommentList) {
      Stream<String> allWordStream = userCommentList.stream().map(comment ->
       comment.getCommentMsg().split("\\s+"))
                .map(wordArray -> new ArrayList(Arrays.asList(wordArray)))
