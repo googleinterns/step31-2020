@@ -44,6 +44,8 @@ public class ContextServlet extends HttpServlet {
   /**
    * Retrieves video information from designated URL, wraps them into information object,
    * then writes the Information object to the frontend.
+   * @param request request from our web server
+   * @param response empty response to write json object
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
