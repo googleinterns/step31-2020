@@ -14,8 +14,6 @@
 
 package com.google.sps;
 
-import com.google.appengine.api.users.User;
-import java.util.Collections;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -38,6 +36,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.junit.Assert;
@@ -89,12 +88,12 @@ public class CommentAnalysisTest {
         tempPoint = tempPoint.add(SCORE_INTERVAL)) {
       BigDecimal nextPoint = UPPER_SCORE.min(tempPoint.add(SCORE_INTERVAL));
       Range currentRange = new Range(tempPoint, nextPoint);
-      List<UserComment> curMagnitudeList =  userCommentList.get(listIndex) == null
-                                                ? new ArrayList<>()
-                                                : userCommentList.get(listIndex);
+      List<UserComment> curMagnitudeList =
+          userCommentList.get(listIndex) == null
+              ? new ArrayList<>()
+              : userCommentList.get(listIndex);
       expectedBucketList.add(
-          new SentimentBucket(
-              curMagnitudeList, frequency.get(listIndex), currentRange));
+          new SentimentBucket(curMagnitudeList, frequency.get(listIndex), currentRange));
       listIndex = listIndex + 1;
     }
     return expectedBucketList;
@@ -131,9 +130,22 @@ public class CommentAnalysisTest {
 
     // Compute and test the sentiment bucket from mocked language service
     Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
-    UserComment testUserComment = new UserComment(TEST_ID, TEST_MESSAGE, new DateTime(new Date()), TEST_SCORE, TEST_MAGNITUDE);
+    UserComment testUserComment =
+        new UserComment(
+            TEST_ID, TEST_MESSAGE, new DateTime(new Date()), TEST_SCORE, TEST_MAGNITUDE);
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, Collections.singletonList(testUserComment), null, null, null));
+        new ArrayList<>(
+            Arrays.asList(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Collections.singletonList(testUserComment),
+                null,
+                null,
+                null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0));
     Assert.assertNotNull(testStat);
     Assert.assertNotNull(testStat.getSentimentBucketList());
@@ -170,8 +182,7 @@ public class CommentAnalysisTest {
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
     Statistics highestStat = new Statistics(inputUserComment, 1);
     Assert.assertEquals(
-        constructSentimentBucketListFromCommentList(
-            expectedUserComment, expectedFrequency),
+        constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
         highestStat.getSentimentBucketList());
   }
 
@@ -202,8 +213,7 @@ public class CommentAnalysisTest {
     Statistics twohighestStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(0.105, twohighestStat.getAverageScore(), 0.01);
     Assert.assertEquals(
-        constructSentimentBucketListFromCommentList(
-            expectedUserComment, expectedFrequency),
+        constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
         twohighestStat.getSentimentBucketList());
   }
 
@@ -232,8 +242,7 @@ public class CommentAnalysisTest {
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 0, 0, 0, 0, 1));
     Statistics distStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(
-        constructSentimentBucketListFromCommentList(
-            expectedUserComment, expectedFrequency),
+        constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
         distStat.getSentimentBucketList());
   }
 }
