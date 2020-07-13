@@ -15,7 +15,7 @@
 package com.google.sps;
 
 import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.model.*;
+import com.google.api.services.youtube.model.CommentThread;
 import com.google.sps.servlets.utils.YouTubeCommentRetriever;
 import java.io.IOException;
 import java.util.List;

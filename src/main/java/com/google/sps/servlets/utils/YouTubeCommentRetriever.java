@@ -47,6 +47,8 @@ public class YouTubeCommentRetriever {
     long commentQueryLimit = 0;
     ArrayList allComments = new ArrayList<>();
     do {
+      // If commentQueryLimit exceeds the number of comments on the video,
+      // The API will simply return all the comments on a video.
       commentQueryLimit = Math.min(COMMENT_LIMIT, numCommentsLeft);
       numCommentsLeft -= COMMENT_LIMIT;
       YouTube.CommentThreads.List commentRequest = generateYouTubeRequest(url, commentQueryLimit);
@@ -55,7 +57,6 @@ public class YouTubeCommentRetriever {
       }
       CommentThreadListResponse commentResponse = commentRequest.execute();
       nextPageToken = commentResponse.getNextPageToken();
-      // Add comment threads to big list
       allComments.addAll(commentResponse.getItems());
     } while (nextPageToken != null && numCommentsLeft > 0);
     return allComments;
