@@ -41,6 +41,14 @@ public class YouTubeCommentRetriever {
 
   private YouTube youtubeService = null;
 
+  public YouTubeCommentRetriever() throws Exception {
+    youtubeService = getService();
+  }
+
+  public YouTubeCommentRetriever(YouTube youTube) {
+    youtubeService = youTube;
+  }
+
   public List<CommentThread> retrieveComments(String url, int maxComments) throws Exception {
     String nextPageToken = "";
     int numCommentsLeft = maxComments;
@@ -70,9 +78,6 @@ public class YouTubeCommentRetriever {
    */
   private YouTube.CommentThreads.List generateYouTubeRequest(String url, long maxResults)
       throws GeneralSecurityException, IOException {
-    if (youtubeService == null) {
-      youtubeService = getService();
-    }
     YouTube.CommentThreads.List commentRequest =
         youtubeService.commentThreads().list(SNIPPET_PARAMETERS);
     return commentRequest
