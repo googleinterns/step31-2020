@@ -14,6 +14,8 @@
 
 package com.google.sps;
 
+import java.util.HashMap;
+import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -215,15 +217,17 @@ public class CommentAnalysisTest {
     Assert.assertEquals(
         constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
         twohighestStat.getSentimentBucketList());
+    Map<String, Integer> expectedMap = new HashMap<String, Integer>(){{put("Normal", 2); put("Comment", 2); put("First", 1); put("Second", 1);}};
+    Assert.assertEquals(expectedMap, twohighestStat.getWordFrequencyMap());
   }
 
   @Test
   public void testDistributeScore() {
     // cases: two user comments with sentiment score in the same interval
     UserComment comment1 =
-        new UserComment("003", "First Normal Comment", new DateTime(new Date()), -1.0, 0.4);
+        new UserComment("003", "Third Comment neg 1", new DateTime(new Date()), -1.0, 0.4);
     UserComment comment2 =
-        new UserComment("004", "Second Normal Comment", new DateTime(new Date()), 0.8, 0.5);
+        new UserComment("004", "Forth Comment pos 1", new DateTime(new Date()), 0.8, 0.5);
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
     List<List<UserComment>> expectedUserComment =
@@ -244,5 +248,7 @@ public class CommentAnalysisTest {
     Assert.assertEquals(
         constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
         distStat.getSentimentBucketList());
+    Map<String, Integer> expectedMap = new HashMap<String, Integer>(){{put("1", 2); put("Comment", 2); put("Third", 1); put("Forth", 1);put("pos", 1);put("neg", 1);}};
+    Assert.assertEquals(expectedMap, distStat.getWordFrequencyMap());
   }
 }

@@ -16,9 +16,15 @@ package com.google.sps.servlets.utils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Statistics {
   private static final double LOWER_SCORE_VAL = -1.0;
@@ -34,6 +40,7 @@ public class Statistics {
 
   // Contains sentiment bucket information for all intervals
   private List<SentimentBucket> sentimentBucketList;
+  private Map<String, Integer> wordFrequencyMap;
   private double averageMagnitude;
   private double averageScore;
 
@@ -49,6 +56,10 @@ public class Statistics {
     return averageScore;
   }
 
+  public Map<String, Integer> getWordFrequencyMap() {
+    return wordFrequencyMap;
+  }
+
   /**
    * Constructor of Statistics to get average score and magnitude and create aggregate sentiment
    * bucket list to store each interval's information
@@ -62,6 +73,16 @@ public class Statistics {
             userCommentList, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL, topNComments);
     averageScore = getAverageScore(userCommentList);
     averageMagnitude = getAverageMagnitude(userCommentList);
+    wordFrequencyMap = countWordFrequencyMap(userCommentList);
+  }
+
+
+  public Map<String, Integer> countWordFrequencyMap(List<UserComment> userCommentList) {
+     Stream<String> allWordStream = userCommentList.stream().map(comment ->
+      comment.getCommentMsg().split("\\s+"))
+               .map(wordArray -> new ArrayList(Arrays.asList(wordArray)))
+               .flatMap(wordList -> wordList.stream());
+    return allWordStream.collect(Collectors.groupingBy(word -> word, Collectors.summingInt(word -> 1)));
   }
 
   /**
