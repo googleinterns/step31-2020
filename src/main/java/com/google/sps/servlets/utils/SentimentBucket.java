@@ -76,5 +76,4 @@ public class SentimentBucket {
         && frequency == bucketToCompare.getFrequency()
         && intervalRange.equals(getIntervalRange());
   }
-
 }
