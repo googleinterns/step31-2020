@@ -28,20 +28,20 @@ import java.util.List;
  * Class to retrieve YouTube comments from a designated URL with certain parameters
  */
 public class YouTubeCommentRetriever {
-  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+  private final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   // Limit of comments that can be obtained in one request
-  private static final Long COMMENT_LIMIT = 100L;
+  private final Long COMMENT_LIMIT = 100L;
   // Parameters required by YouTube API to retrieve the comment threads
-  private static final String SNIPPET_PARAMETERS = "snippet,replies";
-  private static final String ORDER_PARAMETER = "relevance";
+  private final String SNIPPET_PARAMETERS = "snippet,replies";
+  private final String ORDER_PARAMETER = "relevance";
 
-  private static final String APPLICATION_NAME = "SAY";
+  private final String APPLICATION_NAME = "SAY";
   // TODO: have dev key come from centralized location, rather than being hard-coded.
-  private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
+  private final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
 
-  private static YouTube youtubeService = null;
+  private YouTube youtubeService = null;
 
-  public static List<CommentThread> retrieveComments(String url, int maxComments) throws Exception {
+  public List<CommentThread> retrieveComments(String url, int maxComments) throws Exception {
     String nextPageToken = "";
     int numCommentsLeft = maxComments;
     long commentQueryLimit = 0;
@@ -68,7 +68,7 @@ public class YouTubeCommentRetriever {
    *     be reduced for specific queries.
    * @return A list of comment threads to be aggregated to the overall list.
    */
-  private static YouTube.CommentThreads.List generateYouTubeRequest(String url, long maxResults)
+  private YouTube.CommentThreads.List generateYouTubeRequest(String url, long maxResults)
       throws GeneralSecurityException, IOException {
     if (youtubeService == null) {
       youtubeService = getService();
@@ -88,7 +88,7 @@ public class YouTubeCommentRetriever {
    * @return an authorized API client service
    * @throws GeneralSecurityException, IOException
    */
-  public static YouTube getService() throws GeneralSecurityException, IOException {
+  public YouTube getService() throws GeneralSecurityException, IOException {
     final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
         .setApplicationName(APPLICATION_NAME)

@@ -38,10 +38,12 @@ public class CommentRetrievalTest {
   // A video with very few comments (Unlikely to ever reach even 100)
   private final String UNPOPULAR_VIDEO_URL = "cA-arJ0T6L4";
 
+  private YouTubeCommentRetriever mockedRetriever;
+
   @Before
   public void testYoutubeGenerate() throws Exception {
     YouTube mockedYoutube = mock(YouTube.class);
-    YouTubeCommentRetriever mockedRetriever = mock(YouTubeCommentRetriever.class);
+    mockedRetriever = mock(YouTubeCommentRetriever.class);
     Mockito.when(mockedRetriever.getService()).thenReturn(mockedYoutube);
   }
 
@@ -49,7 +51,7 @@ public class CommentRetrievalTest {
   @Test
   public void testDefaultBehaviour() throws Exception {
     List<CommentThread> comments =
-        YouTubeCommentRetriever.retrieveComments(POPULAR_VIDEO_URL, HUNDRED);
+        mockedRetriever.retrieveComments(POPULAR_VIDEO_URL, HUNDRED);
     Assert.assertEquals(comments.size(), 100);
   }
 
@@ -58,7 +60,7 @@ public class CommentRetrievalTest {
   @Test
   public void testExcessHundredComments() throws Exception {
     List<CommentThread> comments =
-        YouTubeCommentRetriever.retrieveComments(POPULAR_VIDEO_URL, EXCESS_HUNDRED);
+        mockedRetriever.retrieveComments(POPULAR_VIDEO_URL, EXCESS_HUNDRED);
     Assert.assertEquals(comments.size(), 200);
   }
 
@@ -66,7 +68,7 @@ public class CommentRetrievalTest {
   @Test
   public void doesNotAttemptRetrieveExcess() throws Exception {
     List<CommentThread> comments =
-        YouTubeCommentRetriever.retrieveComments(UNPOPULAR_VIDEO_URL, EXCESS_HUNDRED);
+        mockedRetriever.retrieveComments(UNPOPULAR_VIDEO_URL, EXCESS_HUNDRED);
     // Assert uses < rather than == so that if additional comments are left it won't break the test.
     Assert.assertTrue(comments.size() < 200);
   }
@@ -74,14 +76,14 @@ public class CommentRetrievalTest {
   // Retrieve a specific amount of comments less than 100
   @Test
   public void retrievesSpecificNumComments() throws Exception {
-    List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments(POPULAR_VIDEO_URL, 12);
+    List<CommentThread> comments = mockedRetriever.retrieveComments(POPULAR_VIDEO_URL, 12);
     Assert.assertEquals(comments.size(), 12);
   }
 
   // Retrieve a specific amount of comments more than 100
   @Test
   public void retrievesSpecificNumCommentsExcessHundred() throws Exception {
-    List<CommentThread> comments = YouTubeCommentRetriever.retrieveComments(POPULAR_VIDEO_URL, 120);
+    List<CommentThread> comments = mockedRetriever.retrieveComments(POPULAR_VIDEO_URL, 120);
     Assert.assertEquals(comments.size(), 120);
   }
 }
