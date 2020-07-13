@@ -17,12 +17,10 @@ package com.google.sps.servlets.utils;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -76,13 +74,14 @@ public class Statistics {
     wordFrequencyMap = countWordFrequencyMap(userCommentList);
   }
 
-
   private Map<String, Integer> countWordFrequencyMap(List<UserComment> userCommentList) {
-     Stream<String> allWordStream = userCommentList.stream().map(comment ->
-      comment.getCommentMsg().split("\\s+"))
-               .map(wordArray -> new ArrayList(Arrays.asList(wordArray)))
-               .flatMap(wordList -> wordList.stream());
-    return allWordStream.collect(Collectors.groupingBy(word -> word, Collectors.summingInt(word -> 1)));
+    Stream<String> allWordStream =
+        userCommentList.stream()
+            .map(comment -> comment.getCommentMsg().split("\\s+"))
+            .map(wordArray -> new ArrayList(Arrays.asList(wordArray)))
+            .flatMap(wordList -> wordList.stream());
+    return allWordStream.collect(
+        Collectors.groupingBy(word -> word, Collectors.summingInt(word -> 1)));
   }
 
   /**
