@@ -44,27 +44,6 @@
       <artifactId>mockito-core</artifactId>
       <version>2.3.4</version>
     </dependency>
-    <!-- PowerMock TestNG Module -->
-	<dependency>
-	  <groupId>org.powermock</groupId>
-	  <artifactId>powermock-module-testng</artifactId>
-	  <version>${powermock.version}</version>
-	  <scope>test</scope>
-	</dependency>
-	<!-- PowerMock JUnit 4.4+ Module -->
-	<dependency>
-	  <groupId>org.powermock</groupId>
-	  <artifactId>powermock-module-junit4</artifactId>
-	  <version>${powermock.version}</version>
-	  <scope>test</scope>
-	</dependency>
-	<!-- PowerMock Mockito2 API -->
-	<dependency>
-	  <groupId>org.powermock</groupId>
-	  <artifactId>powermock-api-mockito2</artifactId>
-	  <version>${powermock.version}</version>
-	  <scope>test</scope>
-	</dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -89,7 +68,16 @@
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.14.1</version>
+        <configuration>
+          <includes>
+            <include>**/CommentRetrievalTest.java</include>
+          </includes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
-
 </project>

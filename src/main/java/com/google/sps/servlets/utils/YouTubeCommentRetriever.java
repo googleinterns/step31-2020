@@ -49,9 +49,9 @@ public class YouTubeCommentRetriever {
     youtubeService = youTube;
   }
 
-  public List<CommentThread> retrieveComments(String url, int maxComments) throws Exception {
+  public List<CommentThread> retrieveComments(String url, long maxComments) throws Exception {
     String nextPageToken = "";
-    int numCommentsLeft = maxComments;
+    long numCommentsLeft = maxComments;
     long commentQueryLimit = 0;
     ArrayList allComments = new ArrayList<>();
     do {

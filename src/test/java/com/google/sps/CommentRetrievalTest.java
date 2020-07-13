@@ -43,9 +43,9 @@ public class CommentRetrievalTest {
   @Before
   public void testYoutubeGenerate() throws Exception {
     YouTube mockedYoutube = mock(YouTube.class);
-    commentRetriever = new YouTubeCommentRetriever(mockedYoutube);//mock(YouTubeCommentRetriever.class);
-    // Mockito.when(commentRetriever.getService()).thenReturn(mockedYoutube);
-    
+    //when(youTube.commentThreads()).thenReturn(new YouTube.CommentThreads.List("Ass"));
+    System.out.println(mockedYoutube);
+    commentRetriever = new YouTubeCommentRetriever(mockedYoutube);
   }
 
   // The simplest case: extract 100 comments from a video with more than 100 comments
