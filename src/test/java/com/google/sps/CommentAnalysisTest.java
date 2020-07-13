@@ -14,8 +14,6 @@
 
 package com.google.sps;
 
-import java.util.HashMap;
-import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -40,7 +38,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -217,7 +217,15 @@ public class CommentAnalysisTest {
     Assert.assertEquals(
         constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
         twohighestStat.getSentimentBucketList());
-    Map<String, Integer> expectedMap = new HashMap<String, Integer>(){{put("Normal", 2); put("Comment", 2); put("First", 1); put("Second", 1);}};
+    Map<String, Integer> expectedMap =
+        new HashMap<String, Integer>() {
+          {
+            put("Normal", 2);
+            put("Comment", 2);
+            put("First", 1);
+            put("Second", 1);
+          }
+        };
     Assert.assertEquals(expectedMap, twohighestStat.getWordFrequencyMap());
   }
 
@@ -248,7 +256,17 @@ public class CommentAnalysisTest {
     Assert.assertEquals(
         constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
         distStat.getSentimentBucketList());
-    Map<String, Integer> expectedMap = new HashMap<String, Integer>(){{put("1", 2); put("Comment", 2); put("Third", 1); put("Forth", 1);put("pos", 1);put("neg", 1);}};
+    Map<String, Integer> expectedMap =
+        new HashMap<String, Integer>() {
+          {
+            put("1", 2);
+            put("Comment", 2);
+            put("Third", 1);
+            put("Forth", 1);
+            put("pos", 1);
+            put("neg", 1);
+          }
+        };
     Assert.assertEquals(expectedMap, distStat.getWordFrequencyMap());
   }
 }
