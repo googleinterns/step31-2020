@@ -41,9 +41,9 @@ function cleanseUrl(url) {
 async function getContext() {
   $('form').submit(async function() {  
     videoContext = await getVideoContext();
-    videoName = videoContext.name;
-    videoAuthor = videoContext.author; 
-    videoDate = videoContext.date;
+    videoName = videoContext.videoName;
+    videoAuthor = videoContext.videoAuthor; 
+    videoDate = videoContext.publishDate;
     videoLikes = videoContext.numLikes;
     videoDislikes = videoContext.numDislikes;
 
