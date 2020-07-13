@@ -49,6 +49,7 @@ function cleanseUrl(url) {
  */
 async function getChart() {
   $('form').submit(async function() {
+    document.getElementById('loading-img').style.display = "block";  
     commentStats = await getYouTubeComments();
     averageScore = commentStats.averageScore;
     aggregateValues = commentStats.aggregateValues; 
@@ -72,13 +73,18 @@ async function getChart() {
       'bar': {groupWidth: "100"}
     };
 
+    document.getElementById('loading-img').style.display = "none";  
+
     CommentSentimentTable.sort({column: 0, desc: false}); 
     var view = new google.visualization.DataView(CommentSentimentTable);
     view.setColumns([1, 2]); 
 
     const chart = new google.visualization.ColumnChart(
-        document.getElementById('chart-container'));       
-    chart.draw(view, options);
+        document.getElementById('chart-container'));
+    chart.draw(view, options);    
+
+    const averageContainer = document.getElementById('average-score-container');
+    averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
   });
 }
 
