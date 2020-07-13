@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
 public class CommentRetrievalTest {
@@ -43,7 +42,7 @@ public class CommentRetrievalTest {
   @Before
   public void testYoutubeGenerate() throws Exception {
     YouTube mockedYoutube = mock(YouTube.class);
-    //when(youTube.commentThreads()).thenReturn(new YouTube.CommentThreads.List("Ass"));
+    // when(youTube.commentThreads()).thenReturn(new YouTube.CommentThreads.List("Ass"));
     System.out.println(mockedYoutube);
     commentRetriever = new YouTubeCommentRetriever(mockedYoutube);
   }
