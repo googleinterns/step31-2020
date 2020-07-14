@@ -38,7 +38,7 @@ public class UserComment {
     this.publishDate = topLevelComment.getSnippet().getPublishedAt();
   }
 
-  /** This is a easy way to construct a new userComment object for testing purpose. */
+  /** This is an easy way to construct a new userComment object for testing purpose. */
   public UserComment(
       String commentId,
       String commentMsg,
@@ -83,10 +83,6 @@ public class UserComment {
 
   public void setCommentId(String commentId) {
     this.commentId = commentId;
-  }
-
-  public String toString() {
-    return commentMsg;
   }
 
   @Override

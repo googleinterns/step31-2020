@@ -17,13 +17,14 @@ package com.google.sps.servlets.utils;
 import java.util.List;
 
 public class SentimentBucket {
-
-  private List<UserComment> topNComments; // userComment with top N magnitude within this interval
-  private int frequency; // number of comments whose sentiment score is in this interval
+  // a list of userComments with high magnitude within this interval; The number of top comments is determined by user input
+  private List<UserComment> CommentsWithHighMagnitude;
+  // number of comments whose sentiment score is in this interval
+  private int frequency;
   private Range intervalRange;
 
-  public List<UserComment> getTopNComments() {
-    return topNComments;
+  public List<UserComment> getCommentsWithHighMagnitude() {
+    return CommentsWithHighMagnitude;
   }
 
   public Range getIntervalRange() {
@@ -34,8 +35,8 @@ public class SentimentBucket {
     return frequency;
   }
 
-  public SentimentBucket(List<UserComment> topNComments, int frequency, Range intervalRange) {
-    this.topNComments = topNComments;
+  public SentimentBucket(List<UserComment> CommentsWithHighMagnitude, int frequency, Range intervalRange) {
+    this.CommentsWithHighMagnitude = CommentsWithHighMagnitude;
     this.frequency = frequency;
     this.intervalRange = intervalRange;
   }
@@ -47,8 +48,8 @@ public class SentimentBucket {
    */
   @Override
   public String toString() {
-    return "(topNComments: "
-        + topNComments
+    return "(CommentsWithHighMagnitude: "
+        + CommentsWithHighMagnitude
         + " frequency: "
         + frequency
         + " intervalRange"
@@ -58,7 +59,7 @@ public class SentimentBucket {
 
   /**
    * This is for testing purpose: if two sentiment bucket have same frequency, range and
-   * topNComments, we consider them as same sentiment bucket
+   * CommentsWithHighMagnitude, we consider them as same sentiment bucket
    *
    * @param bucketObject sentiment bucket object to compare
    * @return true if two sentiment buckets are identical; false otherwise
@@ -72,7 +73,7 @@ public class SentimentBucket {
       return false;
     }
     SentimentBucket bucketToCompare = (SentimentBucket) bucketObject;
-    return (topNComments == null || topNComments.equals(bucketToCompare.getTopNComments()))
+    return (CommentsWithHighMagnitude == null || CommentsWithHighMagnitude.equals(bucketToCompare.getCommentsWithHighMagnitude()))
         && frequency == bucketToCompare.getFrequency()
         && intervalRange.equals(getIntervalRange());
   }
