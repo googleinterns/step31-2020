@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 public class CommentAnalysis {
   private LanguageServiceClient languageService;
-  private static final int DEFAULT_TOP_N = 1; // Number of comments to display with top high magnitude
+  private static final int DEFAULT_TOP_N = 1;
 
   /**
    * Constructor to create and initialize language service for sentiment analysis
@@ -54,12 +54,12 @@ public class CommentAnalysis {
    */
   public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
     // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
-    List<UserComment> userCommentList =
+    List<UserComment> usercommentList =
         youtubeResponse.getItems().parallelStream()
             .map(UserComment::new)
             .map(this::updateSentimentForComment)
             .collect(Collectors.toList());
-    return new Statistics(userCommentList, DEFAULT_TOP_N);
+    return new Statistics(usercommentList, DEFAULT_TOP_N);
   }
 
   /**
@@ -72,19 +72,19 @@ public class CommentAnalysis {
   public Statistics computeOverallStats(
       CommentThreadListResponse youtubeResponse, int numTopComments) {
     // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
-    List<UserComment> userCommentList =
+    List<UserComment> usercommentList =
         youtubeResponse.getItems().parallelStream()
             .map(UserComment::new)
             .map(this::updateSentimentForComment)
             .collect(Collectors.toList());
-    return new Statistics(userCommentList, numTopComments);
+    return new Statistics(usercommentList, numTopComments);
   }
 
   /**
    * Perform sentiment analysis from language service for a single usercomment
    *
    * @param comment a comment object to retrieve the content
-   * @return a userComment with updated sentiment scores & magnitude
+   * @return a Sentiment with sentiment scores & magnitude
    */
   private UserComment updateSentimentForComment(UserComment comment) {
     comment.setSentiment(

@@ -147,7 +147,8 @@ public class CommentAnalysisTest {
         new UserComment("002", "Second Normal Comment", new DateTime(new Date()), 0.11, 0.5);
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
-    // TODO: Add the top magnitude comment message in list as we don't currently have it, which means expectedUserComment is all empty.
+    // TODO: currently we have not added the top magnitude comment message in list. The
+    // expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
         new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
