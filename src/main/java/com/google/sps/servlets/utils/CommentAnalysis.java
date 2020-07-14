@@ -52,8 +52,7 @@ public class CommentAnalysis {
    * @param youtubeResponse a list of commentThread retreived from youtube server
    * @return a Statistics object that contains required values to display
    */
-  public Statistics computeOverallStats(
-      CommentThreadListResponse youtubeResponse) {
+  public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
     // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
     List<UserComment> usercommentList =
         youtubeResponse.getItems().parallelStream()
@@ -64,7 +63,8 @@ public class CommentAnalysis {
   }
 
   /**
-   * It overloads and computes an overall statistics object from the retrieved youtube comments with user-defined number of top comments.
+   * It overloads and computes an overall statistics object from the retrieved youtube comments with user-defined
+   * number of top comments.
    * @param youtubeResponse a list of commentThread retreived from youtube server
    * @param numTopComments number of top comments to display for each interval
    * @return a Statistics object that contains required values to display
@@ -79,7 +79,6 @@ public class CommentAnalysis {
             .collect(Collectors.toList());
     return new Statistics(usercommentList, numTopComments);
   }
-
 
   /**
    * Perform sentiment analysis from language service for a single usercomment

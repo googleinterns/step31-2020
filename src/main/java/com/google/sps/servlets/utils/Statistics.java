@@ -29,7 +29,7 @@ public class Statistics {
   private static final BigDecimal UPPER_SCORE = BigDecimal.valueOf(UPPER_SCORE_VAL);
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
   private static final Comparator<UserComment> ascendingScoreCompare =
-      (UserComment o1, UserComment o2)->Double.compare(o1.getScore(), o2.getScore());
+      (UserComment o1, UserComment o2) -> Double.compare(o1.getScore(), o2.getScore());
 
   // Contains sentiment bucket information for all intervals
   private List<SentimentBucket> sentimentBucketList;

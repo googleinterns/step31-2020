@@ -70,11 +70,13 @@ public class CommentAnalysisTest {
    *     frequency input
    */
   private List<SentimentBucket> constructSentimentBucketListFromCommentList(
-      List<List<UserComment>> userCommentList,
-      List<Integer> frequency){
+      List<List<UserComment>> userCommentList, List<Integer> frequency) {
     if (userCommentList.size() != frequency.size()
         || (frequency.size()
-            != UPPER_SCORE.subtract(LOWER_SCORE).divide(SCORE_INTERVAL, 0, RoundingMode.UP).intValue())) {
+            != UPPER_SCORE
+                .subtract(LOWER_SCORE)
+                .divide(SCORE_INTERVAL, 0, RoundingMode.UP)
+                .intValue())) {
       throw new RuntimeException("Initialize list in test function got wrong size");
     }
     int listIndex = 0;
@@ -132,8 +134,7 @@ public class CommentAnalysisTest {
     Assert.assertEquals(TEST_SCORE, testStat.getAverageScore(), 0.01);
     Assert.assertEquals(TEST_MAGNITUDE, testStat.getAverageMagnitude(), 0.01);
     Assert.assertEquals(
-        constructSentimentBucketListFromCommentList(
-            expectedUserComment, expectedFrequency),
+        constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
         testStat.getSentimentBucketList());
   }
 
@@ -154,8 +155,7 @@ public class CommentAnalysisTest {
     Statistics normalStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(0.105, normalStat.getAverageScore(), 0.01);
     Assert.assertEquals(
-        constructSentimentBucketListFromCommentList(
-            expectedUserComment, expectedFrequency),
+        constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
         normalStat.getSentimentBucketList());
   }
 }
