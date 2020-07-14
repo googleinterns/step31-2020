@@ -120,7 +120,8 @@ public class CommentAnalysisTest {
     CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
 
     // Compute and test the sentiment bucket from mocked language service
-    // TODO: Add the top magnitude comment message in list as we don't currently have it, which means expectedUserComment is all empty.
+    // TODO: Add the top magnitude comment message in list as we don't currently have it, which
+    // means expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
         new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0));
@@ -144,7 +145,8 @@ public class CommentAnalysisTest {
         new UserComment("002", "Second Normal Comment", new DateTime(new Date()), 0.11, 0.5);
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
-    // TODO: Add the top magnitude comment message in list as we don't currently have it, which means expectedUserComment is all empty.
+    // TODO: Add the top magnitude comment message in list as we don't currently have it, which
+    // means expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
         new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
