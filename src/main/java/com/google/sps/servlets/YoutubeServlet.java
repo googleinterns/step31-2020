@@ -14,12 +14,17 @@
 
 package com.google.sps.servlets;
 
-import com.google.api.services.youtube.model.CommentThread;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.gson.Gson;
 import com.google.sps.servlets.utils.CommentAnalysis;
 import com.google.sps.servlets.utils.Statistics;
-import com.google.sps.servlets.utils.YouTubeCommentRetriever;
-import java.util.List;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -29,8 +34,17 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that fetches from Youtube Server. */
 @WebServlet("/YouTubeComments")
 public class YoutubeServlet extends HttpServlet {
+  private static final Long COMMENT_LIMIT = 100L;
+  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   private static final String URL_PARAMETER = "url";
-  private YouTubeCommentRetriever commentRetriever;
+  // Parameters required by YouTube API to retrieve the comment threads
+  private static final String SNIPPET_PARAMETERS = "snippet,replies";
+  private static final String ORDER_PARAMETER = "relevance";
+
+  private static final String APPLICATION_NAME = "SAY";
+  // TODO: have dev key come from centralized location, rather than being hard-coded.
+  private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
+
   /**
    * Retrieves comments from designated URL, passes them off to CommentAnalysis object to be wrapped
    * into Statistics object, then writes the Statistics object to the frontend.
@@ -40,11 +54,10 @@ public class YoutubeServlet extends HttpServlet {
       throws ServletException {
     try {
       String url = request.getParameter(URL_PARAMETER);
-      // TODO: add numComments parameter. Comment count will be hard-coded until then.
-      List<CommentThread> commentThreads = new YouTubeCommentRetriever().retrieveComments(url, 100);
+      CommentThreadListResponse commentResponse = generateYouTubeRequest(url).execute();
 
       CommentAnalysis commentAnalysis = new CommentAnalysis();
-      Statistics statistics = commentAnalysis.computeOverallStats(commentThreads);
+      Statistics statistics = commentAnalysis.computeOverallStats(commentResponse);
       commentAnalysis.closeLanguage();
 
       String json = new Gson().toJson(statistics);
@@ -54,5 +67,35 @@ public class YoutubeServlet extends HttpServlet {
       e.printStackTrace(System.err);
       throw new ServletException("Unable to fetch YouTube Comments Through Servlet.", e);
     }
+  }
+
+  /**
+   * Applies parameters to comment request, then uses it to extract comments. URL is the only true
+   * variable; for this application we will always want order to be relevance, and max results to be
+   * 100, the API's limit for how many comments can be retrieved via a single request.
+   */
+  private YouTube.CommentThreads.List generateYouTubeRequest(String url)
+      throws GeneralSecurityException, IOException {
+    YouTube youtubeService = getService();
+    YouTube.CommentThreads.List commentRequest =
+        youtubeService.commentThreads().list(SNIPPET_PARAMETERS);
+    return commentRequest
+               .setKey(DEVELOPER_KEY)
+               .setVideoId(url)
+               .setOrder(ORDER_PARAMETER)
+               .setMaxResults(COMMENT_LIMIT);
+  }
+
+  /**
+   * Build and return an authorized API client service.
+   *
+   * @return an authorized API client service
+   * @throws GeneralSecurityException, IOException
+   */
+  private static YouTube getService() throws GeneralSecurityException, IOException {
+    final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
+               .setApplicationName(APPLICATION_NAME)
+               .build();
   }
 }
