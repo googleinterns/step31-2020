@@ -40,12 +40,6 @@ public class CommentRetrievalTest {
   private final int HUNDRED = 100;
   private final int EXCESS_HUNDRED = 200;
 
-  private final String SNIPPET_PARAMETERS = "snippet,replies";
-  // A video that has sufficient comments for any test (>900,000).
-  private final String POPULAR_VIDEO_URL = "dQw4w9WgXcQ";
-  // A video with very few comments (Unlikely to ever reach even 100)
-  private final String UNPOPULAR_VIDEO_URL = "cA-arJ0T6L4";
-  
 
   private YouTubeCommentRetriever commentRetriever;
 
@@ -70,8 +64,7 @@ public class CommentRetrievalTest {
     Assert.assertEquals(comments.size(), HUNDRED);
   }
 
-  // Test that class properly consolidates a list of comments greater than the max allowed per
-  // thread
+  // Extract more than 100 comments from a video
   @Test
   public void testExcessHundredComments() throws Exception {
     setUp(EXCESS_HUNDRED);
@@ -80,13 +73,12 @@ public class CommentRetrievalTest {
     Assert.assertEquals(comments.size(), EXCESS_HUNDRED);
   }
 
-  // Ensure that a crash does not occur when loading more comments than there are on a video
+  // Only load the comments that are in a video, without crashing
   @Test
   public void doesNotAttemptRetrieveExcess() throws Exception {
     setUp(1);
     List<CommentThread> comments =
         commentRetriever.retrieveComments(UNPOPULAR_VIDEO_URL, EXCESS_HUNDRED);
-    // Assert uses < rather than == so that if additional comments are left it won't break the test.
     Assert.assertEquals(comments.size(), 1);
   }
 
