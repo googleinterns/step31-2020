@@ -80,10 +80,10 @@ public class YoutubeServlet extends HttpServlet {
     YouTube.CommentThreads.List commentRequest =
         youtubeService.commentThreads().list(SNIPPET_PARAMETERS);
     return commentRequest
-               .setKey(DEVELOPER_KEY)
-               .setVideoId(url)
-               .setOrder(ORDER_PARAMETER)
-               .setMaxResults(COMMENT_LIMIT);
+        .setKey(DEVELOPER_KEY)
+        .setVideoId(url)
+        .setOrder(ORDER_PARAMETER)
+        .setMaxResults(COMMENT_LIMIT);
   }
 
   /**
@@ -95,7 +95,7 @@ public class YoutubeServlet extends HttpServlet {
   private static YouTube getService() throws GeneralSecurityException, IOException {
     final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
-               .setApplicationName(APPLICATION_NAME)
-               .build();
+        .setApplicationName(APPLICATION_NAME)
+        .build();
   }
 }
