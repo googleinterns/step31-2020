@@ -22,7 +22,6 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.youtube.model.Comment;
 import com.google.api.services.youtube.model.CommentSnippet;
 import com.google.api.services.youtube.model.CommentThread;
-import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.api.services.youtube.model.CommentThreadSnippet;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
@@ -109,8 +108,6 @@ public class CommentAnalysisTest {
     CommentThread testCommentThread = new CommentThread().setSnippet(testThreadSnippet);
     List<CommentThread> testCommentThreadList =
         new ArrayList<>(Arrays.asList(testCommentThread, testCommentThread));
-    CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
-    youtubeResponse.setItems(testCommentThreadList);
 
     // Mock the service variables
     LanguageServiceClient mockedlanguageService =
@@ -123,12 +120,13 @@ public class CommentAnalysisTest {
     CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
 
     // Compute and test the sentiment bucket from mocked language service
-    Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
     // TODO: currently we have not added the top magnitude comment message in list. The
     // expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
         new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0));
+    // Compute and test the score from mocked language service
+    Statistics testStat = commentAnalysis.computeOverallStats(testCommentThreadList);
     Assert.assertNotNull(testStat);
     Assert.assertNotNull(testStat.getSentimentBucketList());
     Assert.assertEquals(TEST_SCORE, testStat.getAverageScore(), 0.01);

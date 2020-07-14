@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets.utils;
 
+import com.google.api.services.youtube.model.CommentThread;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
@@ -52,10 +53,10 @@ public class CommentAnalysis {
    * @param youtubeResponse a list of commentThread retreived from youtube server
    * @return a Statistics object that contains required values to display
    */
-  public Statistics computeOverallStats(CommentThreadListResponse youtubeResponse) {
+  public Statistics computeOverallStats(List<CommentThread> youtubeResponse) {
     // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
     List<UserComment> usercommentList =
-        youtubeResponse.getItems().parallelStream()
+        youtubeResponse.parallelStream()
             .map(UserComment::new)
             .map(this::updateSentimentForComment)
             .collect(Collectors.toList());
@@ -70,10 +71,10 @@ public class CommentAnalysis {
    * @return a Statistics object that contains required values to display
    */
   public Statistics computeOverallStats(
-      CommentThreadListResponse youtubeResponse, int numTopComments) {
+      List<CommentThread> youtubeResponse, int numTopComments) {
     // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
     List<UserComment> usercommentList =
-        youtubeResponse.getItems().parallelStream()
+        youtubeResponse.parallelStream()
             .map(UserComment::new)
             .map(this::updateSentimentForComment)
             .collect(Collectors.toList());
