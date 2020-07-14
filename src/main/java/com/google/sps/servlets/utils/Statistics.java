@@ -24,11 +24,10 @@ public class Statistics {
   private static final double LOWER_SCORE_VAL = -1.0;
   private static final double UPPER_SCORE_VAL = 1.0;
   private static final double SCORE_INTERVAL_VAL = 0.2;
-  // TODO: set the current Top n comment as 1; will be updated once we have the input from front-end
   private static final BigDecimal SCORE_INTERVAL = BigDecimal.valueOf(SCORE_INTERVAL_VAL);
   private static final BigDecimal UPPER_SCORE = BigDecimal.valueOf(UPPER_SCORE_VAL);
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
-  private static final Comparator<UserComment> ascendingScoreCompare =
+  private static final Comparator<UserComment> ascendingScoreComparator =
       (UserComment o1, UserComment o2) -> Double.compare(o1.getScore(), o2.getScore());
 
   // Contains sentiment bucket information for all intervals
@@ -49,8 +48,8 @@ public class Statistics {
   }
 
   /**
-   * Constructor of Statistics to get average score and magnitude and create aggregate sentiment
-   * bucket list to store each interval's information
+   * Constructor of Statistics to get average score and magnitude and create aggregate sorted sentiment
+   * bucket list based on intervals' ascending ranges.
    *
    * @param userCommentList given list of userComment objects
    * @param topNComments the number of highest magnitudes to retrieve
@@ -59,8 +58,8 @@ public class Statistics {
     sentimentBucketList =
         categorizeToBucketList(
             userCommentList, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL, topNComments);
-    averageScore = getAverageScore(userCommentList);
-    averageMagnitude = getAverageMagnitude(userCommentList);
+    averageScore = getAverageValue(userCommentList, "Average");
+    averageMagnitude = getAverageValue(userCommentList, "Magnitude");
   }
 
   /**
@@ -82,7 +81,7 @@ public class Statistics {
       int topNumComments) {
     List<SentimentBucket> sentimentBucketList = new ArrayList<>();
     // Add score's interval to different ranges two sorting with and two pointers pop-up
-    userCommentList.sort(ascendingScoreCompare);
+    userCommentList.sort(ascendingScoreComparator);
     int updatingScoreIdx = 0;
     BigDecimal tempPoint;
     for (tempPoint = lowerEnd;
@@ -122,29 +121,16 @@ public class Statistics {
   }
 
   /**
-   * Set the average value of given sentiment values.
-   *
-   * @param userCommentList a list of userComment to calculate the average score for
-   * @return the average score of userCommentList
-   */
-  private double getAverageScore(List<UserComment> userCommentList) {
-    return userCommentList.stream()
-        .mapToDouble(UserComment::getScore)
-        .average()
-        .orElseThrow(
-            () ->
-                new RuntimeException("Unable to calculate average score due to empty input list."));
-  }
-
-  /**
    * Set the average value of given sentiment magnitude.
    *
-   * @param userCommentList a list of userComment to calculate the average magnitude for
-   * @return the average magnitude of userCommentList
+   * @param userCommentList a list of userComment to calculate the average value or magnitude for
+   * @param avg_mag_check parameter to set whether it it returns average score or magnitude
+   * @return the average score or magnitude of userCommentList
    */
-  private double getAverageMagnitude(List<UserComment> userCommentList) {
+  private double getAverageValue(List<UserComment> userCommentList, String avg_mag_check) {
     return userCommentList.stream()
-        .mapToDouble(UserComment::getMagnitude)
+        .mapToDouble(userComment ->
+           avg_mag_check == "Average" ? userComment.getScore() :userComment.getMagnitude())
         .average()
         .orElseThrow(
             () ->

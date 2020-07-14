@@ -27,7 +27,9 @@ import java.util.stream.Collectors;
  */
 public class CommentAnalysis {
   private LanguageServiceClient languageService;
-  private static final int DEFAULT_TOP_N = 1;
+  // Number of comments to display with top high magnitude
+  private static final int DEFAULT_TOP_N =
+      1;
 
   /**
    * Constructor to create and initialize language service for sentiment analysis
@@ -73,19 +75,19 @@ public class CommentAnalysis {
    */
   public Statistics computeOverallStats(List<CommentThread> youtubeResponse, int numTopComments) {
     // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
-    List<UserComment> usercommentList =
+    List<UserComment> userCommentList =
         youtubeResponse.parallelStream()
             .map(UserComment::new)
             .map(this::updateSentimentForComment)
             .collect(Collectors.toList());
-    return new Statistics(usercommentList, numTopComments);
+    return new Statistics(userCommentList, numTopComments);
   }
 
   /**
    * Perform sentiment analysis from language service for a single usercomment
    *
    * @param comment a comment object to retrieve the content
-   * @return a Sentiment with sentiment scores & magnitude
+   * @return a userComment with updated sentiment scores & magnitude
    */
   private UserComment updateSentimentForComment(UserComment comment) {
     comment.setSentiment(
