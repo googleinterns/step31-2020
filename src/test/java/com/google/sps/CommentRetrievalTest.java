@@ -48,9 +48,10 @@ public class CommentRetrievalTest {
   @Before
   public void testYoutubeGenerate() throws Exception {
     YouTube mockedYoutube = mock(YouTube.class, RETURNS_DEEP_STUBS);
-    // TODO: figure out how to instantiate dummy YouTube.CommentThreads.List
+    YouTube.CommentThreads.List mockedCommentThreadList = 
+        mock(YouTube.CommentThreads.List.class, RETURNS_DEEP_STUBS);
     when(mockedYoutube.commentThreads().list(anyString()))
-        .thenReturn(null);
+        .thenReturn(mockedCommentThreadList);
     System.out.println(mockedYoutube);
     commentRetriever = new YouTubeCommentRetriever(mockedYoutube);
   }
