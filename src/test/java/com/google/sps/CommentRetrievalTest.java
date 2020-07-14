@@ -40,8 +40,10 @@ public class CommentRetrievalTest {
   private final int HUNDRED = 100;
   private final int EXCESS_HUNDRED = 200;
 
-
   private YouTubeCommentRetriever commentRetriever;
+  // These url's no longer do anything; rather, serve as parameter for the call
+  private final String POPULAR_VIDEO_URL = "dQw4w9WgXcQ";
+  private final String UNPOPULAR_VIDEO_URL = "cA-arJ0T6L4";
 
   // Simulate a CommentThreadListResponse with exactly as many comments as expected
   public void setUp(int expectedComments) throws Exception {
