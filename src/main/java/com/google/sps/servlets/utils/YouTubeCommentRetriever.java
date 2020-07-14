@@ -61,7 +61,6 @@ public class YouTubeCommentRetriever {
       numCommentsLeft -= COMMENT_LIMIT;
       CommentThreadListResponse commentResponse = generateYouTubeRequest(url, commentQueryLimit, nextPageToken);
       nextPageToken = commentResponse.getNextPageToken();
-      System.out.println("Comment Response: " + commentResponse);
       allComments.addAll(commentResponse.getItems());
     } while (nextPageToken != null && numCommentsLeft > 0);
     return allComments;
