@@ -25,10 +25,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+<<<<<<< HEAD
 // Using wildcard import since documentation is unclear which package 
 // "USES_DEEP_STUBS" is imported from
 import static org.mockito.Mockito.*;
 import static org.mockito.Matchers.anyString;
+=======
+>>>>>>> 191012ed69ad2327453dd813793eea45e06538bc
 
 @RunWith(JUnit4.class)
 public class CommentRetrievalTest {
@@ -52,7 +55,6 @@ public class CommentRetrievalTest {
         mock(YouTube.CommentThreads.List.class, RETURNS_DEEP_STUBS);
     when(mockedYoutube.commentThreads().list(anyString()))
         .thenReturn(mockedCommentThreadList);
-    System.out.println(mockedYoutube);
     commentRetriever = new YouTubeCommentRetriever(mockedYoutube);
   }
 
