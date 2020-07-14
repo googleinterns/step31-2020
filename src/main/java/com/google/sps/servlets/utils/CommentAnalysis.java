@@ -28,8 +28,7 @@ import java.util.stream.Collectors;
 public class CommentAnalysis {
   private LanguageServiceClient languageService;
   // Number of comments to display with top high magnitude
-  private static final int DEFAULT_TOP_N =
-      1;
+  private static final int DEFAULT_TOP_N = 1;
 
   /**
    * Constructor to create and initialize language service for sentiment analysis

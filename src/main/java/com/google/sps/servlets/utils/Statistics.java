@@ -48,8 +48,8 @@ public class Statistics {
   }
 
   /**
-   * Constructor of Statistics to get average score and magnitude and create aggregate sorted sentiment
-   * bucket list based on intervals' ascending ranges.
+   * Constructor of Statistics to get average score and magnitude and create aggregate sorted
+   * sentiment bucket list based on intervals' ascending ranges.
    *
    * @param userCommentList given list of userComment objects
    * @param topNComments the number of highest magnitudes to retrieve
@@ -129,8 +129,9 @@ public class Statistics {
    */
   private double getAverageValue(List<UserComment> userCommentList, String avg_mag_check) {
     return userCommentList.stream()
-        .mapToDouble(userComment ->
-           avg_mag_check == "Average" ? userComment.getScore() :userComment.getMagnitude())
+        .mapToDouble(
+            userComment ->
+                avg_mag_check == "Average" ? userComment.getScore() : userComment.getMagnitude())
         .average()
         .orElseThrow(
             () ->
