@@ -15,7 +15,6 @@
 package com.google.sps.servlets.utils;
 
 import com.google.api.services.youtube.model.CommentThread;
-import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import java.io.IOException;
@@ -50,6 +49,7 @@ public class CommentAnalysis {
 
   /**
    * It computes an overall statistics object from the retrieved youtube comments with default.
+   *
    * @param youtubeResponse a list of commentThread retreived from youtube server
    * @return a Statistics object that contains required values to display
    */
@@ -64,14 +64,14 @@ public class CommentAnalysis {
   }
 
   /**
-   * It overloads and computes an overall statistics object from the retrieved youtube comments with user-defined
-   * number of top comments.
+   * It overloads and computes an overall statistics object from the retrieved youtube comments with
+   * user-defined number of top comments.
+   *
    * @param youtubeResponse a list of commentThread retreived from youtube server
    * @param numTopComments number of top comments to display for each interval
    * @return a Statistics object that contains required values to display
    */
-  public Statistics computeOverallStats(
-      List<CommentThread> youtubeResponse, int numTopComments) {
+  public Statistics computeOverallStats(List<CommentThread> youtubeResponse, int numTopComments) {
     // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
     List<UserComment> usercommentList =
         youtubeResponse.parallelStream()
