@@ -59,12 +59,9 @@ public class YouTubeCommentRetriever {
       // The API will simply return all the comments on a video.
       commentQueryLimit = Math.min(COMMENT_LIMIT, numCommentsLeft);
       numCommentsLeft -= COMMENT_LIMIT;
-      YouTube.CommentThreads.List commentRequest = generateYouTubeRequest(url, commentQueryLimit);
-      if (nextPageToken != null && nextPageToken != "") {
-        commentRequest.setPageToken(nextPageToken);
-      }
-      CommentThreadListResponse commentResponse = commentRequest.execute();
+      CommentThreadListResponse commentResponse = generateYouTubeRequest(url, commentQueryLimit, nextPageToken);
       nextPageToken = commentResponse.getNextPageToken();
+      System.out.println("Comment Response: " + commentResponse);
       allComments.addAll(commentResponse.getItems());
     } while (nextPageToken != null && numCommentsLeft > 0);
     return allComments;
@@ -76,15 +73,19 @@ public class YouTubeCommentRetriever {
    *     be reduced for specific queries.
    * @return A list of comment threads to be aggregated to the overall list.
    */
-  private YouTube.CommentThreads.List generateYouTubeRequest(String url, long maxResults)
+  private CommentThreadListResponse generateYouTubeRequest(String url, long maxResults, String nextPageToken)
       throws GeneralSecurityException, IOException {
     YouTube.CommentThreads.List commentRequest =
         youtubeService.commentThreads().list(SNIPPET_PARAMETERS);
-    return commentRequest
+    commentRequest
         .setKey(DEVELOPER_KEY)
         .setVideoId(url)
         .setOrder(ORDER_PARAMETER)
         .setMaxResults(maxResults);
+    if (nextPageToken != null && nextPageToken != "") {
+      commentRequest.setPageToken(nextPageToken);
+    }
+    return commentRequest.execute();
   }
 
   /**
