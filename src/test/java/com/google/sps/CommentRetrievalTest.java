@@ -14,6 +14,8 @@
 
 package com.google.sps;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.mock;
 
 import com.google.api.services.youtube.YouTube;
@@ -25,11 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-// Using wildcard import since documentation is unclear which package 
+// Using wildcard import since documentation is unclear which package
 // "USES_DEEP_STUBS" is imported from
-import static org.mockito.Mockito.*;
-import static org.mockito.Matchers.anyString;
-
 
 @RunWith(JUnit4.class)
 public class CommentRetrievalTest {
@@ -42,17 +41,15 @@ public class CommentRetrievalTest {
   private final String POPULAR_VIDEO_URL = "dQw4w9WgXcQ";
   // A video with very few comments (Unlikely to ever reach even 100)
   private final String UNPOPULAR_VIDEO_URL = "cA-arJ0T6L4";
-  
 
   private YouTubeCommentRetriever commentRetriever;
 
   @Before
   public void testYoutubeGenerate() throws Exception {
     YouTube mockedYoutube = mock(YouTube.class, RETURNS_DEEP_STUBS);
-    YouTube.CommentThreads.List mockedCommentThreadList = 
+    YouTube.CommentThreads.List mockedCommentThreadList =
         mock(YouTube.CommentThreads.List.class, RETURNS_DEEP_STUBS);
-    when(mockedYoutube.commentThreads().list(anyString()))
-        .thenReturn(mockedCommentThreadList);
+    when(mockedYoutube.commentThreads().list(anyString())).thenReturn(mockedCommentThreadList);
     commentRetriever = new YouTubeCommentRetriever(mockedYoutube);
   }
 
