@@ -55,6 +55,7 @@ function extractYouTubeUrl(url) {
   */
 async function getChart() {
   $('form').submit(async function() {
+    document.getElementById('loading-img').style.display = "block";  
     commentStats = await getYouTubeComments();
     averageScore = commentStats.averageScore;
     aggregateValues = commentStats.aggregateValues; 
@@ -66,7 +67,9 @@ async function getChart() {
 
     // The json keys (ranges of scores) are sorted through their starting values
     Object.keys(aggregateValues).forEach(function(key) {
-      CommentSentimentTable.addRow([key.getInclusiveStart(), toRangeStringRepresentation(key), aggregateValues[key]]);  
+      var inclusiveStart = getRangeInclusiveStart(key);  
+      var exclusiveEnd = getRangeExclusiveEnd(key);
+      CommentSentimentTable.addRow([inclusiveStart, inclusiveStart + ' to ' + exclusiveEnd, aggregateValues[key]]);  
     });
 
     const options = {
@@ -76,16 +79,27 @@ async function getChart() {
       'bar': {groupWidth: "100"}
     };
 
+    document.getElementById('loading-img').style.display = "none";  
+
     CommentSentimentTable.sort({column: 0, desc: false}); 
     var view = new google.visualization.DataView(CommentSentimentTable);
     view.setColumns([1, 2]); 
 
     const chart = new google.visualization.ColumnChart(
-        document.getElementById('chart-container'));       
-    chart.draw(view, options);
+        document.getElementById('chart-container'));
+    chart.draw(view, options);    
+
+    const averageContainer = document.getElementById('average-score-container');
+    averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
   });
 }
 
-function toRangeStringRepresentation(range) {
-  return range.getInclusiveStart() + " to " + range.getExclusiveEnd();  
+function getRangeExclusiveEnd(rangeString) {
+  rangeString.trim();
+  return Number(rangeString.substring(rangeString.indexOf(',') + 1, rangeString.length - 1));
+}
+ 
+function getRangeInclusiveStart(rangeString) {
+  rangeString.trim();
+  return Number(rangeString.substring(1, rangeString.indexOf(',')));
 }
