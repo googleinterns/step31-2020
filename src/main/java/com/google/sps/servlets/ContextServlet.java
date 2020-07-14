@@ -21,7 +21,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.VideoListResponse;
 import com.google.gson.Gson;
-import com.google.sps.servlets.utils.Information;
+import com.google.sps.servlets.utils.VideoInformation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import javax.servlet.ServletException;
@@ -43,7 +43,7 @@ public class ContextServlet extends HttpServlet {
 
   /**
    * Retrieves video information from designated URL, wraps them into information object, then
-   * writes the Information object to the frontend.
+   * writes the VideoInformation object to the frontend.
    *
    * @param request request from our web server
    * @param response empty response to write json object
@@ -54,7 +54,7 @@ public class ContextServlet extends HttpServlet {
     try {
       String url = request.getParameter(URL_PARAMETER);
       VideoListResponse videoResponse = generateYouTubeRequest(url).execute();
-      Information videoInfo = new Information(videoResponse);
+      VideoInformation videoInfo = new VideoInformation(videoResponse);
       String json = new Gson().toJson(videoInfo);
       response.setContentType("application/json");
       response.getWriter().println(json);
