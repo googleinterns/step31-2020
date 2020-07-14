@@ -21,12 +21,10 @@ import static org.mockito.Mockito.mock;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.CommentThread;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
-import com.google.api.services.youtube.model.Comment;
 import com.google.sps.servlets.utils.YouTubeCommentRetriever;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -50,10 +48,10 @@ public class CommentRetrievalTest {
     YouTube.CommentThreads.List mockedCommentThreadList =
         mock(YouTube.CommentThreads.List.class, RETURNS_DEEP_STUBS);
     when(mockedCommentThreadList.execute())
-        .thenReturn(new CommentThreadListResponse().setItems(
-            Collections.nCopies(expectedComments, new CommentThread())));
-    when(mockedYoutube.commentThreads().list(anyString()))
-        .thenReturn(mockedCommentThreadList);
+        .thenReturn(
+            new CommentThreadListResponse()
+                .setItems(Collections.nCopies(expectedComments, new CommentThread())));
+    when(mockedYoutube.commentThreads().list(anyString())).thenReturn(mockedCommentThreadList);
     commentRetriever = new YouTubeCommentRetriever(mockedYoutube);
   }
 
