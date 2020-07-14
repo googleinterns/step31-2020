@@ -49,7 +49,7 @@ function cleanseUrl(url) {
  */
 async function getChart() {
   $('form').submit(async function() {
-    document.getElementById('loading-img').style.display = "block";  
+    //document.getElementById('loading-img').style.display = "block";  
     commentStats = await getYouTubeComments();
     averageScore = commentStats.averageScore;
     averageMagnitude = commentStats.averageMagnitude;
@@ -62,7 +62,7 @@ async function getChart() {
  
     for(i = 0; i < sentimentBucketList.length; i++) {
       currentSentimentBucket = sentimentBucketList[i];
-      rangeAsString = currentSentimentBucket.intervalRange.asString;
+      rangeAsString = convertRangeToString(currentSentimentBucket.intervalRange);
       highestMagnitudeComments = currentSentimentBucket.topNComments;
 
       CommentSentimentTable.addRow([rangeAsString, currentSentimentBucket.frequency, 
@@ -88,10 +88,14 @@ async function getChart() {
 }
  
 function toTooltipString(userComments) {
-  tooltipString = "";  
-  userComments.forEach(function(comment) {  
-    commentMagnitude = comment.magnitude;  
-    tooltipString = tooltipString + comment.commentMsg + "</br> Magnitude Score: " + commentMagnitude + "</br>";  
-  })
-  return tooltipString;    
+  return userComments.map(comment => userCommentAsString(comment)).join("<br>"); 
+}
+
+function userCommentAsString(comment) {
+  commentMagnitude = comment.magnitude;  
+  return comment.commentMsg + "<br> Magnitude Score: " + commentMagnitude;
+}
+
+function convertRangeToString(range) {
+  return range.inclusiveStart + " to " + range.exclusiveEnd;  
 }
