@@ -15,7 +15,7 @@
 async function getVideoContext() { 
   const urlInput = document.getElementById('link-input');
   const url = cleanseUrl(urlInput.value);
-  const response = await fetch("/VideoContext?url="+url);
+  const response = await fetch("/VideoContext?URL_PARAMETER="+url);
   const context = await response.json();
   return context;
 }
@@ -41,16 +41,16 @@ function cleanseUrl(url) {
 async function getContext() {
   $('form').submit(async function() {  
     videoContext = await getVideoContext();
-    videoName = videoContext.videoName;
-    videoAuthor = videoContext.videoAuthor; 
-    videoDate = videoContext.publishDate;
-    videoLikes = videoContext.numLikes;
-    videoDislikes = videoContext.numDislikes;
-
-    videoInfo = videoContext.name + "<br>Channel: " + videoAuthor + "</br>Date Published: " + videoDate.asString
-        + "</br> Likes/dislikes" + videoLikes + " / " + videoDislikes;
-
-    document.getElementById('video-context').innerHTML = videoInfo;   
+    document.getElementById('video-context').innerHTML = videoInfoAsString(videoContext);   
   });
 }
 
+function videoInfoAsString(videoContext) {
+  videoName = videoContext.videoName;
+  videoAuthor = videoContext.videoAuthor; 
+  videoDate = videoContext.publishDate;
+  videoLikes = videoContext.numLikes;
+  videoDislikes = videoContext.numDislikes;  
+  return videoName + "<br>Channel: " + videoAuthor + "</br>Date Published: " + videoDate
+        + "</br> Likes/dislikes" + videoLikes + " / " + videoDislikes
+}
