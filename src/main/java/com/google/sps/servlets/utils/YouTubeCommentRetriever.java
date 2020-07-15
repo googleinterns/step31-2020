@@ -50,7 +50,7 @@ public class YouTubeCommentRetriever {
   }
 
   public List<CommentThread> retrieveComments(String url, long maxComments) throws Exception {
-    String nextPageToken = "";
+    String nextPageToken = null;
     long numCommentsLeft = maxComments;
     long commentQueryLimit = 0;
     ArrayList allComments = new ArrayList<>();
@@ -63,6 +63,7 @@ public class YouTubeCommentRetriever {
           generateYouTubeRequest(url, commentQueryLimit, nextPageToken);
       nextPageToken = commentResponse.getNextPageToken();
       allComments.addAll(commentResponse.getItems());
+      // Continue retrieving comments until either reaching desired number or end of nextPageTokens.
     } while (nextPageToken != null && numCommentsLeft > 0);
     return allComments;
   }
@@ -82,10 +83,8 @@ public class YouTubeCommentRetriever {
         .setKey(DEVELOPER_KEY)
         .setVideoId(url)
         .setOrder(ORDER_PARAMETER)
-        .setMaxResults(maxResults);
-    if (nextPageToken != null && nextPageToken != "") {
-      commentRequest.setPageToken(nextPageToken);
-    }
+        .setMaxResults(maxResults)
+        .setPageToken(nextPageToken);
     return commentRequest.execute();
   }
 
