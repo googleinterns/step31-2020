@@ -95,7 +95,8 @@ public class Statistics {
             BigDecimal.valueOf(userCommentList.get(updatingScoreIdx).getScore());
         if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_SCORE) == 0) {
           currentFrequency += 1;
-          addToFixedQueue(userCommentList.get(updatingScoreIdx), highMagnitudeComments, topNumComments);
+          addToFixedQueue(
+              userCommentList.get(updatingScoreIdx), highMagnitudeComments, topNumComments);
         } else {
           break;
         }
