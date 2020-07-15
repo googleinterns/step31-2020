@@ -22,7 +22,6 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.youtube.model.Comment;
 import com.google.api.services.youtube.model.CommentSnippet;
 import com.google.api.services.youtube.model.CommentThread;
-import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.api.services.youtube.model.CommentThreadSnippet;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
@@ -90,12 +89,12 @@ public class CommentAnalysisTest {
         tempPoint = tempPoint.add(SCORE_INTERVAL)) {
       BigDecimal nextPoint = UPPER_SCORE.min(tempPoint.add(SCORE_INTERVAL));
       Range currentRange = new Range(tempPoint, nextPoint);
-      List<UserComment> curMagnitudeList =
+      List<UserComment> curUserCommentList =
           userCommentList.get(listIndex) == null
               ? new ArrayList<>()
               : userCommentList.get(listIndex);
       expectedBucketList.add(
-          new SentimentBucket(curMagnitudeList, frequency.get(listIndex), currentRange));
+          new SentimentBucket(curUserCommentList, frequency.get(listIndex), currentRange));
       listIndex = listIndex + 1;
     }
     return expectedBucketList;
@@ -117,8 +116,6 @@ public class CommentAnalysisTest {
     CommentThread testCommentThread = new CommentThread().setSnippet(testThreadSnippet);
     List<CommentThread> testCommentThreadList =
         new ArrayList<>(Arrays.asList(testCommentThread, testCommentThread));
-    CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
-    youtubeResponse.setItems(testCommentThreadList);
 
     // Mock the service variables
     LanguageServiceClient mockedlanguageService =
@@ -129,9 +126,6 @@ public class CommentAnalysisTest {
     when(mockedlanguageService.analyzeSentiment(any(Document.class)).getDocumentSentiment())
         .thenReturn(mockedSentiment);
     CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
-
-    // Compute and test the sentiment bucket from mocked language service
-    Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
     UserComment testUserComment =
         new UserComment(
             TEST_ID, TEST_MESSAGE, new DateTime(new Date()), TEST_SCORE, TEST_MAGNITUDE);
@@ -149,6 +143,8 @@ public class CommentAnalysisTest {
                 null,
                 null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0));
+    // Compute and test the score from mocked language service
+    Statistics testStat = commentAnalysis.computeOverallStats(testCommentThreadList);
     Assert.assertNotNull(testStat);
     Assert.assertNotNull(testStat.getSentimentBucketList());
     Assert.assertEquals(TEST_SCORE, testStat.getAverageScore(), 0.01);

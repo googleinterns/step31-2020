@@ -41,22 +41,6 @@ public class SentimentBucket {
   }
 
   /**
-   * This is currently for debugging purpose to show what each sentiment bucket returns
-   *
-   * @return debugging result for each sentiment bucket
-   */
-  @Override
-  public String toString() {
-    return "(topNComments: "
-        + topNComments
-        + " frequency: "
-        + frequency
-        + " intervalRange"
-        + intervalRange
-        + ")\n";
-  }
-
-  /**
    * This is for testing purpose: if two sentiment bucket have same frequency, range and
    * topNComments, we consider them as same sentiment bucket
    *
@@ -72,7 +56,7 @@ public class SentimentBucket {
       return false;
     }
     SentimentBucket bucketToCompare = (SentimentBucket) bucketObject;
-    return (topNComments.isEmpty() || topNComments.equals(bucketToCompare.getTopNComments()))
+    return (topNComments.equals(bucketToCompare.getTopNComments()))
         && frequency == bucketToCompare.getFrequency()
         && intervalRange.equals(getIntervalRange());
   }
