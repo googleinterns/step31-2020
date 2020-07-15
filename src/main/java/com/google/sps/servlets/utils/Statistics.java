@@ -108,11 +108,15 @@ public class Statistics {
           new PriorityQueue<>(topNumComments, descendingMagnitudeCompare);
       // loop through sorted scores within currentRange from updated score pointer and update its
       // corresponding appearance frequency
-      for (updatingScoreIdx = updatingScoreIdx; updatingScoreIdx < userCommentList.size(); updatingScoreIdx++) {
-        BigDecimal scorePoint = BigDecimal.valueOf(userCommentList.get(updatingScoreIdx).getScore());
+      for (updatingScoreIdx = updatingScoreIdx;
+          updatingScoreIdx < userCommentList.size();
+          updatingScoreIdx++) {
+        BigDecimal scorePoint =
+            BigDecimal.valueOf(userCommentList.get(updatingScoreIdx).getScore());
         if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_SCORE) == 0) {
           currentFrequency += 1;
-          addToFixedQueue(userCommentList.get(updatingScoreIdx), highMagnitudeComments, topNumComments);
+          addToFixedQueue(
+              userCommentList.get(updatingScoreIdx), highMagnitudeComments, topNumComments);
         } else {
           break;
         }
