@@ -126,22 +126,12 @@ public class CommentAnalysisTest {
     when(mockedlanguageService.analyzeSentiment(any(Document.class)).getDocumentSentiment())
         .thenReturn(mockedSentiment);
     CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
-    UserComment testUserComment =
-        new UserComment(
-            TEST_ID, TEST_MESSAGE, new DateTime(new Date()), TEST_SCORE, TEST_MAGNITUDE);
+
+    // Compute and test the sentiment bucket from mocked language service
+    // TODO: Add the top magnitude comment message in list as we don't currently have it, which
+    // means expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(
-            Arrays.asList(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                Collections.singletonList(testUserComment),
-                null,
-                null,
-                null));
+        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0));
     // Compute and test the score from mocked language service
     Statistics testStat = commentAnalysis.computeOverallStats(testCommentThreadList);
@@ -164,24 +154,16 @@ public class CommentAnalysisTest {
         new UserComment("002", "Second Normal Comment", new DateTime(new Date()), 0.11, 0.5);
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
+    // TODO: Add the top magnitude comment message in list as we don't currently have it, which
+    // means expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(
-            Arrays.asList(
-                null,
-                null,
-                null,
-                null,
-                null,
-                new ArrayList<>(Arrays.asList(comment2)),
-                null,
-                null,
-                null,
-                null));
+        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
-    Statistics highestStat = new Statistics(inputUserComment, 1);
+    Statistics normalStat = new Statistics(inputUserComment, 2);
+    Assert.assertEquals(0.105, normalStat.getAverageScore(), 0.01);
     Assert.assertEquals(
         constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
-        highestStat.getSentimentBucketList());
+        normalStat.getSentimentBucketList());
   }
 
   @Test
@@ -194,6 +176,8 @@ public class CommentAnalysisTest {
         new UserComment("002", "Second Normal Comment", new DateTime(new Date()), 0.11, 0.5);
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
+    // TODO: Add the top magnitude comment message in list as we don't currently have it, which
+    // means expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
         new ArrayList<>(
             Arrays.asList(
@@ -202,7 +186,7 @@ public class CommentAnalysisTest {
                 null,
                 null,
                 null,
-                new ArrayList<>(Arrays.asList(comment1, comment2)),
+                null,
                 null,
                 null,
                 null,
@@ -234,10 +218,11 @@ public class CommentAnalysisTest {
         new UserComment("004", "Forth Comment pos 1", new DateTime(new Date()), 0.8, 0.5);
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
+    // TODO: Add the top magnitude comment message in list as we don't currently have it, which
+    // means expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
         new ArrayList<>(
             Arrays.asList(
-                new ArrayList<>(Arrays.asList(comment1)),
                 null,
                 null,
                 null,
@@ -246,7 +231,8 @@ public class CommentAnalysisTest {
                 null,
                 null,
                 null,
-                new ArrayList<>(Arrays.asList(comment2))));
+                null,
+                null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 0, 0, 0, 0, 1));
     Statistics distStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(

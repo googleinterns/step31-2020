@@ -33,8 +33,6 @@ public class Statistics {
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
   private static final Comparator<UserComment> ascendingScoreComparator =
       (UserComment o1, UserComment o2) -> Double.compare(o1.getScore(), o2.getScore());
-  private static final Comparator<UserComment> descendingMagnitudeCompare =
-      (UserComment o1, UserComment o2) -> Double.compare(o1.getMagnitude(), o2.getMagnitude());
 
   // Contains sentiment bucket information for all SCORE_INTERVALs
   private List<SentimentBucket> sentimentBucketList;
@@ -104,8 +102,7 @@ public class Statistics {
       BigDecimal nextPoint = UPPER_SCORE.min(tempPoint.add(SCORE_INTERVAL));
       Range currentRange = new Range(tempPoint, nextPoint);
       int currentFrequency = 0;
-      PriorityQueue<UserComment> highMagnitudeComments =
-          new PriorityQueue<>(topNumComments, descendingMagnitudeCompare);
+      PriorityQueue<UserComment> highMagnitudeComments = new PriorityQueue<>();
       // loop through sorted scores within currentRange from updated score pointer and update its
       // corresponding appearance frequency
       for (updatingScoreIdx = updatingScoreIdx;
@@ -115,8 +112,7 @@ public class Statistics {
             BigDecimal.valueOf(userCommentList.get(updatingScoreIdx).getScore());
         if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_SCORE) == 0) {
           currentFrequency += 1;
-          addToFixedQueue(
-              userCommentList.get(updatingScoreIdx), highMagnitudeComments, topNumComments);
+          // TODO: add topNumComments to the priority queue highMagnitudeList
         } else {
           break;
         }
@@ -145,23 +141,13 @@ public class Statistics {
    */
   private double getAverageValue(List<UserComment> userCommentList, String scoreMagCheck) {
     return userCommentList.stream()
-        .mapToDouble(
-            userComment ->
-                scoreMagCheck == "score" ? userComment.getScore() : userComment.getMagnitude())
-        .average()
-        .orElseThrow(
-            () ->
-                new RuntimeException(
-                    "Unable to calculate average magnitude due to empty input list."));
-  }
-
-  private void addToFixedQueue(
-      UserComment newComment, PriorityQueue<UserComment> currentQueue, int queueSize) {
-    if (currentQueue.size() < queueSize) {
-      currentQueue.add(newComment);
-    } else if (newComment.getMagnitude() >= currentQueue.peek().getMagnitude()) {
-      currentQueue.poll();
-      currentQueue.add(newComment);
-    }
+               .mapToDouble(
+                   userComment ->
+                       scoreMagCheck == "score" ? userComment.getScore() : userComment.getMagnitude())
+               .average()
+               .orElseThrow(
+                   () ->
+                       new RuntimeException(
+                           "Unable to calculate average magnitude due to empty input list."));
   }
 }
