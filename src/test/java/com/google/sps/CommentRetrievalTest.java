@@ -43,8 +43,7 @@ public class CommentRetrievalTest {
   private final String UNPOPULAR_VIDEO_URL = "cA-arJ0T6L4";
   private final String NEXT_PAGE_TOKEN = "Some Page Token";
 
-
-  public void setUp(int numExpectedComments) throws Exception{
+  public void setUp(int numExpectedComments) throws Exception {
     setUp(numExpectedComments, null);
   }
   // Simulate a CommentThreadListResponse with exactly as many comments as expected
@@ -54,25 +53,29 @@ public class CommentRetrievalTest {
         mock(YouTube.CommentThreads.List.class, RETURNS_DEEP_STUBS);
     // This is only enough for two calls, all these tests require
     // Return on the first call either 100 comments or the desired number.
-    // If there's no next page token, return nothing on the second call, 
+    // If there's no next page token, return nothing on the second call,
     // Otherwise return the remainder of comments
     when(mockedCommentThreadList.execute())
         .thenReturn(
-            mockThreadListResponse(Math.min(numExpectedComments, MAX_COMMENTS_PER_TOKEN), nextPageToken),
-            mockThreadListResponse((nextPageToken == null) 
-                ? 0
-                : Math.min(numExpectedComments - MAX_COMMENTS_PER_TOKEN, MAX_COMMENTS_PER_TOKEN), nextPageToken));
-    when(mockedYoutube.commentThreads().list(anyString()))
-        .thenReturn(mockedCommentThreadList);
+            mockThreadListResponse(
+                Math.min(numExpectedComments, MAX_COMMENTS_PER_TOKEN), nextPageToken),
+            mockThreadListResponse(
+                (nextPageToken == null)
+                    ? 0
+                    : Math.min(
+                        numExpectedComments - MAX_COMMENTS_PER_TOKEN, MAX_COMMENTS_PER_TOKEN),
+                nextPageToken));
+    when(mockedYoutube.commentThreads().list(anyString())).thenReturn(mockedCommentThreadList);
     commentRetriever = new YouTubeCommentRetriever(mockedYoutube);
   }
 
-  // Creates list of comments of desired length. 
+  // Creates list of comments of desired length.
   // Page token is needed for iteration but its contents are irrelevant.
-  private CommentThreadListResponse mockThreadListResponse(int desiredComments, String nextPageToken) {
-    return new CommentThreadListResponse().setItems(
-        Collections.nCopies(desiredComments, new CommentThread()))
-            .setNextPageToken(nextPageToken);
+  private CommentThreadListResponse mockThreadListResponse(
+      int desiredComments, String nextPageToken) {
+    return new CommentThreadListResponse()
+        .setItems(Collections.nCopies(desiredComments, new CommentThread()))
+        .setNextPageToken(nextPageToken);
   }
 
   // The simplest case: extract 100 comments from a video with more than 100 comments
