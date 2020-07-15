@@ -19,7 +19,10 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.mock;
 
 import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.Comment;
+import com.google.api.services.youtube.model.CommentSnippet;
 import com.google.api.services.youtube.model.CommentThread;
+import com.google.api.services.youtube.model.CommentThreadSnippet;
 import com.google.api.services.youtube.model.CommentThreadListResponse;
 import com.google.sps.servlets.utils.YouTubeCommentRetriever;
 import java.util.Collections;
@@ -42,6 +45,8 @@ public class CommentRetrievalTest {
   private final String POPULAR_VIDEO_URL = "dQw4w9WgXcQ";
   private final String UNPOPULAR_VIDEO_URL = "cA-arJ0T6L4";
   private final String NEXT_PAGE_TOKEN = "Some Page Token";
+  private final String FIRST_TOKEN_COMMENT = "First";
+  private final String SECOND_TOKEN_COMMENT = "Second";
 
   public void setUp(int numExpectedComments) throws Exception {
     setUp(numExpectedComments, null);
@@ -55,16 +60,12 @@ public class CommentRetrievalTest {
     // Return on the first call either 100 comments or the desired number.
     // If there's no next page token, return nothing on the second call,
     // Otherwise return the remainder of comments
+    CommentThreadListResponse firstResponse = mockThreadListResponse(
+        Math.min(numExpectedComments, MAX_COMMENTS_PER_TOKEN), nextPageToken, FIRST_TOKEN_COMMENT);
+    CommentThreadListResponse secondResponse = mockThreadListResponse((nextPageToken == null) ? 0: 
+        Math.min(numExpectedComments - MAX_COMMENTS_PER_TOKEN, MAX_COMMENTS_PER_TOKEN), nextPageToken, SECOND_TOKEN_COMMENT);
     when(mockedCommentThreadList.execute())
-        .thenReturn(
-            mockThreadListResponse(
-                Math.min(numExpectedComments, MAX_COMMENTS_PER_TOKEN), nextPageToken),
-            mockThreadListResponse(
-                (nextPageToken == null)
-                    ? 0
-                    : Math.min(
-                        numExpectedComments - MAX_COMMENTS_PER_TOKEN, MAX_COMMENTS_PER_TOKEN),
-                nextPageToken));
+        .thenReturn(firstResponse, secondResponse);
     when(mockedYoutube.commentThreads().list(anyString())).thenReturn(mockedCommentThreadList);
     commentRetriever = new YouTubeCommentRetriever(mockedYoutube);
   }
@@ -72,10 +73,19 @@ public class CommentRetrievalTest {
   // Creates list of comments of desired length.
   // Page token is needed for iteration but its contents are irrelevant.
   private CommentThreadListResponse mockThreadListResponse(
-      int desiredComments, String nextPageToken) {
+      int desiredComments, String nextPageToken, String commentContent) {
+    CommentThread mockThread = dummyCommentThread(commentContent);
     return new CommentThreadListResponse()
-        .setItems(Collections.nCopies(desiredComments, new CommentThread()))
+        .setItems(Collections.nCopies(desiredComments, mockThread))
         .setNextPageToken(nextPageToken);
+  }
+
+  private CommentThread dummyCommentThread(String comment) {
+    // This has to be done because for some reason it's impossible to directly change a comment's content
+    CommentThread mockedCommentThread = mock(CommentThread.class, RETURNS_DEEP_STUBS);
+    when(mockedCommentThread.getSnippet().getTopLevelComment().getSnippet().getTextDisplay())
+        .thenReturn(comment);
+    return mockedCommentThread;
   }
 
   // The simplest case: extract 100 comments from a video with more than 100 comments
@@ -119,4 +129,14 @@ public class CommentRetrievalTest {
     List<CommentThread> comments = commentRetriever.retrieveComments(POPULAR_VIDEO_URL, 120);
     Assert.assertEquals(comments.size(), 120);
   }
+
+  @Test
+  public void retrievesCorrectCommentContent() throws Exception {
+    setUp(200, NEXT_PAGE_TOKEN);
+    List<CommentThread> comments = commentRetriever.retrieveComments(POPULAR_VIDEO_URL, 200);
+    String firstCommentContent = comments.get(0).getSnippet().getTopLevelComment().getSnippet().getTextDisplay();
+    String lastCommentContent = comments.get(150).getSnippet().getTopLevelComment().getSnippet().getTextDisplay();
+    Assert.assertEquals(FIRST_TOKEN_COMMENT, firstCommentContent);
+    Assert.assertEquals(SECOND_TOKEN_COMMENT, lastCommentContent);
+  } 
 }
