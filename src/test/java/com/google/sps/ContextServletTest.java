@@ -13,16 +13,15 @@
 // limitations under the License.
 package com.google.sps;
 
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.YouTubeRequest;
-import com.google.api.services.youtube.model.VideoListResponse;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.sps.servlets.ContextServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URL;
 import java.security.GeneralSecurityException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,14 +30,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /** This is a JUnit test for sentiment mockedAnalysis */
 @RunWith(JUnit4.class)
-
 public class ContextServletTest {
   private static final String URL_PARAMETER = "url";
   private static final String TEST_URL = "WkZ5e94QnWk";
@@ -53,12 +47,14 @@ public class ContextServletTest {
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(mockedResponse.getWriter()).thenReturn(writer);
-    contextServlet.doGet(mockedRequest,mockedResponse);
-    verify(mockedRequest, atLeast(1)).getParameter(URL_PARAMETER); // only if you want to verify username was called...
+    contextServlet.doGet(mockedRequest, mockedResponse);
+    verify(mockedRequest, atLeast(1))
+        .getParameter(URL_PARAMETER); // only if you want to verify username was called...
     Assert.assertTrue(stringWriter.toString().contains("Fuck Donald Trump"));
     Assert.assertTrue(stringWriter.toString().contains("\"videoAuthor\":\"WORLDSTARHIPHOP\""));
     Assert.assertTrue(stringWriter.toString().contains("numLikes"));
     Assert.assertTrue(stringWriter.toString().contains("numDislikes"));
-    Assert.assertTrue(stringWriter.toString().contains("\"publishDate\":\"2016-04-18T17:01:23.000Z\""));
+    Assert.assertTrue(
+        stringWriter.toString().contains("\"publishDate\":\"2016-04-18T17:01:23.000Z\""));
   }
 }
