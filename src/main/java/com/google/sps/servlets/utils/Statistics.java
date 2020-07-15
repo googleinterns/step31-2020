@@ -85,9 +85,8 @@ public class Statistics {
       PriorityQueue<UserComment> highMagnitudeComments = new PriorityQueue<>();
       // loop through sorted scores within currentRange from updated score pointer and update its
       // corresponding appearance frequency
-      int scoreIdx;
-      for (scoreIdx = updatingScoreIdx; scoreIdx < userCommentList.size(); scoreIdx++) {
-        BigDecimal scorePoint = BigDecimal.valueOf(userCommentList.get(scoreIdx).getScore());
+      for (updatingScoreIdx = updatingScoreIdx; updatingScoreIdx < userCommentList.size(); updatingScoreIdx++) {
+        BigDecimal scorePoint = BigDecimal.valueOf(userCommentList.get(updatingScoreIdx).getScore());
         if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_SCORE) == 0) {
           currentFrequency += 1;
           // TODO: add topNumComments to the priority queue highMagnitudeList
@@ -95,8 +94,6 @@ public class Statistics {
           break;
         }
       }
-      // update the score pointer
-      updatingScoreIdx = scoreIdx;
       sentimentBucketList.add(
           new SentimentBucket(
               convertQueueToList(highMagnitudeComments), currentFrequency, currentRange));
