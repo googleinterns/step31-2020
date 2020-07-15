@@ -9,6 +9,7 @@
     <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="script.js"></script>
+    <script src="search.js"></script>
   </head>
   <body>  
     <ul class="nav justify-content-center">
@@ -38,6 +39,9 @@
       </div>
       <div id="chart-container"></div>
       <div id="average-score-container"></div>
-    </div>                  
+    </div>
+    <input type="text" id="search-input">
+    <input name="Submit" type="submit" id="submit-button" onclick="doIt()"/>
+    <div id="video-results"></div>              
   </body>
 </html>
