@@ -35,7 +35,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -179,18 +178,7 @@ public class CommentAnalysisTest {
     // TODO: Add the top magnitude comment message in list as we don't currently have it, which
     // means expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(
-            Arrays.asList(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null));
+        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
     Statistics twohighestStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(0.105, twohighestStat.getAverageScore(), 0.01);
@@ -221,18 +209,7 @@ public class CommentAnalysisTest {
     // TODO: Add the top magnitude comment message in list as we don't currently have it, which
     // means expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(
-            Arrays.asList(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null));
+        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 0, 0, 0, 0, 1));
     Statistics distStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(
