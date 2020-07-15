@@ -30,7 +30,7 @@ public class Statistics {
   private static final Comparator<UserComment> ascendingScoreComparator =
       (UserComment o1, UserComment o2) -> Double.compare(o1.getScore(), o2.getScore());
 
-  // Contains sentiment bucket information for all intervals
+  // Contains sentiment bucket information for all SCORE_INTERVALs
   private List<SentimentBucket> sentimentBucketList;
   private double averageMagnitude;
   private double averageScore;
@@ -49,7 +49,7 @@ public class Statistics {
 
   /**
    * Constructor of Statistics to get average score and magnitude and create aggregate sorted
-   * sentiment bucket list based on intervals' ascending ranges.
+   * sentiment bucket list based on SCORE_INTERVALs' ascending ranges.
    *
    * @param userCommentList given list of userComment objects
    * @param topNComments the number of highest magnitudes to retrieve
@@ -57,37 +57,31 @@ public class Statistics {
   public Statistics(List<UserComment> userCommentList, int topNComments) {
     sentimentBucketList =
         categorizeToBucketList(
-            userCommentList, LOWER_SCORE, UPPER_SCORE, SCORE_INTERVAL, topNComments);
+            userCommentList, topNComments);
     averageScore = getAverageValue(userCommentList, "Average");
     averageMagnitude = getAverageValue(userCommentList, "Magnitude");
   }
 
   /**
-   * Categorize all score values into different range intervals and count the frequency for each
-   * interval, and set the aggregatedValues.
+   * Categorize all score values into different range SCORE_INTERVALs and count the frequency for each
+   * SCORE_INTERVAL, and set the aggregatedValues.
    *
    * @param userCommentList a list of userComment analyzed from sentiment analysis with upadted
    *     score and magnitude
-   * @param lowerEnd lower end boundary of the map
-   * @param upperEnd upper end boundary of the map
-   * @param interval interval for the range
-   * @return a categorized map based on userCommentList from lowerEnd to upperEnd with interval
+   * @return a categorized map based on userCommentList from LOWER_SCORE to UPPER_SCORE with SCORE_INTERVAL
    */
   private List<SentimentBucket> categorizeToBucketList(
       List<UserComment> userCommentList,
-      BigDecimal lowerEnd,
-      BigDecimal upperEnd,
-      BigDecimal interval,
       int topNumComments) {
     List<SentimentBucket> sentimentBucketList = new ArrayList<>();
-    // Add score's interval to different ranges two sorting with and two pointers pop-up
+    // Add score's SCORE_INTERVAL to different ranges two sorting with and two pointers pop-up
     userCommentList.sort(ascendingScoreComparator);
     int updatingScoreIdx = 0;
     BigDecimal tempPoint;
-    for (tempPoint = lowerEnd;
-        tempPoint.compareTo(upperEnd) < 0;
-        tempPoint = tempPoint.add(interval)) {
-      BigDecimal nextPoint = upperEnd.min(tempPoint.add(interval));
+    for (tempPoint = LOWER_SCORE;
+        tempPoint.compareTo(UPPER_SCORE) < 0;
+        tempPoint = tempPoint.add(SCORE_INTERVAL)) {
+      BigDecimal nextPoint = UPPER_SCORE.min(tempPoint.add(SCORE_INTERVAL));
       Range currentRange = new Range(tempPoint, nextPoint);
       int currentFrequency = 0;
       PriorityQueue<UserComment> highMagnitudeComments = new PriorityQueue<>();
@@ -96,7 +90,7 @@ public class Statistics {
       int scoreIdx;
       for (scoreIdx = updatingScoreIdx; scoreIdx < userCommentList.size(); scoreIdx++) {
         BigDecimal scorePoint = BigDecimal.valueOf(userCommentList.get(scoreIdx).getScore());
-        if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(upperEnd) == 0) {
+        if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_SCORE) == 0) {
           currentFrequency += 1;
           // TODO: add topNumComments to the priority queue highMagnitudeList
         } else {
