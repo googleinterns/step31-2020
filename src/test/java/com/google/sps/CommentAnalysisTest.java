@@ -14,7 +14,6 @@
 
 package com.google.sps;
 
-import com.google.appengine.api.users.User;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -86,10 +85,12 @@ public class CommentAnalysisTest {
         tempPoint = tempPoint.add(SCORE_INTERVAL)) {
       BigDecimal nextPoint = UPPER_SCORE.min(tempPoint.add(SCORE_INTERVAL));
       Range currentRange = new Range(tempPoint, nextPoint);
-      List<UserComment> curUserCommentList =  userCommentList.get(listIndex) == null ? new ArrayList<>() : userCommentList.get(listIndex);
+      List<UserComment> curUserCommentList =
+          userCommentList.get(listIndex) == null
+              ? new ArrayList<>()
+              : userCommentList.get(listIndex);
       expectedBucketList.add(
-          new SentimentBucket(
-              curUserCommentList, frequency.get(listIndex), currentRange));
+          new SentimentBucket(curUserCommentList, frequency.get(listIndex), currentRange));
       listIndex = listIndex + 1;
     }
     return expectedBucketList;

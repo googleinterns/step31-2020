@@ -45,16 +45,16 @@ public class SentimentBucket {
    *
    * @return debugging result for each sentiment bucket
    */
-//  @Override
-//  public String toString() {
-//    return "(topNComments: "
-//        + topNComments
-//        + " frequency: "
-//        + frequency
-//        + " intervalRange"
-//        + intervalRange
-//        + ")\n";
-//  }
+  //  @Override
+  //  public String toString() {
+  //    return "(topNComments: "
+  //        + topNComments
+  //        + " frequency: "
+  //        + frequency
+  //        + " intervalRange"
+  //        + intervalRange
+  //        + ")\n";
+  //  }
 
   /**
    * This is for testing purpose: if two sentiment bucket have same frequency, range and
