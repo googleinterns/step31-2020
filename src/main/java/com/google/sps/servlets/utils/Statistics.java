@@ -55,24 +55,22 @@ public class Statistics {
    * @param topNComments the number of highest magnitudes to retrieve
    */
   public Statistics(List<UserComment> userCommentList, int topNComments) {
-    sentimentBucketList =
-        categorizeToBucketList(
-            userCommentList, topNComments);
+    sentimentBucketList = categorizeToBucketList(userCommentList, topNComments);
     averageScore = getAverageValue(userCommentList, "Average");
     averageMagnitude = getAverageValue(userCommentList, "Magnitude");
   }
 
   /**
-   * Categorize all score values into different range SCORE_INTERVALs and count the frequency for each
-   * SCORE_INTERVAL, and set the aggregatedValues.
+   * Categorize all score values into different range SCORE_INTERVALs and count the frequency for
+   * each SCORE_INTERVAL, and set the aggregatedValues.
    *
    * @param userCommentList a list of userComment analyzed from sentiment analysis with upadted
    *     score and magnitude
-   * @return a categorized map based on userCommentList from LOWER_SCORE to UPPER_SCORE with SCORE_INTERVAL
+   * @return a categorized map based on userCommentList from LOWER_SCORE to UPPER_SCORE with
+   *     SCORE_INTERVAL
    */
   private List<SentimentBucket> categorizeToBucketList(
-      List<UserComment> userCommentList,
-      int topNumComments) {
+      List<UserComment> userCommentList, int topNumComments) {
     List<SentimentBucket> sentimentBucketList = new ArrayList<>();
     // Add score's SCORE_INTERVAL to different ranges two sorting with and two pointers pop-up
     userCommentList.sort(ascendingScoreComparator);
