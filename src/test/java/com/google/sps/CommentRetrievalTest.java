@@ -45,13 +45,13 @@ public class CommentRetrievalTest {
   private final String UNPOPULAR_VIDEO_URL = "cA-arJ0T6L4";
 
   // Simulate a CommentThreadListResponse with exactly as many comments as expected
-  public void setUp(int expectedComments) throws Exception {
+  public void setUp(int numExpectedComments) throws Exception {
     YouTube mockedYoutube = mock(YouTube.class, RETURNS_DEEP_STUBS);
     YouTube.CommentThreads.List mockedCommentThreadList =
         mock(YouTube.CommentThreads.List.class, RETURNS_DEEP_STUBS);
     when(mockedCommentThreadList.execute())
         .thenReturn(new CommentThreadListResponse().setItems(
-            Collections.nCopies(expectedComments, new CommentThread())));
+            Collections.nCopies(numExpectedComments, new CommentThread())));
     when(mockedYoutube.commentThreads().list(anyString()))
         .thenReturn(mockedCommentThreadList);
     commentRetriever = new YouTubeCommentRetriever(mockedYoutube);
