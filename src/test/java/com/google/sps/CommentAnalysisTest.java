@@ -115,8 +115,6 @@ public class CommentAnalysisTest {
     CommentThread testCommentThread = new CommentThread().setSnippet(testThreadSnippet);
     List<CommentThread> testCommentThreadList =
         new ArrayList<>(Arrays.asList(testCommentThread, testCommentThread));
-    CommentThreadListResponse youtubeResponse = new CommentThreadListResponse();
-    youtubeResponse.setItems(testCommentThreadList);
 
     // Mock the service variables
     LanguageServiceClient mockedlanguageService =
@@ -129,7 +127,7 @@ public class CommentAnalysisTest {
     CommentAnalysis commentAnalysis = new CommentAnalysis(mockedlanguageService);
 
     // Compute and test the sentiment bucket from mocked language service
-    Statistics testStat = commentAnalysis.computeOverallStats(youtubeResponse);
+    Statistics testStat = commentAnalysis.computeOverallStats(testCommentThreadList);
     UserComment testUserComment =
         new UserComment(
             TEST_ID, TEST_MESSAGE, new DateTime(new Date()), TEST_SCORE, TEST_MAGNITUDE);

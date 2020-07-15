@@ -29,7 +29,7 @@ public class Statistics {
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
   private static final Comparator<UserComment> ascendingScoreComparator =
       (UserComment o1, UserComment o2) -> Double.compare(o1.getScore(), o2.getScore());
-  private static final Comparator<UserComment> descendingMagnitudeCompare =
+  private static final Comparator<UserComment> descendingMagnitudeComparator =
       (UserComment o1, UserComment o2) -> Double.compare(o1.getMagnitude(), o2.getMagnitude());
 
   // Contains sentiment bucket information for all SCORE_INTERVALs
@@ -85,7 +85,7 @@ public class Statistics {
       Range currentRange = new Range(tempPoint, nextPoint);
       int currentFrequency = 0;
       PriorityQueue<UserComment> highMagnitudeComments =
-          new PriorityQueue<>(topNumComments, descendingMagnitudeCompare);
+          new PriorityQueue<>(topNumComments, descendingMagnitudeComparator);
       // loop through sorted scores within currentRange from updated score pointer and update its
       // corresponding appearance frequency
       for (updatingScoreIdx = updatingScoreIdx;
