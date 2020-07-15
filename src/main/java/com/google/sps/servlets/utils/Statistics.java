@@ -56,7 +56,7 @@ public class Statistics {
    */
   public Statistics(List<UserComment> userCommentList, int topNComments) {
     sentimentBucketList = categorizeToBucketList(userCommentList, topNComments);
-    averageScore = getAverageValue(userCommentList, "Average");
+    averageScore = getAverageValue(userCommentList, "score");
     averageMagnitude = getAverageValue(userCommentList, "Magnitude");
   }
 
@@ -116,14 +116,14 @@ public class Statistics {
    * Set the average value of given sentiment magnitude.
    *
    * @param userCommentList a list of userComment to calculate the average value or magnitude for
-   * @param avg_mag_check parameter to set whether it it returns average score or magnitude
+   * @param scoreMagCheck parameter to set whether it it returns average score or magnitude
    * @return the average score or magnitude of userCommentList
    */
-  private double getAverageValue(List<UserComment> userCommentList, String avg_mag_check) {
+  private double getAverageValue(List<UserComment> userCommentList, String scoreMagCheck) {
     return userCommentList.stream()
         .mapToDouble(
             userComment ->
-                avg_mag_check == "Average" ? userComment.getScore() : userComment.getMagnitude())
+                scoreMagCheck == "score" ? userComment.getScore() : userComment.getMagnitude())
         .average()
         .orElseThrow(
             () ->
