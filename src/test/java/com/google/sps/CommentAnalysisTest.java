@@ -35,7 +35,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -179,18 +178,7 @@ public class CommentAnalysisTest {
     // TODO: Add the top magnitude comment message in list as we don't currently have it, which
     // means expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(
-            Arrays.asList(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null));
+        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
     Statistics twohighestStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(0.105, twohighestStat.getAverageScore(), 0.01);
@@ -221,18 +209,7 @@ public class CommentAnalysisTest {
     // TODO: Add the top magnitude comment message in list as we don't currently have it, which
     // means expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(
-            Arrays.asList(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null));
+        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 0, 0, 0, 0, 1));
     Statistics distStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(
@@ -261,7 +238,6 @@ public class CommentAnalysisTest {
         new UserComment("006", "word0 word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 extraword", new DateTime(new Date()), 0.8, 0.5);
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment5, comment6));
     Statistics moreThan10Words = new Statistics(inputUserComment, 2);
-    System.out.println(moreThan10Words.getWordFrequencyMap());
     Map<String, Integer> expectedMap =
         new HashMap<String, Integer>() {
           {
@@ -280,3 +256,4 @@ public class CommentAnalysisTest {
     Assert.assertEquals(expectedMap, moreThan10Words.getWordFrequencyMap());
   }
 }
+

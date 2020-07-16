@@ -85,11 +85,9 @@ public class Statistics {
     // Group and sum the appearances of each word
     Map<String, Integer> wordPairMap = allWordStream.collect(
         Collectors.groupingBy(word -> word, Collectors.summingInt(word -> 1)));
-    Map<String, Integer> top10Entry = wordPairMap.entrySet().stream()
+    return wordPairMap.entrySet().stream()
                                                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                                                .limit(10).collect(Collectors.toMap(Map.Entry:: getKey,Map.Entry :: getValue));
-    return top10Entry;
-
   }
 
   /**
@@ -159,13 +157,13 @@ public class Statistics {
    */
   private double getAverageValue(List<UserComment> userCommentList, String scoreMagCheck) {
     return userCommentList.stream()
-               .mapToDouble(
-                   userComment ->
-                       scoreMagCheck == "score" ? userComment.getScore() : userComment.getMagnitude())
-               .average()
-               .orElseThrow(
-                   () ->
-                       new RuntimeException(
-                           "Unable to calculate average magnitude due to empty input list."));
+        .mapToDouble(
+            userComment ->
+                scoreMagCheck == "score" ? userComment.getScore() : userComment.getMagnitude())
+        .average()
+        .orElseThrow(
+            () ->
+                new RuntimeException(
+                    "Unable to calculate average magnitude due to empty input list."));
   }
 }
