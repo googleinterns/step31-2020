@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets.utils;
 
+import com.sun.org.apache.xpath.internal.compiler.Keywords;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,7 +81,7 @@ public class Statistics {
     Stream<String> allWordStream =
         userCommentList.stream()
             .map(comment -> comment.getCommentMsg().split("\\s+"))
-            .map(wordArray -> new ArrayList(Arrays.asList(wordArray)))
+            .map(wordArray -> new ArrayList<>(Arrays.asList(wordArray)))
             .flatMap(wordList -> wordList.stream());
     // Group and sum the appearances of each word
     Map<String, Integer> wordPairMap = allWordStream.collect(
@@ -166,4 +167,5 @@ public class Statistics {
                 new RuntimeException(
                     "Unable to calculate average magnitude due to empty input list."));
   }
+
 }
