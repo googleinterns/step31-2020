@@ -13,26 +13,25 @@
 // limitations under the License.
 package com.google.sps;
 
-import com.google.api.client.util.DateTime;
-import com.google.api.services.youtube.model.Video;
-import com.google.api.services.youtube.model.VideoListResponse;
-import com.google.api.services.youtube.model.VideoSnippet;
-import com.google.api.services.youtube.model.VideoStatistics;
-import java.math.BigInteger;
-import java.util.Collections;
-import java.util.Date;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.api.client.util.DateTime;
+import com.google.api.services.youtube.model.Video;
+import com.google.api.services.youtube.model.VideoListResponse;
+import com.google.api.services.youtube.model.VideoSnippet;
+import com.google.api.services.youtube.model.VideoStatistics;
 import com.google.sps.servlets.ContextServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigInteger;
 import java.security.GeneralSecurityException;
+import java.util.Collections;
+import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,7 +51,6 @@ public class ContextServletTest {
   private static final int numLikesVal = 10;
   private static final int numDislikesVal = 1;
 
-
   @Test
   public void testContextGet() throws IOException, GeneralSecurityException {
     ContextServlet contextServlet = spy(ContextServlet.class);
@@ -61,10 +59,17 @@ public class ContextServletTest {
     when(mockedRequest.getParameter(URL_PARAMETER)).thenReturn(TEST_URL);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
-    VideoSnippet mockedVideoSnippet = new VideoSnippet().setPublishedAt(new DateTime(new Date())).setTitle(TEST_TITLE).setChannelTitle(TEST_CHANNEL);
-    VideoStatistics mockedVidoeStatistics = new VideoStatistics().setLikeCount(BigInteger.TEN).setDislikeCount(BigInteger.ONE);
-    Video mockedVideo = new Video().setSnippet(mockedVideoSnippet).setStatistics(mockedVidoeStatistics);
-    VideoListResponse mockedVideoList = new VideoListResponse().setItems(Collections.singletonList(mockedVideo));
+    VideoSnippet mockedVideoSnippet =
+        new VideoSnippet()
+            .setPublishedAt(new DateTime(new Date()))
+            .setTitle(TEST_TITLE)
+            .setChannelTitle(TEST_CHANNEL);
+    VideoStatistics mockedVidoeStatistics =
+        new VideoStatistics().setLikeCount(BigInteger.TEN).setDislikeCount(BigInteger.ONE);
+    Video mockedVideo =
+        new Video().setSnippet(mockedVideoSnippet).setStatistics(mockedVidoeStatistics);
+    VideoListResponse mockedVideoList =
+        new VideoListResponse().setItems(Collections.singletonList(mockedVideo));
     when(contextServlet.generateYouTubeRequest(TEST_URL)).thenReturn(mockedVideoList);
     when(mockedResponse.getWriter()).thenReturn(writer);
     try {
@@ -73,13 +78,11 @@ public class ContextServletTest {
       System.err.println("Mocked Servlet still calls original Youtube Service");
       throw new IOException(e.getMessage());
     }
-    verify(mockedRequest, atLeast(1))
-        .getParameter(URL_PARAMETER);
-    Assert.assertTrue(stringWriter.toString().contains("\"videoName\":\"" + TEST_TITLE +"\""));
+    verify(mockedRequest, atLeast(1)).getParameter(URL_PARAMETER);
+    Assert.assertTrue(stringWriter.toString().contains("\"videoName\":\"" + TEST_TITLE + "\""));
     Assert.assertTrue(stringWriter.toString().contains("\"videoAuthor\":\"" + TEST_CHANNEL + "\""));
     Assert.assertTrue(stringWriter.toString().contains("\"numLikes\":" + numLikesVal));
     Assert.assertTrue(stringWriter.toString().contains("\"numDislikes\":" + numDislikesVal));
-    Assert.assertTrue(
-        stringWriter.toString().contains("\"publishDateString\":"));
+    Assert.assertTrue(stringWriter.toString().contains("\"publishDateString\":"));
   }
 }
