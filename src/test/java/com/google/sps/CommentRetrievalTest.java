@@ -58,9 +58,9 @@ public class CommentRetrievalTest {
     CommentThreadListResponse firstResponse =
         mockThreadListResponse(
             Math.min(numExpectedComments, MAX_COMMENTS_PER_TOKEN),
-            (useNextPageToken)? NEXT_PAGE_TOKEN :  null,
+            (useNextPageToken) ? NEXT_PAGE_TOKEN : null,
             FIRST_TOKEN_COMMENT);
-    if(useNextPageToken) {
+    if (useNextPageToken) {
       CommentThreadListResponse secondResponse =
           mockThreadListResponse(
               Math.min(numExpectedComments - MAX_COMMENTS_PER_TOKEN, MAX_COMMENTS_PER_TOKEN),
@@ -68,8 +68,8 @@ public class CommentRetrievalTest {
               SECOND_TOKEN_COMMENT);
       when(mockedCommentThreadList.execute()).thenReturn(firstResponse, secondResponse);
     } else {
-      when(mockedCommentThreadList.execute()).thenReturn(firstResponse);      
-    }        
+      when(mockedCommentThreadList.execute()).thenReturn(firstResponse);
+    }
 
     when(mockedYoutube.commentThreads().list(anyString())).thenReturn(mockedCommentThreadList);
     commentRetriever = new YouTubeCommentRetriever(mockedYoutube);
