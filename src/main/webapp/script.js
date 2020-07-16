@@ -21,9 +21,10 @@ const INTERVAL = 0.2;
 google.charts.load('current', {'packages':['corechart']});
 google.setOnLoadCallback(getChart)
  
-async function getYouTubeComments() { 
-  const urlInput = document.getElementById('link-input');
-  const url = cleanseUrl(urlInput.value);
+async function getYouTubeComments(currUrl) { 
+  const urlInput = currUrl; //document.getElementById('link-input');
+  console.log(currUrl);
+  const url = cleanseUrl(currUrl);
   const response = await fetch("/YouTubeComments?url="+url);
   const comments = await response.json();
   return comments;
@@ -35,6 +36,7 @@ async function getYouTubeComments() {
 function cleanseUrl(url) {
   // Split web address from parameters, extract first parameter
   // TODO: Add checks to make this work if video is not first parameter.
+  console.log(url);
   var videoId = url.split("?");
   videoId = (videoId.length > 1) ? videoId[1].split("&")[0] : videoId[0];
  
@@ -47,14 +49,18 @@ function cleanseUrl(url) {
 /**
  * Fetches data and adds to html
  */
-async function getChart() {
-  $('form').submit(async function() {
-    //document.getElementById('loading-img').style.display = "block";  
-    commentStats = await getYouTubeComments();
+async function getChart(url) { 
+  $('.button').click(async function() {
+    // After video is selected, hide the search results and display the loading icon  
+    document.getElementById("video-results").style.display = "none";
+    document.getElementById('loading-img').style.display = "block";  
+
+    commentStats = await getYouTubeComments(url);
+    console.log(commentStats);
     averageScore = commentStats.averageScore;
     averageMagnitude = commentStats.averageMagnitude;
     sentimentBucketList = commentStats.sentimentBucketList; 
- 
+    
     const CommentSentimentTable = new google.visualization.DataTable();
     CommentSentimentTable.addColumn('string', 'Sentiment Range');
     CommentSentimentTable.addColumn('number', 'Comment Count');

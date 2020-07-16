@@ -22,16 +22,10 @@
       </li>  
     </ul>  
     <div id="youtube-data">
-      <div class="form-group">  
-        <form onsubmit="return false">
-          <p>Enter a YouTube video link:</p>
-          <input id="link-input" name="link-input" required pattern="https?://www.youtube.com/watch\?v=.+"/>
-          <small id="url-help" class="form-text text-muted">Format: https://youtube.com/watch?v=...</small>
-          </br>
-          <input type="submit" id="submit-btn"/>
-          </br>
-        </form>
-      </div>
+      <input type="text" id="search-input">
+      <input name="Search" type="submit" id="submit-button" onclick="getVideoResults()"/>
+      <div id="video-results"></div>  
+      <!-- loading gif -->
       <div class="d-flex justify-content-center">
         <div id="loading-img" class="spinner-border text-dark" role="status" style="display:none">
           <span class="sr-only">Loading...</span>
@@ -39,9 +33,6 @@
       </div>
       <div id="chart-container"></div>
       <div id="average-score-container"></div>
-    </div>
-    <input type="text" id="search-input">
-    <input name="Submit" type="submit" id="submit-button" onclick="doIt()"/>
-    <div id="video-results"></div>              
+    </div>              
   </body>
 </html>
