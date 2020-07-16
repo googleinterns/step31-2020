@@ -45,7 +45,6 @@ import org.junit.runners.JUnit4;
 public class ContextServletTest {
   private static final String URL_PARAMETER = "url";
   private static final String TEST_URL = "WkZ5e94QnWk";
-  private static final String REQUEST_INFO = "snippet,statistics";
   private static final String TEST_TITLE = "Test Title";
   private static final String TEST_CHANNEL = "Test Channel";
   private static final int NUM_LIKES_VAL = 10;
