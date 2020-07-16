@@ -57,7 +57,7 @@ public class YoutubeServlet extends HttpServlet {
       CommentThreadListResponse commentResponse = generateYouTubeRequest(url).execute();
 
       CommentAnalysis commentAnalysis = new CommentAnalysis();
-      Statistics statistics = commentAnalysis.computeOverallStats(commentResponse);
+      Statistics statistics = null;//commentAnalysis.computeOverallStats(commentResponse);
       commentAnalysis.closeLanguage();
 
       String json = new Gson().toJson(statistics);
