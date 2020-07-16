@@ -233,9 +233,19 @@ public class CommentAnalysisTest {
   public void testOver10CommentWords() {
     // cases: user comments with more than 10 vocabulary to test the top 10 comments retreived
     UserComment comment5 =
-        new UserComment("005", "word0 word1 word2 word3 word4 word5 word6 word7 word8", new DateTime(new Date()), -1.0, 0.4);
+        new UserComment(
+            "005",
+            "word0 word1 word2 word3 word4 word5 word6 word7 word8",
+            new DateTime(new Date()),
+            -1.0,
+            0.4);
     UserComment comment6 =
-        new UserComment("006", "word0 word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 extraword", new DateTime(new Date()), 0.8, 0.5);
+        new UserComment(
+            "006",
+            "word0 word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 extraword",
+            new DateTime(new Date()),
+            0.8,
+            0.5);
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment5, comment6));
     Statistics moreThan10Words = new Statistics(inputUserComment, 2);
     Map<String, Integer> expectedMap =
@@ -256,4 +266,3 @@ public class CommentAnalysisTest {
     Assert.assertEquals(expectedMap, moreThan10Words.getWordFrequencyMap());
   }
 }
-

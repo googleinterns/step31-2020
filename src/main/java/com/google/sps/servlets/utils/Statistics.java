@@ -72,6 +72,7 @@ public class Statistics {
 
   /**
    * Convert given userCommentList into a word map: {word: frequency}
+   *
    * @param userCommentList a list of userComment with all fields updated
    * @return wordFrequencyMap to represent each word appearance time
    */
@@ -83,11 +84,13 @@ public class Statistics {
             .map(wordArray -> new ArrayList(Arrays.asList(wordArray)))
             .flatMap(wordList -> wordList.stream());
     // Group and sum the appearances of each word
-    Map<String, Integer> wordPairMap = allWordStream.collect(
-        Collectors.groupingBy(word -> word, Collectors.summingInt(word -> 1)));
+    Map<String, Integer> wordPairMap =
+        allWordStream.collect(
+            Collectors.groupingBy(word -> word, Collectors.summingInt(word -> 1)));
     return wordPairMap.entrySet().stream()
-                                               .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                                               .limit(10).collect(Collectors.toMap(Map.Entry:: getKey,Map.Entry :: getValue));
+        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+        .limit(10)
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   /**
@@ -134,9 +137,9 @@ public class Statistics {
     return sentimentBucketList;
   }
 
-
   /**
    * Covert the priority queue into an arrayList with preserved order
+   *
    * @param inputQueue given priority queue of usercomments
    * @return ArrayList sorted based on inputQueue polling order
    */
