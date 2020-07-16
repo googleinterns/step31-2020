@@ -58,10 +58,17 @@ public class ContextServletTest {
     HttpServletResponse mockedResponse = mock(HttpServletResponse.class);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
-    VideoSnippet mockedVideoSnippet = new VideoSnippet().setPublishedAt(new DateTime(new Date())).setTitle(TEST_TITLE).setChannelTitle(TEST_CHANNEL);
-    VideoStatistics mockedVidoeStatistics = new VideoStatistics().setLikeCount(BigInteger.TEN).setDislikeCount(BigInteger.ONE);
-    Video mockedVideo = new Video().setSnippet(mockedVideoSnippet).setStatistics(mockedVidoeStatistics);
-    VideoListResponse mockedVideoList = new VideoListResponse().setItems(Collections.singletonList(mockedVideo));
+    VideoSnippet mockedVideoSnippet =
+        new VideoSnippet()
+            .setPublishedAt(new DateTime(new Date()))
+            .setTitle(TEST_TITLE)
+            .setChannelTitle(TEST_CHANNEL);
+    VideoStatistics mockedVidoeStatistics =
+        new VideoStatistics().setLikeCount(BigInteger.TEN).setDislikeCount(BigInteger.ONE);
+    Video mockedVideo =
+        new Video().setSnippet(mockedVideoSnippet).setStatistics(mockedVidoeStatistics);
+    VideoListResponse mockedVideoList =
+        new VideoListResponse().setItems(Collections.singletonList(mockedVideo));
     when(mockedRequest.getParameter(URL_PARAMETER)).thenReturn(TEST_URL);
     when(contextServlet.generateYouTubeRequest(TEST_URL)).thenReturn(mockedVideoList);
     when(mockedResponse.getWriter()).thenReturn(writer);
@@ -76,7 +83,6 @@ public class ContextServletTest {
     Assert.assertTrue(stringWriter.toString().contains("\"videoAuthor\":\"" + TEST_CHANNEL + "\""));
     Assert.assertTrue(stringWriter.toString().contains("\"numLikes\":" + NUM_LIKES_VAL));
     Assert.assertTrue(stringWriter.toString().contains("\"numDislikes\":" + NUM_DISLIKES_VAL));
-    Assert.assertTrue(
-        stringWriter.toString().contains("\"publishDateString\":"));
+    Assert.assertTrue(stringWriter.toString().contains("\"publishDateString\":"));
   }
 }
