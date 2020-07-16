@@ -38,9 +38,7 @@ public class CommentRetrievalTest {
   private final int EXCESS_HUNDRED = 200;
   private final int MAX_COMMENTS_PER_TOKEN = 100;
   private YouTubeCommentRetriever commentRetriever;
-  // These url's no longer do anything; rather, serve as parameter for the call
-  private final String POPULAR_VIDEO_URL = "dQw4w9WgXcQ";
-  private final String UNPOPULAR_VIDEO_URL = "cA-arJ0T6L4";
+  private final String videoUrl = "dummyVideo";
   private final String NEXT_PAGE_TOKEN = "Some Page Token";
   private final String FIRST_TOKEN_COMMENT = "First";
   private final String SECOND_TOKEN_COMMENT = "Second";
@@ -98,17 +96,8 @@ public class CommentRetrievalTest {
   @Test
   public void testDefaultBehaviour() throws Exception {
     setUpYouTubeMocks(HUNDRED);
-    List<CommentThread> comments = commentRetriever.retrieveComments(POPULAR_VIDEO_URL, HUNDRED);
+    List<CommentThread> comments = commentRetriever.retrieveComments(videoUrl, HUNDRED);
     Assert.assertEquals(comments.size(), HUNDRED);
-  }
-
-  // Extract more than 100 comments from a video
-  @Test
-  public void testExcessHundredComments() throws Exception {
-    setUpYouTubeMocks(EXCESS_HUNDRED);
-    List<CommentThread> comments =
-        commentRetriever.retrieveComments(POPULAR_VIDEO_URL, EXCESS_HUNDRED);
-    Assert.assertEquals(comments.size(), EXCESS_HUNDRED);
   }
 
   // Only load the comments that are in a video, without crashing
@@ -116,7 +105,7 @@ public class CommentRetrievalTest {
   public void doesNotAttemptRetrieveExcess() throws Exception {
     setUpYouTubeMocks(1);
     List<CommentThread> comments =
-        commentRetriever.retrieveComments(UNPOPULAR_VIDEO_URL, EXCESS_HUNDRED);
+        commentRetriever.retrieveComments(videoUrl, EXCESS_HUNDRED);
     Assert.assertEquals(comments.size(), 1);
   }
 
@@ -124,7 +113,7 @@ public class CommentRetrievalTest {
   @Test
   public void retrievesSpecificNumComments() throws Exception {
     setUpYouTubeMocks(12);
-    List<CommentThread> comments = commentRetriever.retrieveComments(POPULAR_VIDEO_URL, 12);
+    List<CommentThread> comments = commentRetriever.retrieveComments(videoUrl, 12);
     Assert.assertEquals(comments.size(), 12);
   }
 
@@ -132,18 +121,18 @@ public class CommentRetrievalTest {
   @Test
   public void retrievesSpecificNumCommentsExcessHundred() throws Exception {
     setUpYouTubeMocks(120);
-    List<CommentThread> comments = commentRetriever.retrieveComments(POPULAR_VIDEO_URL, 120);
+    List<CommentThread> comments = commentRetriever.retrieveComments(videoUrl, 120);
     Assert.assertEquals(comments.size(), 120);
   }
 
   @Test
   public void retrievesCorrectCommentContent() throws Exception {
     setUpYouTubeMocks(200);
-    List<CommentThread> comments = commentRetriever.retrieveComments(POPULAR_VIDEO_URL, 200);
+    List<CommentThread> comments = commentRetriever.retrieveComments(videoUrl, 200);
     String firstCommentContent =
         comments.get(0).getSnippet().getTopLevelComment().getSnippet().getTextDisplay();
     String lastCommentContent =
-        comments.get(150).getSnippet().getTopLevelComment().getSnippet().getTextDisplay();
+        comments.get(199).getSnippet().getTopLevelComment().getSnippet().getTextDisplay();
     Assert.assertEquals(FIRST_TOKEN_COMMENT, firstCommentContent);
     Assert.assertEquals(SECOND_TOKEN_COMMENT, lastCommentContent);
   }
