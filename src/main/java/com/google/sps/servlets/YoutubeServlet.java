@@ -43,7 +43,8 @@ public class YoutubeServlet extends HttpServlet {
     try {
       String url = request.getParameter(URL_PARAMETER);
       // TODO: add numComments parameter. Comment count will be hard-coded until then.
-      List<CommentThread> commentThreads = new YouTubeCommentRetriever().retrieveComments(url, DEFAULT_COMMENTS);
+      List<CommentThread> commentThreads =
+          new YouTubeCommentRetriever().retrieveComments(url, DEFAULT_COMMENTS);
 
       CommentAnalysis commentAnalysis = new CommentAnalysis();
       Statistics statistics = commentAnalysis.computeOverallStats(commentThreads);
