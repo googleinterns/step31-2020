@@ -251,4 +251,32 @@ public class CommentAnalysisTest {
         };
     Assert.assertEquals(expectedMap, distStat.getWordFrequencyMap());
   }
+
+  @Test
+  public void testOver10CommentWords() {
+    // cases: user comments with more than 10 vocabulary to test the top 10 comments retreived
+    UserComment comment5 =
+        new UserComment("005", "word0 word1 word2 word3 word4 word5 word6 word7 word8", new DateTime(new Date()), -1.0, 0.4);
+    UserComment comment6 =
+        new UserComment("006", "word0 word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 extraword", new DateTime(new Date()), 0.8, 0.5);
+    List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment5, comment6));
+    Statistics moreThan10Words = new Statistics(inputUserComment, 2);
+    System.out.println(moreThan10Words.getWordFrequencyMap());
+    Map<String, Integer> expectedMap =
+        new HashMap<String, Integer>() {
+          {
+            put("word0", 3);
+            put("word1", 2);
+            put("word2", 2);
+            put("word3", 2);
+            put("word4", 2);
+            put("word5", 2);
+            put("word6", 2);
+            put("word7", 2);
+            put("word8", 2);
+            put("extraword", 1);
+          }
+        };
+    Assert.assertEquals(expectedMap, moreThan10Words.getWordFrequencyMap());
+  }
 }

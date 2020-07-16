@@ -70,14 +70,26 @@ public class Statistics {
     wordFrequencyMap = countWordFrequencyMap(userCommentList);
   }
 
+  /**
+   * Convert given userCommentList into a word map: {word: frequency}
+   * @param userCommentList a list of userComment with all fields updated
+   * @return wordFrequencyMap to represent each word appearance time
+   */
   private Map<String, Integer> countWordFrequencyMap(List<UserComment> userCommentList) {
+    // Flatten all user comment message into a list of words
     Stream<String> allWordStream =
         userCommentList.stream()
             .map(comment -> comment.getCommentMsg().split("\\s+"))
             .map(wordArray -> new ArrayList(Arrays.asList(wordArray)))
             .flatMap(wordList -> wordList.stream());
-    return allWordStream.collect(
+    // Group and sum the appearances of each word
+    Map<String, Integer> wordPairMap = allWordStream.collect(
         Collectors.groupingBy(word -> word, Collectors.summingInt(word -> 1)));
+    Map<String, Integer> top10Entry = wordPairMap.entrySet().stream()
+                                               .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                                               .limit(10).collect(Collectors.toMap(Map.Entry:: getKey,Map.Entry :: getValue));
+    return top10Entry;
+
   }
 
   /**
@@ -124,6 +136,12 @@ public class Statistics {
     return sentimentBucketList;
   }
 
+
+  /**
+   * Covert the priority queue into an arrayList with preserved order
+   * @param inputQueue given priority queue of usercomments
+   * @return ArrayList sorted based on inputQueue polling order
+   */
   private ArrayList convertQueueToList(PriorityQueue<UserComment> inputQueue) {
     ArrayList<UserComment> returnList = new ArrayList<>();
     while (!inputQueue.isEmpty()) {
