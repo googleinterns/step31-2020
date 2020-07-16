@@ -39,7 +39,7 @@ public class ContextServlet extends HttpServlet {
   // TODO: encapsulate this piece into a YoutubeProvider class to avoid repeating the code
   private static final String APPLICATION_NAME = "SAY";
   private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
-  private static final String REQUEST_INFO = "snippet,contentDetails,statistics";
+  private static final String REQUEST_INFO = "snippet,statistics";
 
   /**
    * Retrieves video information from designated URL, wraps them into information object, then
@@ -53,14 +53,14 @@ public class ContextServlet extends HttpServlet {
       throws ServletException {
     try {
       String url = request.getParameter(URL_PARAMETER);
-      VideoListResponse videoResponse = generateYouTubeRequest(url).execute();
+      VideoListResponse videoResponse = generateYouTubeRequest(url);
       VideoInformation videoInfo = new VideoInformation(videoResponse);
       String json = new Gson().toJson(videoInfo);
       response.setContentType("application/json");
       response.getWriter().println(json);
     } catch (Exception e) {
       e.printStackTrace(System.err);
-      throw new ServletException("Unable to fetch YouTube Comments Through Servlet.", e);
+      throw new ServletException("Unable to fetch YouTube Video Information Through Servlet.", e);
     }
   }
 
@@ -69,10 +69,10 @@ public class ContextServlet extends HttpServlet {
    *
    * @param url Youtube video id to retrieve information
    */
-  public YouTube.Videos.List generateYouTubeRequest(String url)
+  public VideoListResponse generateYouTubeRequest(String url)
       throws GeneralSecurityException, IOException {
     YouTube.Videos.List videoRequest = getService().videos().list(REQUEST_INFO);
-    return videoRequest.setKey(DEVELOPER_KEY).setId(url);
+    return videoRequest.setKey(DEVELOPER_KEY).setId(url).execute();
   }
 
   /**

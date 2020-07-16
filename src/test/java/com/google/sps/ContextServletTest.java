@@ -13,8 +13,18 @@
 // limitations under the License.
 package com.google.sps;
 
+import com.google.api.client.util.DateTime;
+import com.google.api.services.youtube.model.Video;
+import com.google.api.services.youtube.model.VideoListResponse;
+import com.google.api.services.youtube.model.VideoSnippet;
+import com.google.api.services.youtube.model.VideoStatistics;
+import java.math.BigInteger;
+import java.util.Collections;
+import java.util.Date;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,25 +46,40 @@ import org.junit.runners.JUnit4;
 public class ContextServletTest {
   private static final String URL_PARAMETER = "url";
   private static final String TEST_URL = "WkZ5e94QnWk";
-  private static final String REQUEST_INFO = "snippet,contentDetails,statistics";
+  private static final String REQUEST_INFO = "snippet,statistics";
+  private static final String TEST_TITLE = "Test Title";
+  private static final String TEST_CHANNEL = "Test Channel";
+  private static final int numLikesVal = 10;
+  private static final int numDislikesVal = 1;
+
 
   @Test
-  public void testContextGet() throws ServletException, IOException, GeneralSecurityException {
-    ContextServlet contextServlet = new ContextServlet();
+  public void testContextGet() throws IOException, GeneralSecurityException {
+    ContextServlet contextServlet = spy(ContextServlet.class);
     HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
     HttpServletResponse mockedResponse = mock(HttpServletResponse.class);
     when(mockedRequest.getParameter(URL_PARAMETER)).thenReturn(TEST_URL);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
+    VideoSnippet mockedVideoSnippet = new VideoSnippet().setPublishedAt(new DateTime(new Date())).setTitle(TEST_TITLE).setChannelTitle(TEST_CHANNEL);
+    VideoStatistics mockedVidoeStatistics = new VideoStatistics().setLikeCount(BigInteger.TEN).setDislikeCount(BigInteger.ONE);
+    Video mockedVideo = new Video().setSnippet(mockedVideoSnippet).setStatistics(mockedVidoeStatistics);
+    VideoListResponse mockedVideoList = new VideoListResponse().setItems(Collections.singletonList(mockedVideo));
+    when(contextServlet.generateYouTubeRequest(TEST_URL)).thenReturn(mockedVideoList);
     when(mockedResponse.getWriter()).thenReturn(writer);
-    contextServlet.doGet(mockedRequest, mockedResponse);
+    try {
+      contextServlet.doGet(mockedRequest, mockedResponse);
+    } catch (ServletException e) {
+      System.err.println("Mocked Servlet still calls original Youtube Service");
+      throw new IOException(e.getMessage());
+    }
     verify(mockedRequest, atLeast(1))
-        .getParameter(URL_PARAMETER); // only if you want to verify username was called...
-    Assert.assertTrue(stringWriter.toString().contains("Fuck Donald Trump"));
-    Assert.assertTrue(stringWriter.toString().contains("\"videoAuthor\":\"WORLDSTARHIPHOP\""));
-    Assert.assertTrue(stringWriter.toString().contains("numLikes"));
-    Assert.assertTrue(stringWriter.toString().contains("numDislikes"));
+        .getParameter(URL_PARAMETER);
+    Assert.assertTrue(stringWriter.toString().contains("\"videoName\":\"" + TEST_TITLE +"\""));
+    Assert.assertTrue(stringWriter.toString().contains("\"videoAuthor\":\"" + TEST_CHANNEL + "\""));
+    Assert.assertTrue(stringWriter.toString().contains("\"numLikes\":" + numLikesVal));
+    Assert.assertTrue(stringWriter.toString().contains("\"numDislikes\":" + numDislikesVal));
     Assert.assertTrue(
-        stringWriter.toString().contains("\"publishDate\":\"2016-04-18T17:01:23.000Z\""));
+        stringWriter.toString().contains("\"publishDateString\":"));
   }
 }
