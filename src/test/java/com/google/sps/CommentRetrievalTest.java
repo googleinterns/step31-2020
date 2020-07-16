@@ -45,14 +45,12 @@ public class CommentRetrievalTest {
   private final String FIRST_TOKEN_COMMENT = "First";
   private final String SECOND_TOKEN_COMMENT = "Second";
 
-  public void setUp(int numExpectedComments) throws Exception {
-    setUp(numExpectedComments, null);
-  }
   // Simulate a CommentThreadListResponse with exactly as many comments as expected
-  public void setUp(int numExpectedComments, String nextPageToken) throws Exception {
+  public void setUpYouTubeMocks(int numExpectedComments) throws Exception {
     YouTube mockedYoutube = mock(YouTube.class, RETURNS_DEEP_STUBS);
     YouTube.CommentThreads.List mockedCommentThreadList =
         mock(YouTube.CommentThreads.List.class, RETURNS_DEEP_STUBS);
+    boolean useNextPageToken = (numExpectedComments > MAX_COMMENTS_PER_TOKEN);
     // This is only enough for two calls, all these tests require
     // Return on the first call either 100 comments or the desired number.
     // If there's no next page token, return nothing on the second call,
@@ -60,16 +58,19 @@ public class CommentRetrievalTest {
     CommentThreadListResponse firstResponse =
         mockThreadListResponse(
             Math.min(numExpectedComments, MAX_COMMENTS_PER_TOKEN),
-            nextPageToken,
+            (useNextPageToken)? NEXT_PAGE_TOKEN :  null,
             FIRST_TOKEN_COMMENT);
-    CommentThreadListResponse secondResponse =
-        mockThreadListResponse(
-            (nextPageToken == null)
-                ? 0
-                : Math.min(numExpectedComments - MAX_COMMENTS_PER_TOKEN, MAX_COMMENTS_PER_TOKEN),
-            nextPageToken,
-            SECOND_TOKEN_COMMENT);
-    when(mockedCommentThreadList.execute()).thenReturn(firstResponse, secondResponse);
+    if(useNextPageToken) {
+      CommentThreadListResponse secondResponse =
+          mockThreadListResponse(
+              Math.min(numExpectedComments - MAX_COMMENTS_PER_TOKEN, MAX_COMMENTS_PER_TOKEN),
+              NEXT_PAGE_TOKEN,
+              SECOND_TOKEN_COMMENT);
+      when(mockedCommentThreadList.execute()).thenReturn(firstResponse, secondResponse);
+    } else {
+      when(mockedCommentThreadList.execute()).thenReturn(firstResponse);      
+    }        
+
     when(mockedYoutube.commentThreads().list(anyString())).thenReturn(mockedCommentThreadList);
     commentRetriever = new YouTubeCommentRetriever(mockedYoutube);
   }
@@ -96,7 +97,7 @@ public class CommentRetrievalTest {
   // The simplest case: extract 100 comments from a video with more than 100 comments
   @Test
   public void testDefaultBehaviour() throws Exception {
-    setUp(HUNDRED);
+    setUpYouTubeMocks(HUNDRED);
     List<CommentThread> comments = commentRetriever.retrieveComments(POPULAR_VIDEO_URL, HUNDRED);
     Assert.assertEquals(comments.size(), HUNDRED);
   }
@@ -104,7 +105,7 @@ public class CommentRetrievalTest {
   // Extract more than 100 comments from a video
   @Test
   public void testExcessHundredComments() throws Exception {
-    setUp(EXCESS_HUNDRED, NEXT_PAGE_TOKEN);
+    setUpYouTubeMocks(EXCESS_HUNDRED);
     List<CommentThread> comments =
         commentRetriever.retrieveComments(POPULAR_VIDEO_URL, EXCESS_HUNDRED);
     Assert.assertEquals(comments.size(), EXCESS_HUNDRED);
@@ -113,7 +114,7 @@ public class CommentRetrievalTest {
   // Only load the comments that are in a video, without crashing
   @Test
   public void doesNotAttemptRetrieveExcess() throws Exception {
-    setUp(1);
+    setUpYouTubeMocks(1);
     List<CommentThread> comments =
         commentRetriever.retrieveComments(UNPOPULAR_VIDEO_URL, EXCESS_HUNDRED);
     Assert.assertEquals(comments.size(), 1);
@@ -122,7 +123,7 @@ public class CommentRetrievalTest {
   // Retrieve a specific amount of comments less than 100
   @Test
   public void retrievesSpecificNumComments() throws Exception {
-    setUp(12);
+    setUpYouTubeMocks(12);
     List<CommentThread> comments = commentRetriever.retrieveComments(POPULAR_VIDEO_URL, 12);
     Assert.assertEquals(comments.size(), 12);
   }
@@ -130,14 +131,14 @@ public class CommentRetrievalTest {
   // Retrieve a specific amount of comments more than 100
   @Test
   public void retrievesSpecificNumCommentsExcessHundred() throws Exception {
-    setUp(120, NEXT_PAGE_TOKEN);
+    setUpYouTubeMocks(120);
     List<CommentThread> comments = commentRetriever.retrieveComments(POPULAR_VIDEO_URL, 120);
     Assert.assertEquals(comments.size(), 120);
   }
 
   @Test
   public void retrievesCorrectCommentContent() throws Exception {
-    setUp(200, NEXT_PAGE_TOKEN);
+    setUpYouTubeMocks(200);
     List<CommentThread> comments = commentRetriever.retrieveComments(POPULAR_VIDEO_URL, 200);
     String firstCommentContent =
         comments.get(0).getSnippet().getTopLevelComment().getSnippet().getTextDisplay();
