@@ -49,22 +49,23 @@ public class ContextServletTest {
   private static final String REQUEST_INFO = "snippet,statistics";
   private static final String TEST_TITLE = "Test Title";
   private static final String TEST_CHANNEL = "Test Channel";
-  private static final int numLikesVal = 10;
-  private static final int numDislikesVal = 1;
+  private static final int NUM_LIKES_VAL = 10;
+  private static final int NUM_DISLIKES_VAL = 1;
 
 
   @Test
   public void testContextGet() throws IOException, GeneralSecurityException {
+    // Test the doGet() method to retrieve youtube vidoe context with mocked service
     ContextServlet contextServlet = spy(ContextServlet.class);
     HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
     HttpServletResponse mockedResponse = mock(HttpServletResponse.class);
-    when(mockedRequest.getParameter(URL_PARAMETER)).thenReturn(TEST_URL);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     VideoSnippet mockedVideoSnippet = new VideoSnippet().setPublishedAt(new DateTime(new Date())).setTitle(TEST_TITLE).setChannelTitle(TEST_CHANNEL);
     VideoStatistics mockedVidoeStatistics = new VideoStatistics().setLikeCount(BigInteger.TEN).setDislikeCount(BigInteger.ONE);
     Video mockedVideo = new Video().setSnippet(mockedVideoSnippet).setStatistics(mockedVidoeStatistics);
     VideoListResponse mockedVideoList = new VideoListResponse().setItems(Collections.singletonList(mockedVideo));
+    when(mockedRequest.getParameter(URL_PARAMETER)).thenReturn(TEST_URL);
     when(contextServlet.generateYouTubeRequest(TEST_URL)).thenReturn(mockedVideoList);
     when(mockedResponse.getWriter()).thenReturn(writer);
     try {
@@ -77,8 +78,8 @@ public class ContextServletTest {
         .getParameter(URL_PARAMETER);
     Assert.assertTrue(stringWriter.toString().contains("\"videoName\":\"" + TEST_TITLE +"\""));
     Assert.assertTrue(stringWriter.toString().contains("\"videoAuthor\":\"" + TEST_CHANNEL + "\""));
-    Assert.assertTrue(stringWriter.toString().contains("\"numLikes\":" + numLikesVal));
-    Assert.assertTrue(stringWriter.toString().contains("\"numDislikes\":" + numDislikesVal));
+    Assert.assertTrue(stringWriter.toString().contains("\"numLikes\":" + NUM_LIKES_VAL));
+    Assert.assertTrue(stringWriter.toString().contains("\"numDislikes\":" + NUM_DISLIKES_VAL));
     Assert.assertTrue(
         stringWriter.toString().contains("\"publishDateString\":"));
   }
