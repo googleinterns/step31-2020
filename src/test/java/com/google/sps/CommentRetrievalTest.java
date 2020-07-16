@@ -102,8 +102,7 @@ public class CommentRetrievalTest {
   @Test
   public void doesNotAttemptRetrieveExcess() throws Exception {
     setUpYouTubeMocks(1);
-    List<CommentThread> comments =
-        commentRetriever.retrieveComments(videoUrl, EXCESS_HUNDRED);
+    List<CommentThread> comments = commentRetriever.retrieveComments(videoUrl, EXCESS_HUNDRED);
     Assert.assertEquals(comments.size(), 1);
   }
 
