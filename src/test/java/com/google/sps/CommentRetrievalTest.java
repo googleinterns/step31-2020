@@ -76,25 +76,23 @@ public class CommentRetrievalTest {
   // Creates list of comments of desired length.
   // Page token is needed for iteration but its contents are irrelevant.
   private CommentThreadListResponse mockThreadListResponse(
-      int desiredComments, String nextPageToken, String commentContent) {
+      int numDesiredComments, String nextPageToken, String commentContent) {
     CommentThread mockThread = dummyCommentThread(commentContent);
     return new CommentThreadListResponse()
-        .setItems(Collections.nCopies(desiredComments, mockThread))
+        .setItems(Collections.nCopies(numDesiredComments, mockThread))
         .setNextPageToken(nextPageToken);
   }
 
   private CommentThread dummyCommentThread(String comment) {
-    // This has to be done because for some reason it's impossible to directly change a comment's
-    // content
     CommentThread mockedCommentThread = mock(CommentThread.class, RETURNS_DEEP_STUBS);
     when(mockedCommentThread.getSnippet().getTopLevelComment().getSnippet().getTextDisplay())
         .thenReturn(comment);
     return mockedCommentThread;
   }
 
-  // The simplest case: extract 100 comments from a video with more than 100 comments
+  // Extract exactly the maximum allowed per request
   @Test
-  public void testDefaultBehaviour() throws Exception {
+  public void testBasicExraction() throws Exception {
     setUpYouTubeMocks(HUNDRED);
     List<CommentThread> comments = commentRetriever.retrieveComments(videoUrl, HUNDRED);
     Assert.assertEquals(comments.size(), HUNDRED);
@@ -109,7 +107,7 @@ public class CommentRetrievalTest {
     Assert.assertEquals(comments.size(), 1);
   }
 
-  // Retrieve a specific amount of comments less than 100
+  // Retrieve a specific amount of comments less than max results per request
   @Test
   public void retrievesSpecificNumComments() throws Exception {
     setUpYouTubeMocks(12);
@@ -117,7 +115,7 @@ public class CommentRetrievalTest {
     Assert.assertEquals(comments.size(), 12);
   }
 
-  // Retrieve a specific amount of comments more than 100
+  // Retrieve a specific amount of comments more than max results per request
   @Test
   public void retrievesSpecificNumCommentsExcessHundred() throws Exception {
     setUpYouTubeMocks(120);
