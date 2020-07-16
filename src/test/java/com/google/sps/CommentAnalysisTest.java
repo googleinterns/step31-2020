@@ -268,17 +268,20 @@ public class CommentAnalysisTest {
 
   @Test
   public void sampleTest() {
-    String sampleMsg = "You can use HtmlUnit to parse the article's HTML and query for the parts of the document you are interested in searching. Then you can apply a simple algorithm of your own design to determine tags/keywords.\n" +
-                                  "\n" +
-                                  "Like for instance, split() the text on whitespace and then count how many times each word occurs. The words that occur the most (ignoring things like \"and\", \"the\", \"if\", etc.) are good candidates for keywords.";
+    String sampleMsg =
+        "You can use HtmlUnit to parse the article's HTML and query for the parts of the document"
+            + " you are interested in searching. Then you can apply a simple algorithm of your own"
+            + " design to determine tags/keywords.\n"
+            + "\n"
+            + "Like for instance, split() the text on whitespace and then count how many times"
+            + " each word occurs. The words that occur the most (ignoring things like \"and\","
+            + " \"the\", \"if\", etc.) are good candidates for keywords.";
     // TODO: make this work!!!
     System.out.println(sampleMsg.split("\\s+"));
 
-    UserComment comment5 =
-        new UserComment("005",sampleMsg, new DateTime(new Date()), -1.0, 0.4);
+    UserComment comment5 = new UserComment("005", sampleMsg, new DateTime(new Date()), -1.0, 0.4);
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment5));
     Statistics moreThan10Words = new Statistics(inputUserComment, 2);
     System.out.println(moreThan10Words.getWordFrequencyMap());
-
   }
 }

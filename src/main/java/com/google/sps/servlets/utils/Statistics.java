@@ -14,7 +14,6 @@
 
 package com.google.sps.servlets.utils;
 
-import com.sun.org.apache.xpath.internal.compiler.Keywords;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -170,5 +169,4 @@ public class Statistics {
                 new RuntimeException(
                     "Unable to calculate average magnitude due to empty input list."));
   }
-
 }
