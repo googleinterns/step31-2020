@@ -20,21 +20,6 @@ async function getVideoContext() {
   return context;
 }
 
-/*
- * Extracts video id from full url
- */ 
-function cleanseUrl(url) {
-  // Split web address from parameters, extract first parameter
-  // TODO: Add checks to make this work if video is not first parameter.
-  var videoId = url.split("?");
-  videoId = (videoId.length > 1) ? videoId[1].split("&")[0] : videoId[0];
-
-  // If param name present, remove it to isolate video Id.
-  videoId = videoId.replace("v=", "");
-  
-  return videoId;
-}
-
 /**
  * Fetches data and adds to html
  */
@@ -45,12 +30,8 @@ async function getContext() {
   });
 }
 
-function videoInfoAsString(videoContext) {
-  videoName = videoContext.videoName;
-  videoAuthor = videoContext.videoAuthor; 
-  videoDate = videoContext.publishDateString;
-  videoLikes = videoContext.numLikes;
-  videoDislikes = videoContext.numDislikes;  
-  return videoName + "<br>Channel: " + videoAuthor + "</br>Date Published: " + videoDate
-        + "</br> Likes/dislikes" + videoLikes + " / " + videoDislikes
+function videoInfoAsString(videoContext) { 
+  return videoContext.videoName + "<br>Channel: " + videoContext.videoAuthor + 
+    "<br>Date Published: " + videoContext.videoDate + "<br>Likes/dislikes" + 
+    videoContext.videoLikes + " / " + videoContext.videoDislikes;
 }
