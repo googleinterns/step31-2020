@@ -115,7 +115,7 @@ public class Statistics {
 
   /**
    * Convert a priority queue of userComments with high magnitude to a list of userComments with
-   * descending magnitudes
+   * descending magnitudes. Note: direcly call toArray() will not preserve the order of priority queue
    *
    * @param inputQueue fixed size priority queue that stores userComment based on descending order
    *     of magnitude
