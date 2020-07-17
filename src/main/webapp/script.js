@@ -51,16 +51,18 @@ async function getChart() {
   $('form').submit(async function() {
     document.getElementById('loading-img').style.display = "block";  
     commentStats = await getYouTubeComments();
-    getBarChart(commentStats);
+    sentimentBucketList = commentStats.sentimentBucketList; 
+    getBarChart(sentimentBucketList);
     console.log(commentStats);
     getWordCloudChart();
+    averageScore = commentStats.averageScore;
+    const averageContainer = document.getElementById('average-score-container');
+    averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
     }
   );
 }
 
-function getBarChart(commentStats) {
-  averageScore = commentStats.averageScore;
-    aggregateValues = commentStats.aggregateValues; 
+function getBarChart(sentimentBucketList) {
 
     const CommentSentimentTable = new google.visualization.DataTable();
     CommentSentimentTable.addColumn('number', 'InclusiveStart');
@@ -68,10 +70,10 @@ function getBarChart(commentStats) {
     CommentSentimentTable.addColumn('number', 'CommentCount');
 
     // The json keys (ranges of scores) are sorted through their starting values
-    Object.keys(aggregateValues).forEach(function(key) {
-      var inclusiveStart = getRangeInclusiveStart(key);  
-      var exclusiveEnd = getRangeExclusiveEnd(key);
-      CommentSentimentTable.addRow([inclusiveStart, inclusiveStart + ' to ' + exclusiveEnd, aggregateValues[key]]);  
+    sentimentBucketList.forEach(sentimentBucket => {
+      var inclusiveStart = sentimentBucket.intervalRange.inclusiveStart;
+      var exclusiveEnd = sentimentBucket.intervalRange.exclusiveEnd;
+      CommentSentimentTable.addRow([inclusiveStart, inclusiveStart + ' to ' + exclusiveEnd, sentimentBucket.frequency]);  
     });
 
     const options = {
@@ -91,21 +93,12 @@ function getBarChart(commentStats) {
         document.getElementById('chart-container'));
     chart.draw(view, options);    
 
-    const averageContainer = document.getElementById('average-score-container');
-    averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
+  
 }
 
-function getRangeExclusiveEnd(rangeString) {
-  rangeString.trim();
-  return Number(rangeString.substring(rangeString.indexOf(',') + 1, rangeString.length - 1));
-}
- 
-function getRangeInclusiveStart(rangeString) {
-  rangeString.trim();
-  return Number(rangeString.substring(1, rangeString.indexOf(',')));
-}
 
-function getWordCloudChart() {
+function getWordCloudChart(commentStats) {
+  
   var data = [
     {"x": "Mandarin chinese", "value": 1090000000},
     {"x": "English", "value": 983000000},
@@ -113,7 +106,7 @@ function getWordCloudChart() {
     {"x": "Spanish", "value": 527000000},
     {"x": "Arabic", "value": 422000000}
   ];
-
+  commentStats.
   // create a tag cloud chart
   var chart = anychart.tagCloud(data);
 
