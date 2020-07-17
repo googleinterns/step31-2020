@@ -155,7 +155,7 @@ public class CommentAnalysisTest {
 
   @Test
   public void testTopOneMagnitude() {
-    // cases: two user comments with sentiment score in the same interval and only reuqire top 1
+    // Cases: two user comments with sentiment score in the same interval and only reuqire top 1
     // comment
     UserComment comment1 =
         new UserComment("001", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4);
@@ -185,7 +185,7 @@ public class CommentAnalysisTest {
 
   @Test
   public void testMoreThanOneMagnitude() {
-    // cases: two user comments with sentiment score in the same interval and require more than 1
+    // Cases: two user comments with sentiment score in the same interval and require more than 1
     // top comments
     UserComment comment1 =
         new UserComment("001", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4);
@@ -216,7 +216,7 @@ public class CommentAnalysisTest {
 
   @Test
   public void testDistributeScore() {
-    // cases: two user comments with sentiment score in the same interval
+    // Cases: two user comments with sentiment score in the same interval
     UserComment comment1 =
         new UserComment("003", "First Normal Comment", new DateTime(new Date()), -1.0, 0.4);
     UserComment comment2 =
