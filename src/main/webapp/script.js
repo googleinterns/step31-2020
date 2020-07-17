@@ -49,14 +49,14 @@ function cleanseUrl(url) {
  */
 async function getChart() {
   $('form').submit(async function() {
-    //document.getElementById('loading-img').style.display = "block";
+    document.getElementById('loading-img').style.display = "block";
     commentStats = await getYouTubeComments();
     sentimentBucketList = commentStats.sentimentBucketList;
-    wordCloud = commentStats.sentimentBucketList;
+    wordFrequencyMap = commentStats.wordFrequencyMap;
 
-    getBarChart(sentimentBucketList);
+    // getBarChart(sentimentBucketList);
     console.log(commentStats);
-    getWordCloudChart(sentimentBucketList);
+    getWordCloudChart(wordFrequencyMap);
     averageScore = commentStats.averageScore;
     const averageContainer = document.getElementById('average-score-container');
     averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
@@ -95,16 +95,10 @@ function getBarChart(sentimentBucketList) {
     chart.draw(view, options);
 }
 
-function getWordCloudChart(sentimentBucketList) {
+function getWordCloudChart(wordFrequencyMap) {
 
-  var data = [
-    {"x": "Mandarin chinese", "value": 1090000000},
-    {"x": "English", "value": 983000000},
-    {"x": "Hindustani", "value": 544000000},
-    {"x": "Spanish", "value": 527000000},
-    {"x": "Arabic", "value": 422000000}
-  ];
-  sentimentBucketList.forEach(sentimentBucket => data.addRow({"x": sentimentBucket}))
+  var data = [];
+  Object.keys(wordFrequencyMap).forEach(wordKey => data.push({"x": wordKey, "value": wordFrequencyMap[wordKey]}));
   // create a tag cloud chart
   var chart = anychart.tagCloud(data);
 
