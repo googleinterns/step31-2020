@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/YouTubeComments")
 public class YoutubeServlet extends HttpServlet {
   private static final String URL_PARAMETER = "url";
+  private static final String NUM_COMMENTS_PARAMETER ="numComments";
   private static final long DEFAULT_COMMENTS = 100L;
   private YouTubeCommentRetriever commentRetriever;
 
@@ -42,10 +43,14 @@ public class YoutubeServlet extends HttpServlet {
       throws ServletException {
     try {
       String url = request.getParameter(URL_PARAMETER);
-      // TODO: add numComments parameter. Comment count will be hard-coded until then.
-      List<CommentThread> commentThreads =
-          new YouTubeCommentRetriever().retrieveComments(url, DEFAULT_COMMENTS);
-
+      String numCommentsInput = request.getParameter(NUM_COMMENTS_PARAMETER);
+      System.out.println("Num Comments Input: " + numCommentsInput);
+      long numComments = (numCommentsInput == null || numCommentsInput == "")
+          ? DEFAULT_COMMENTS 
+          : Long.valueOf(numCommentsInput);
+      List<CommentThread> commentThreads = 
+          new YouTubeCommentRetriever().retrieveComments(url, numComments);
+      System.out.println("Comment Threads: " + commentThreads.size());
       CommentAnalysis commentAnalysis = new CommentAnalysis();
       Statistics statistics = commentAnalysis.computeOverallStats(commentThreads);
       commentAnalysis.closeLanguage();
