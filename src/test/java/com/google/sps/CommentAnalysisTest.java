@@ -72,14 +72,6 @@ public class CommentAnalysisTest {
    */
   private List<SentimentBucket> constructSentimentBucketListFromCommentList(
       List<List<UserComment>> userCommentList, List<Integer> frequency) {
-    if (userCommentList.size() != frequency.size()
-        || (frequency.size()
-            != UPPER_SCORE
-                .subtract(LOWER_SCORE)
-                .divide(SCORE_INTERVAL, 0, RoundingMode.UP)
-                .intValue())) {
-      throw new RuntimeException("Initialize list in test function got wrong size");
-    }
     int listIndex = 0;
     List<SentimentBucket> expectedBucketList = new ArrayList<>();
     for (BigDecimal tempPoint = LOWER_SCORE;
@@ -207,16 +199,16 @@ public class CommentAnalysisTest {
                 null,
                 null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
-    Statistics twohighestStat = new Statistics(inputUserComment, 2);
-    Assert.assertEquals(0.105, twohighestStat.getAverageScore(), 0.01);
+    Statistics twoHighestStat = new Statistics(inputUserComment, 2);
+    Assert.assertEquals(0.105, twoHighestStat.getAverageScore(), 0.01);
     Assert.assertEquals(
         constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
-        twohighestStat.getSentimentBucketList());
+        twoHighestStat.getSentimentBucketList());
   }
 
   @Test
   public void testDistributeScore() {
-    // Cases: two user comments with sentiment score in the same interval
+    // Cases: two user comments with sentiment score on the two edge cases
     UserComment comment1 =
         new UserComment("003", "First Normal Comment", new DateTime(new Date()), -1.0, 0.4);
     UserComment comment2 =
