@@ -51,7 +51,15 @@ async function getChart() {
   $('form').submit(async function() {
     document.getElementById('loading-img').style.display = "block";  
     commentStats = await getYouTubeComments();
-    averageScore = commentStats.averageScore;
+    getBarChart(commentStats);
+    console.log(commentStats);
+    getWordCloudChart();
+    }
+  );
+}
+
+function getBarChart(commentStats) {
+  averageScore = commentStats.averageScore;
     aggregateValues = commentStats.aggregateValues; 
 
     const CommentSentimentTable = new google.visualization.DataTable();
@@ -85,7 +93,6 @@ async function getChart() {
 
     const averageContainer = document.getElementById('average-score-container');
     averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
-  });
 }
 
 function getRangeExclusiveEnd(rangeString) {
@@ -97,3 +104,25 @@ function getRangeInclusiveStart(rangeString) {
   rangeString.trim();
   return Number(rangeString.substring(1, rangeString.indexOf(',')));
 }
+
+function getWordCloudChart() {
+  var data = [
+    {"x": "Mandarin chinese", "value": 1090000000},
+    {"x": "English", "value": 983000000},
+    {"x": "Hindustani", "value": 544000000},
+    {"x": "Spanish", "value": 527000000},
+    {"x": "Arabic", "value": 422000000}
+  ];
+
+  // create a tag cloud chart
+  var chart = anychart.tagCloud(data);
+
+  // set the chart title
+  chart.title('Most Popular Comments')
+  // set array of angles, by which words will be placed
+  chart.angles([0])
+
+  // display chart
+  chart.container("word-cloud");
+  chart.draw();
+};
