@@ -23,11 +23,13 @@ google.setOnLoadCallback(getChart)
 
 async function getYouTubeComments() { 
   const urlInput = document.getElementById('link-input');
+  console.log("wtf")
   const url = cleanseUrl(urlInput.value);
   const response = await fetch("/YouTubeComments?url="+url);
   const comments = await response.json();
   return comments;
 }
+
 
 /*
  * Extracts video id from full url
@@ -49,7 +51,11 @@ function cleanseUrl(url) {
  */
 async function getChart() {
   $('form').submit(async function() {
-    document.getElementById('loading-img').style.display = "block";  
+    document.getElementById('loading-img').style.display = "block";
+
+//    videoContext = await getVideoContext();
+//    console.log(videoContext);
+//    document.getElementById('video-context').innerHTML = videoInfoAsString(videoContext);
     commentStats = await getYouTubeComments();
     averageScore = commentStats.averageScore;
     aggregateValues = commentStats.aggregateValues; 
