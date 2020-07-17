@@ -40,7 +40,6 @@ function cleanseUrl(url) {
 
   // If param name present, remove it to isolate video Id.
   videoId = videoId.replace("v=", "");
-
   return videoId;
 }
 
@@ -49,13 +48,12 @@ function cleanseUrl(url) {
  */
 async function getChart() {
   $('form').submit(async function() {
-    document.getElementById('loading-img').style.display = "block";
+    document.getElementById('loading-img').style.display = "block"; 
     commentStats = await getYouTubeComments();
     sentimentBucketList = commentStats.sentimentBucketList;
     wordFrequencyMap = commentStats.wordFrequencyMap;
 
     // getBarChart(sentimentBucketList);
-    console.log(commentStats);
     getWordCloudChart(wordFrequencyMap);
     averageScore = commentStats.averageScore;
     const averageContainer = document.getElementById('average-score-container');
@@ -75,27 +73,28 @@ function getBarChart(sentimentBucketList) {
     CommentSentimentTable.addColumn('number', 'CommentCount');
 
     // The json keys (ranges of scores) are sorted through their starting values
-    sentimentBucketList.forEach(sentimentBucket => {
-      var inclusiveStart = sentimentBucket.intervalRange.inclusiveStart;
-      var exclusiveEnd = sentimentBucket.intervalRange.exclusiveEnd;
-      CommentSentimentTable.addRow([inclusiveStart, inclusiveStart + ' to ' + exclusiveEnd, sentimentBucket.frequency]);
+        Object.keys(aggregateValues).forEach(function(key) {
+      var inclusiveStart = getRangeInclusiveStart(key);  
+      var exclusiveEnd = getRangeExclusiveEnd(key);
+      CommentSentimentTable.addRow([inclusiveStart, inclusiveStart + ' to ' + exclusiveEnd, aggregateValues[key]]);  
     });
-
-      CommentSentimentTable.addRow([rangeAsString, currentSentimentBucket.frequency,
-        toTooltipString(highestMagnitudeComments)]);
 
     const options = {
       'title': 'Comment Sentiment Range',
       'width': CHART_WIDTH,
       'height':CHART_HEIGHT,
-      'bar': {groupWidth: "100"},
-      'tooltip': {isHtml: true}
+      'bar': {groupWidth: "100"}
     };
 
+    document.getElementById('loading-img').style.display = "none";  
+
+    CommentSentimentTable.sort({column: 0, desc: false}); 
     var view = new google.visualization.DataView(CommentSentimentTable);
+    view.setColumns([1, 2]); 
+
     const chart = new google.visualization.ColumnChart(
         document.getElementById('chart-container'));
-    chart.draw(view, options);
+    chart.draw(view, options); 
 }
 
 /**
@@ -118,15 +117,12 @@ function getWordCloudChart(wordFrequencyMap) {
   chart.draw();
 };
 
-function toTooltipString(userComments) {
-  return userComments.map(comment => userCommentAsString(comment)).join("<br>");
+function getRangeExclusiveEnd(rangeString) {
+  rangeString.trim();
+  return Number(rangeString.substring(rangeString.indexOf(',') + 1, rangeString.length - 1));
 }
-
-function userCommentAsString(comment) {
-  commentMagnitude = comment.magnitude;
-  return comment.commentMsg + "<br> Magnitude Score: " + commentMagnitude;
-}
-
-function convertRangeToString(range) {
-  return range.inclusiveStart + " to " + range.exclusiveEnd;
+ 
+function getRangeInclusiveStart(rangeString) {
+  rangeString.trim();
+  return Number(rangeString.substring(1, rangeString.indexOf(',')));
 }
