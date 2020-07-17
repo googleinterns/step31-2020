@@ -73,9 +73,9 @@ public class CommentAnalysisTest {
     if (userCommentList.size() != frequency.size()
         || (frequency.size()
             != UPPER_SCORE
-                   .subtract(LOWER_SCORE)
-                   .divide(SCORE_INTERVAL, 0, RoundingMode.UP)
-                   .intValue())) {
+                 .subtract(LOWER_SCORE)
+                 .divide(SCORE_INTERVAL, 0, RoundingMode.UP)
+                 .intValue())) {
       throw new RuntimeException("Initialize list in test function got wrong size");
     }
     int listIndex = 0;
