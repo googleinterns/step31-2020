@@ -32,7 +32,6 @@ import com.google.sps.servlets.utils.SentimentBucket;
 import com.google.sps.servlets.utils.Statistics;
 import com.google.sps.servlets.utils.UserComment;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
