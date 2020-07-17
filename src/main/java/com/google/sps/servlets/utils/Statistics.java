@@ -161,15 +161,14 @@ public class Statistics {
    */
   private void addToFixedQueue(
       UserComment newComment, PriorityQueue<UserComment> currentQueue, int maxQueueSize) {
-    if (currentQueue.size() < maxQueueSize) {
-      currentQueue.add(newComment);
-    } else {
-      if (newComment.getMagnitude() < currentQueue.peek().getMagnitude()) return;
-      else {
-        currentQueue.poll();
-        // Since userCommentList has been sorted, if newComment and last comment have same magnitude, add newComment since it has higher score.
-        currentQueue.add(newComment);
+    UserComment commentToAdd = newComment;
+    if (currentQueue.size() == maxQueueSize) {
+      commentToAdd = currentQueue.poll();
+      // Since userCommentList has been sorted, if newComment and commentToAdd have same magnitude, add newComment since it has higher score.
+      if (newComment.getMagnitude() > commentToAdd.getMagnitude()) {
+        commentToAdd = newComment;
       }
     }
+    currentQueue.add(commentToAdd);
   }
 }
