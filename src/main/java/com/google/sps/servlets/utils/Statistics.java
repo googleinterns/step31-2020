@@ -167,7 +167,8 @@ public class Statistics {
       if (newComment.getMagnitude() < currentQueue.peek().getMagnitude()) return;
       else {
         currentQueue.poll();
-        // Since userCommentList has been sorted, if newComment and last comment have same magnitude, add newComment since it has higher score.
+        // Since userCommentList has been sorted, if newComment and last comment have same
+        // magnitude, add newComment since it has higher score.
         currentQueue.add(newComment);
       }
     }
