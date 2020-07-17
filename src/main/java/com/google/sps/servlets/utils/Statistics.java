@@ -153,7 +153,7 @@ public class Statistics {
    * Add a new comment to priority queue. If the priority queue has not been filled to maxQueueSize,
    * directly add the comment in; If the last element in priority queue has smaller magnitude,
    * replace that with new comment; If they have the same magnitude, replace the last element with
-   * comment that has higher score.
+   * new incoming comment that has higher score.
    *
    * @param newComment userComment to add into currentQueue
    * @param currentQueue priority queue of userComment sorted based on descending order of magnitude
@@ -164,16 +164,11 @@ public class Statistics {
     if (currentQueue.size() < maxQueueSize) {
       currentQueue.add(newComment);
     } else {
-      UserComment commentToReplace = currentQueue.peek();
-      if (newComment.getMagnitude() < commentToReplace.getMagnitude()) return;
+      if (newComment.getMagnitude() < currentQueue.peek().getMagnitude()) return;
       else {
-        UserComment commentToAdd = newComment;
         currentQueue.poll();
-        if (newComment.getMagnitude() == commentToReplace.getMagnitude()) {
-          commentToAdd =
-              newComment.getScore() > commentToReplace.getScore() ? newComment : commentToReplace;
-        }
-        currentQueue.add(commentToAdd);
+        // Since userCommentList has been sorted, if newComment and last comment have same magnitude, add newComment since it has higher score.
+        currentQueue.add(newComment);
       }
     }
   }
