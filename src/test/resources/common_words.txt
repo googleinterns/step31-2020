@@ -1,0 +1,2 @@
+"the", "it", "at", "and", "to", "we",
+    "can", "are", "of", "is"

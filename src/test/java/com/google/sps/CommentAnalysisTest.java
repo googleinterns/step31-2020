@@ -270,18 +270,38 @@ public class CommentAnalysisTest {
   public void sampleTest() {
     String sampleMsg =
         "You can use HtmlUnit to parse the article's HTML and query for the parts of the document"
-            + " you are interested in searching. Then you can apply a simple algorithm of your own"
-            + " design to determine tags/keywords.\n"
+            + " you <br> are interested in searching. Then you can apply a simple algorithm of your own"
+            + " design to <br> determine tags/keywords.\n"
             + "\n"
-            + "Like for instance, split() the text on whitespace and then count how many times"
-            + " each word occurs. The words that occur the most (ignoring things like \"and\","
+            + "Like for \n instance, <br> split() the text on whitespace \n and then count how many times"
+            + " each word occurs. The words that occur the most <br> (ignoring things like \"and\","
             + " \"the\", \"if\", etc.) are good candidates for keywords.";
     // TODO: make this work!!!
-    System.out.println(sampleMsg.split("\\s+"));
+    System.out.println("Split at space" + sampleMsg.split("\\s+"));
 
     UserComment comment5 = new UserComment("005", sampleMsg, new DateTime(new Date()), -1.0, 0.4);
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment5));
     Statistics moreThan10Words = new Statistics(inputUserComment, 2);
-    System.out.println(moreThan10Words.getWordFrequencyMap());
+    System.out.println("Map: " + moreThan10Words.getWordFrequencyMap());
+  }
+
+  @Test
+  public void testEmptyCommentMap() {
+    String emptyMsg = "";
+
+    UserComment comment6 = new UserComment("006", emptyMsg, new DateTime(new Date()), -1.0, 0.4);
+    List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment6));
+    Statistics moreThan10Words = new Statistics(inputUserComment, 2);
+    Assert.assertEquals(null, moreThan10Words.getWordFrequencyMap());
+  }
+
+  @Test
+  public void testHTMLCommentMap() {
+    String htmlMsg = "<p><br><br></p>";
+
+    UserComment comment7 = new UserComment("007", htmlMsg, new DateTime(new Date()), -1.0, 0.4);
+    List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment7));
+    Statistics moreThan10Words = new Statistics(inputUserComment, 2);
+    System.out.println("Map: " + moreThan10Words.getWordFrequencyMap());
   }
 }

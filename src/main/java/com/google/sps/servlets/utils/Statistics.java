@@ -23,8 +23,10 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import net.htmlparser.jericho.*;
 
 public class Statistics {
+  private static final int MINIMUM_WORDMAP_SIZE = 2;  
   private static final double LOWER_SCORE_VAL = -1.0;
   private static final double UPPER_SCORE_VAL = 1.0;
   private static final double SCORE_INTERVAL_VAL = 0.2;
@@ -33,6 +35,8 @@ public class Statistics {
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
   private static final Comparator<UserComment> ascendingScoreComparator =
       (UserComment o1, UserComment o2) -> Double.compare(o1.getScore(), o2.getScore());
+  private static final List<String> wordsToIgnore = new ArrayList<>(Arrays.asList("the", "it", "at", "and", "to", "we",
+    "can", "are", "of", "is"));    
 
   // Contains sentiment bucket information for all SCORE_INTERVALs
   private List<SentimentBucket> sentimentBucketList;
@@ -80,17 +84,22 @@ public class Statistics {
     // Flatten all user comment message into a list of words
     Stream<String> allWordStream =
         userCommentList.stream()
-            .map(comment -> comment.getCommentMsg().split("\\s+"))
+            .map(comment -> new Source(comment.getCommentMsg()).getTextExtractor().toString().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+"))
             .map(wordArray -> new ArrayList<>(Arrays.asList(wordArray)))
-            .flatMap(wordList -> wordList.stream());
+            .flatMap(wordList -> wordList.stream())
+            .filter(word -> !wordsToIgnore.contains(word));
     // Group and sum the appearances of each word
     Map<String, Integer> wordPairMap =
         allWordStream.collect(
             Collectors.groupingBy(word -> word, Collectors.summingInt(word -> 1)));
-    return wordPairMap.entrySet().stream()
-        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-        .limit(10)
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    if (wordPairMap.size() < MINIMUM_WORDMAP_SIZE) {
+        return null;
+    } else {
+      return wordPairMap.entrySet().stream()
+          .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+          .limit(10)
+          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }   
   }
 
   /**
