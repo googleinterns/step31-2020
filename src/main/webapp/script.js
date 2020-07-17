@@ -73,7 +73,7 @@ function getBarChart(sentimentBucketList) {
     CommentSentimentTable.addColumn('number', 'CommentCount');
 
     // The json keys (ranges of scores) are sorted through their starting values
-        Object.keys(aggregateValues).forEach(function(key) {
+    Object.keys(aggregateValues).forEach(function(key) {
       var inclusiveStart = getRangeInclusiveStart(key);  
       var exclusiveEnd = getRangeExclusiveEnd(key);
       CommentSentimentTable.addRow([inclusiveStart, inclusiveStart + ' to ' + exclusiveEnd, aggregateValues[key]]);  
@@ -102,19 +102,19 @@ function getBarChart(sentimentBucketList) {
  * @param {Map<String:Integer>} wordFrequencyMap 
  */
 function getWordCloudChart(wordFrequencyMap) {
-  var data = [];
-  Object.keys(wordFrequencyMap).forEach(wordKey => data.push({"x": wordKey, "value": wordFrequencyMap[wordKey]}));
-  // create a tag cloud chart
-  var chart = anychart.tagCloud(data);
+    var data = [];
+    Object.keys(wordFrequencyMap).forEach(wordKey => data.push({"x": wordKey, "value": wordFrequencyMap[wordKey]}));
+    // create a tag cloud chart
+    var chart = anychart.tagCloud(data);
 
-  // set the chart title
-  chart.title('Most Popular Comments')
-  // set array of angles, by which words will be placed
-  chart.angles([0])
+    // set the chart title
+    chart.title('Most Popular Comments')
+    // set array of angles, by which words will be placed
+    chart.angles([0])
 
-  // display chart
-  chart.container("word-cloud");
-  chart.draw();
+    // display chart
+    chart.container("word-cloud");
+    chart.draw();
 };
 
 function getRangeExclusiveEnd(rangeString) {
