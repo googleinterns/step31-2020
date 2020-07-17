@@ -53,10 +53,8 @@ public class Statistics {
    * Constructor of Statistics to get average score and magnitude and create aggregate sorted
    * sentiment bucket list based on SCORE_INTERVALs' ascending ranges.
    *
-   * @param userCommentList
-   *     given list of userComment objects
-   * @param topNComments
-   *     the number of highest magnitudes to retrieve
+   * @param userCommentList given list of userComment objects
+   * @param topNComments the number of highest magnitudes to retrieve
    */
   public Statistics(List<UserComment> userCommentList, int topNComments) {
     sentimentBucketList = categorizeToBucketList(userCommentList, topNComments);
@@ -68,11 +66,10 @@ public class Statistics {
    * Categorize all score values into different range SCORE_INTERVALs and count the frequency for
    * each SCORE_INTERVAL, and set the aggregatedValues.
    *
-   * @param userCommentList
-   *     a list of userComment analyzed from sentiment analysis with upadted
+   * @param userCommentList a list of userComment analyzed from sentiment analysis with upadted
    *     score and magnitude
    * @return a categorized map based on userCommentList from LOWER_SCORE to UPPER_SCORE with
-   * SCORE_INTERVAL
+   *     SCORE_INTERVAL
    */
   private List<SentimentBucket> categorizeToBucketList(
       List<UserComment> userCommentList, int topNumComments) {
@@ -90,7 +87,8 @@ public class Statistics {
       PriorityQueue<UserComment> descendingCommentMagnitudeQueue =
           new PriorityQueue<>(topNumComments, descendingMagnitudeComparator);
       // loop through sorted scores within currentRange from updated score pointer, update its
-      // corresponding appearance frequency, and store the comments with topNumComments high magnitude 
+      // corresponding appearance frequency, and store the comments with topNumComments high
+      // magnitude
       for (updatingScoreIdx = updatingScoreIdx;
           updatingScoreIdx < userCommentList.size();
           updatingScoreIdx++) {
@@ -99,26 +97,32 @@ public class Statistics {
         if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_SCORE) == 0) {
           currentFrequency += 1;
           addToFixedQueue(
-              userCommentList.get(updatingScoreIdx), descendingCommentMagnitudeQueue, topNumComments);
+              userCommentList.get(updatingScoreIdx),
+              descendingCommentMagnitudeQueue,
+              topNumComments);
         } else {
           break;
         }
       }
       sentimentBucketList.add(
           new SentimentBucket(
-              convertQueueToDescendingList(descendingCommentMagnitudeQueue), currentFrequency, currentRange));
+              convertQueueToDescendingList(descendingCommentMagnitudeQueue),
+              currentFrequency,
+              currentRange));
     }
     return sentimentBucketList;
   }
 
   /**
-   * Convert a priority queue of userComments with high magnitude to a list of userComments with descending magnitudes
+   * Convert a priority queue of userComments with high magnitude to a list of userComments with
+   * descending magnitudes
    *
-   * @param inputQueue
-   *     fixed size priority queue that stores userComment based on descending order of magnitude
+   * @param inputQueue fixed size priority queue that stores userComment based on descending order
+   *     of magnitude
    * @return a list of userComment with descending magnitudes
    */
-  private ArrayList<UserComment> convertQueueToDescendingList(PriorityQueue<UserComment> inputQueue) {
+  private ArrayList<UserComment> convertQueueToDescendingList(
+      PriorityQueue<UserComment> inputQueue) {
     ArrayList<UserComment> returnList = new ArrayList<>();
     while (!inputQueue.isEmpty()) {
       returnList.add(inputQueue.poll());
@@ -129,29 +133,28 @@ public class Statistics {
   /**
    * Set the average value of given sentiment magnitude.
    *
-   * @param userCommentList
-   *     a list of userComment to calculate the average value or magnitude for
-   * @param scoreMagCheck
-   *     parameter to set whether it it returns average score or magnitude
+   * @param userCommentList a list of userComment to calculate the average value or magnitude for
+   * @param scoreMagCheck parameter to set whether it it returns average score or magnitude
    * @return the average score or magnitude of userCommentList
    */
   private double getAverageValue(List<UserComment> userCommentList, String scoreMagCheck) {
     return userCommentList.stream()
-               .mapToDouble(
-                   userComment ->
-                       scoreMagCheck == "score" ? userComment.getScore() : userComment.getMagnitude())
-               .average()
-               .orElseThrow(
-                   () ->
-                       new RuntimeException(
-                           "Unable to calculate average magnitude due to empty input list."));
+        .mapToDouble(
+            userComment ->
+                scoreMagCheck == "score" ? userComment.getScore() : userComment.getMagnitude())
+        .average()
+        .orElseThrow(
+            () ->
+                new RuntimeException(
+                    "Unable to calculate average magnitude due to empty input list."));
   }
 
   /**
-   * Add a new comment to priority queue.
-   * If the priority queue has not been filled to maxQueueSize, directly add the comment in;
-   * If the last element in priority queue has smaller magnitude, replace that with new comment;
-   * If they have the same magnitude, replace the last element with comment that has higher score.
+   * Add a new comment to priority queue. If the priority queue has not been filled to maxQueueSize,
+   * directly add the comment in; If the last element in priority queue has smaller magnitude,
+   * replace that with new comment; If they have the same magnitude, replace the last element with
+   * comment that has higher score.
+   *
    * @param newComment userComment to add into currentQueue
    * @param currentQueue priority queue of userComment sorted based on descending order of magnitude
    * @param maxQueueSize maximum size of priority queue
@@ -167,7 +170,8 @@ public class Statistics {
         UserComment commentToAdd = newComment;
         currentQueue.poll();
         if (newComment.getMagnitude() == commentToReplace.getMagnitude()) {
-          commentToAdd = newComment.getScore() > commentToReplace.getScore() ? newComment : commentToReplace;
+          commentToAdd =
+              newComment.getScore() > commentToReplace.getScore() ? newComment : commentToReplace;
         }
         currentQueue.add(commentToAdd);
       }
