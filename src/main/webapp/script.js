@@ -21,7 +21,7 @@ const INTERVAL = 0.2;
 google.charts.load('current', {'packages':['corechart']});
 google.setOnLoadCallback(getChart)
 
-async function getYouTubeComments() { 
+async function getYouTubeComments() {
   const urlInput = document.getElementById('link-input');
   const url = cleanseUrl(urlInput.value);
   const response = await fetch("/YouTubeComments?url="+url);
@@ -31,7 +31,7 @@ async function getYouTubeComments() {
 
 /*
  * Extracts video id from full url
- */ 
+ */
 function cleanseUrl(url) {
   // Split web address from parameters, extract first parameter
   // TODO: Add checks to make this work if video is not first parameter.
@@ -40,7 +40,7 @@ function cleanseUrl(url) {
 
   // If param name present, remove it to isolate video Id.
   videoId = videoId.replace("v=", "");
-  
+
   return videoId;
 }
 
@@ -49,12 +49,14 @@ function cleanseUrl(url) {
  */
 async function getChart() {
   $('form').submit(async function() {
-    document.getElementById('loading-img').style.display = "block";  
+    //document.getElementById('loading-img').style.display = "block";
     commentStats = await getYouTubeComments();
-    sentimentBucketList = commentStats.sentimentBucketList; 
+    sentimentBucketList = commentStats.sentimentBucketList;
+    wordCloud = commentStats.sentimentBucketList;
+
     getBarChart(sentimentBucketList);
     console.log(commentStats);
-    getWordCloudChart();
+    getWordCloudChart(sentimentBucketList);
     averageScore = commentStats.averageScore;
     const averageContainer = document.getElementById('average-score-container');
     averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
@@ -73,32 +75,28 @@ function getBarChart(sentimentBucketList) {
     sentimentBucketList.forEach(sentimentBucket => {
       var inclusiveStart = sentimentBucket.intervalRange.inclusiveStart;
       var exclusiveEnd = sentimentBucket.intervalRange.exclusiveEnd;
-      CommentSentimentTable.addRow([inclusiveStart, inclusiveStart + ' to ' + exclusiveEnd, sentimentBucket.frequency]);  
+      CommentSentimentTable.addRow([inclusiveStart, inclusiveStart + ' to ' + exclusiveEnd, sentimentBucket.frequency]);
     });
+
+      CommentSentimentTable.addRow([rangeAsString, currentSentimentBucket.frequency,
+        toTooltipString(highestMagnitudeComments)]);
 
     const options = {
       'title': 'Comment Sentiment Range',
       'width': CHART_WIDTH,
       'height':CHART_HEIGHT,
-      'bar': {groupWidth: "100"}
+      'bar': {groupWidth: "100"},
+      'tooltip': {isHtml: true}
     };
 
-    document.getElementById('loading-img').style.display = "none";  
-
-    CommentSentimentTable.sort({column: 0, desc: false}); 
     var view = new google.visualization.DataView(CommentSentimentTable);
-    view.setColumns([1, 2]); 
-
     const chart = new google.visualization.ColumnChart(
         document.getElementById('chart-container'));
-    chart.draw(view, options);    
-
-  
+    chart.draw(view, options);
 }
 
+function getWordCloudChart(sentimentBucketList) {
 
-function getWordCloudChart(commentStats) {
-  
   var data = [
     {"x": "Mandarin chinese", "value": 1090000000},
     {"x": "English", "value": 983000000},
@@ -106,7 +104,7 @@ function getWordCloudChart(commentStats) {
     {"x": "Spanish", "value": 527000000},
     {"x": "Arabic", "value": 422000000}
   ];
-  commentStats.
+  sentimentBucketList.forEach(sentimentBucket => data.addRow({"x": sentimentBucket}))
   // create a tag cloud chart
   var chart = anychart.tagCloud(data);
 
@@ -119,3 +117,16 @@ function getWordCloudChart(commentStats) {
   chart.container("word-cloud");
   chart.draw();
 };
+
+function toTooltipString(userComments) {
+  return userComments.map(comment => userCommentAsString(comment)).join("<br>");
+}
+
+function userCommentAsString(comment) {
+  commentMagnitude = comment.magnitude;
+  return comment.commentMsg + "<br> Magnitude Score: " + commentMagnitude;
+}
+
+function convertRangeToString(range) {
+  return range.inclusiveStart + " to " + range.exclusiveEnd;
+}
