@@ -51,8 +51,6 @@ async function getChart() {
   $('form').submit(async function() {
     document.getElementById('loading-img').style.display = "block";  
     commentStats = await getYouTubeComments();
-    console.log("stats");
-    console.log(commentStats);
     averageScore = commentStats.averageScore;
     sentimentBucketList = commentStats.sentimentBucketList; 
 
