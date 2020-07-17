@@ -64,8 +64,11 @@ async function getChart() {
   );
 }
 
+/**
+ * Create a bar chart of sentiment score interval, frequency and high magnitude comments
+ * @param {Array<sentimentBucket>} sentimentBucketList 
+ */
 function getBarChart(sentimentBucketList) {
-
     const CommentSentimentTable = new google.visualization.DataTable();
     CommentSentimentTable.addColumn('number', 'InclusiveStart');
     CommentSentimentTable.addColumn('string', 'SentimentRange');
@@ -95,8 +98,11 @@ function getBarChart(sentimentBucketList) {
     chart.draw(view, options);
 }
 
+/**
+ * Create a word cloud based on the number of appearance for each word
+ * @param {Map<String:Integer>} wordFrequencyMap 
+ */
 function getWordCloudChart(wordFrequencyMap) {
-
   var data = [];
   Object.keys(wordFrequencyMap).forEach(wordKey => data.push({"x": wordKey, "value": wordFrequencyMap[wordKey]}));
   // create a tag cloud chart
