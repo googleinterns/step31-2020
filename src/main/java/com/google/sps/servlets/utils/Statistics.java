@@ -121,13 +121,13 @@ public class Statistics {
    */
   private double getAverageValue(List<UserComment> userCommentList, String scoreMagCheck) {
     return userCommentList.stream()
-               .mapToDouble(
-                   userComment ->
-                       scoreMagCheck == "score" ? userComment.getScore() : userComment.getMagnitude())
-               .average()
-               .orElseThrow(
-                   () ->
-                       new RuntimeException(
-                           "Unable to calculate average magnitude due to empty input list."));
+        .mapToDouble(
+            userComment ->
+                scoreMagCheck == "score" ? userComment.getScore() : userComment.getMagnitude())
+        .average()
+        .orElseThrow(
+            () ->
+                new RuntimeException(
+                    "Unable to calculate average magnitude due to empty input list."));
   }
 }
