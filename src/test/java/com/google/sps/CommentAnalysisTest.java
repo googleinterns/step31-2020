@@ -36,7 +36,9 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -57,7 +59,8 @@ public class CommentAnalysisTest {
 
   private static final float TEST_SCORE = 0.23f;
   private static final float TEST_MAGNITUDE = 1.5f;
-
+  private static final String TEST_MESSAGE = "Test Message";
+  private static final String TEST_ID = "000";
   /**
    * It constructs a List with sentiment bucket for expected score categorizations, frequency and
    * top comments for testing
@@ -104,8 +107,9 @@ public class CommentAnalysisTest {
 
     // Declarations of mocked variables and set the dependencies between constructed comments and
     // threads
-    CommentSnippet topCommentSnippet = new CommentSnippet().setTextDisplay("Test Message");
+    CommentSnippet topCommentSnippet = new CommentSnippet().setTextDisplay(TEST_MESSAGE);
     Comment testTopComment = new Comment().setSnippet(topCommentSnippet);
+    testTopComment.setId(TEST_ID);
     CommentThreadSnippet testThreadSnippet =
         new CommentThreadSnippet().setTopLevelComment(testTopComment);
     CommentThread testCommentThread = new CommentThread().setSnippet(testThreadSnippet);
@@ -140,8 +144,9 @@ public class CommentAnalysisTest {
   }
 
   @Test
-  public void testNormalScoreCases() {
-    // cases: two user comments with sentiment score in the same interval
+  public void testTopOneMagnitude() {
+    // cases: two user comments with sentiment score in the same interval and only reuqire top 1
+    // comment
     UserComment comment1 =
         new UserComment("001", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4);
     UserComment comment2 =
@@ -158,5 +163,125 @@ public class CommentAnalysisTest {
     Assert.assertEquals(
         constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
         normalStat.getSentimentBucketList());
+  }
+
+  @Test
+  public void testMoreThanOneMagnitude() {
+    // cases: two user comments with sentiment score in the same interval and require more than 1
+    // top comments
+    UserComment comment1 =
+        new UserComment("001", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4);
+    UserComment comment2 =
+        new UserComment("002", "Second Normal Comment", new DateTime(new Date()), 0.11, 0.5);
+
+    List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
+    // TODO: Add the top magnitude comment message in list as we don't currently have it, which
+    // means expectedUserComment is all empty.
+    List<List<UserComment>> expectedUserComment =
+        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
+    List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
+    Statistics twohighestStat = new Statistics(inputUserComment, 2);
+    Assert.assertEquals(0.105, twohighestStat.getAverageScore(), 0.01);
+    Assert.assertEquals(
+        constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
+        twohighestStat.getSentimentBucketList());
+    Map<String, Integer> expectedMap =
+        new HashMap<String, Integer>() {
+          {
+            put("Normal", 2);
+            put("Comment", 2);
+            put("First", 1);
+            put("Second", 1);
+          }
+        };
+    Assert.assertEquals(expectedMap, twohighestStat.getWordFrequencyMap());
+  }
+
+  @Test
+  public void testDistributeScore() {
+    // cases: two user comments with sentiment score in the same interval
+    UserComment comment1 =
+        new UserComment("003", "Third Comment neg 1", new DateTime(new Date()), -1.0, 0.4);
+    UserComment comment2 =
+        new UserComment("004", "Forth Comment pos 1", new DateTime(new Date()), 0.8, 0.5);
+
+    List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
+    // TODO: Add the top magnitude comment message in list as we don't currently have it, which
+    // means expectedUserComment is all empty.
+    List<List<UserComment>> expectedUserComment =
+        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
+    List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 0, 0, 0, 0, 1));
+    Statistics distStat = new Statistics(inputUserComment, 2);
+    Assert.assertEquals(
+        constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
+        distStat.getSentimentBucketList());
+    Map<String, Integer> expectedMap =
+        new HashMap<String, Integer>() {
+          {
+            put("1", 2);
+            put("Comment", 2);
+            put("Third", 1);
+            put("Forth", 1);
+            put("pos", 1);
+            put("neg", 1);
+          }
+        };
+    Assert.assertEquals(expectedMap, distStat.getWordFrequencyMap());
+  }
+
+  @Test
+  public void testOver10CommentWords() {
+    // cases: user comments with more than 10 vocabulary to test the top 10 comments retreived
+    UserComment comment5 =
+        new UserComment(
+            "005",
+            "word0 word1 word2 word3 word4 word5 word6 word7 word8",
+            new DateTime(new Date()),
+            -1.0,
+            0.4);
+    UserComment comment6 =
+        new UserComment(
+            "006",
+            "word0 word0 word1 word2 word3 word4 word5 word6 word7 word8 word9 extraword",
+            new DateTime(new Date()),
+            0.8,
+            0.5);
+    List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment5, comment6));
+    Statistics moreThan10Words = new Statistics(inputUserComment, 2);
+    Map<String, Integer> expectedMap =
+        new HashMap<String, Integer>() {
+          {
+            put("word0", 3);
+            put("word1", 2);
+            put("word2", 2);
+            put("word3", 2);
+            put("word4", 2);
+            put("word5", 2);
+            put("word6", 2);
+            put("word7", 2);
+            put("word8", 2);
+            put("extraword", 1);
+          }
+        };
+    Assert.assertEquals(expectedMap, moreThan10Words.getWordFrequencyMap());
+  }
+
+  @Test
+  public void sampleTest() {
+    String sampleMsg =
+        "You can use HtmlUnit to parse the article's HTML and query for the parts of the document"
+            + " you are interested in searching. Then you can apply a simple algorithm of your own"
+            + " design to determine tags/keywords.\n"
+            + "\n"
+            + "Like for instance, split() the text on whitespace and then count how many times"
+            + " each word occurs. The words that occur the most (ignoring things like \"and\","
+            + " \"the\", \"if\", etc.) are good candidates for keywords.";
+    // TODO: make this work!!!
+    System.out.println(sampleMsg.split("\\s+"));
+
+    UserComment comment5 = new UserComment("005", sampleMsg, new DateTime(new Date()), -1.0, 0.4);
+    List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment5));
+    Statistics moreThan10Words = new Statistics(inputUserComment, 2);
+    System.out.println(moreThan10Words.getWordFrequencyMap());
   }
 }
