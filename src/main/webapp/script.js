@@ -29,28 +29,12 @@ async function getYouTubeComments() {
   return comments;
 }
 
-
-/*
- * Extracts video id from full url
- */ 
-function cleanseUrl(url) {
-  // Split web address from parameters, extract first parameter
-  // TODO: Add checks to make this work if video is not first parameter.
-  var videoId = url.split("?");
-  videoId = (videoId.length > 1) ? videoId[1].split("&")[0] : videoId[0];
-
-  // If param name present, remove it to isolate video Id.
-  videoId = videoId.replace("v=", "");
-  
-  return videoId;
-}
-
 /**
  * Fetches data and adds to html
  */
 async function getChart() {
   $('form').submit(async function() {
-    document.getElementById('loading-img').style.display = "block";
+    document.getElementById('loading-img').style.display = "block";  
     commentStats = await getYouTubeComments();
     averageScore = commentStats.averageScore;
     aggregateValues = commentStats.aggregateValues; 
