@@ -44,13 +44,14 @@ public class YoutubeServlet extends HttpServlet {
     try {
       String url = request.getParameter(URL_PARAMETER);
       String numCommentsInput = request.getParameter(NUM_COMMENTS_PARAMETER);
-      System.out.println("Num Comments Input: " + numCommentsInput);
-      long numComments = (numCommentsInput == null || numCommentsInput == "")
+      // If nothing is inputted, length of list is default, otherwise it's what was inputted.
+      long numComments = (numCommentsInput == null || numCommentsInput.trim().equals(""))
           ? DEFAULT_COMMENTS 
           : Long.valueOf(numCommentsInput);
+
       List<CommentThread> commentThreads = 
           new YouTubeCommentRetriever().retrieveComments(url, numComments);
-      System.out.println("Comment Threads: " + commentThreads.size());
+   
       CommentAnalysis commentAnalysis = new CommentAnalysis();
       Statistics statistics = commentAnalysis.computeOverallStats(commentThreads);
       commentAnalysis.closeLanguage();

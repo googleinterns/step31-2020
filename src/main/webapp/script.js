@@ -24,7 +24,7 @@ google.setOnLoadCallback(getChart)
 async function getYouTubeComments() { 
   const urlInput = document.getElementById('link-input');
   const url = cleanseUrl(urlInput.value);
-  const numComments = document.getElementById('numComments-input');
+  const numComments = document.getElementById('numComments-input').value;
   const response = await fetch("/YouTubeComments?url="+url+"&numComments="+numComments);
   const comments = await response.json();
   return comments;
