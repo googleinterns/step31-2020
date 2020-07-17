@@ -23,7 +23,7 @@ async function getVideoContext() {
 /**
  * Fetches data and adds to html
  */
-async function getContext() {
+async function updateUIWithVideoContext() {
   $('form').submit(async function() {  
     videoContext = await getVideoContext();
     document.getElementById('video-context').innerHTML = videoInfoAsString(videoContext);   
