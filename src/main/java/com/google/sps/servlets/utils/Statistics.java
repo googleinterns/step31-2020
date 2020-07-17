@@ -164,7 +164,8 @@ public class Statistics {
     UserComment commentToAdd = newComment;
     if (currentQueue.size() == maxQueueSize) {
       commentToAdd = currentQueue.poll();
-      // Since userCommentList has been sorted, if newComment and commentToAdd have same magnitude, add newComment since it has higher score.
+      // Since userCommentList has been sorted, if newComment and commentToAdd have same magnitude,
+      // add newComment since it has higher score.
       if (newComment.getMagnitude() > commentToAdd.getMagnitude()) {
         commentToAdd = newComment;
       }
