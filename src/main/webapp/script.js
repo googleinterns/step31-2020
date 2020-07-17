@@ -51,8 +51,10 @@ async function getChart() {
   $('form').submit(async function() {
     document.getElementById('loading-img').style.display = "block";  
     commentStats = await getYouTubeComments();
+    console.log("stats");
+    console.log(commentStats);
     averageScore = commentStats.averageScore;
-    aggregateValues = commentStats.aggregateValues; 
+    sentimentBucketList = commentStats.sentimentBucketList; 
 
     const CommentSentimentTable = new google.visualization.DataTable();
     CommentSentimentTable.addColumn('number', 'InclusiveStart');
@@ -60,10 +62,10 @@ async function getChart() {
     CommentSentimentTable.addColumn('number', 'CommentCount');
 
     // The json keys (ranges of scores) are sorted through their starting values
-    Object.keys(aggregateValues).forEach(function(key) {
-      var inclusiveStart = getRangeInclusiveStart(key);  
-      var exclusiveEnd = getRangeExclusiveEnd(key);
-      CommentSentimentTable.addRow([inclusiveStart, inclusiveStart + ' to ' + exclusiveEnd, aggregateValues[key]]);  
+    sentimentBucketList.forEach(sentimentBucket => {
+      var inclusiveStart = sentimentBucket.intervalRange.inclusiveStart;
+      var exclusiveEnd = sentimentBucket.intervalRange.exclusiveEnd;
+      CommentSentimentTable.addRow([inclusiveStart, inclusiveStart + ' to ' + exclusiveEnd, sentimentBucket.frequency]);  
     });
 
     const options = {
@@ -86,14 +88,4 @@ async function getChart() {
     const averageContainer = document.getElementById('average-score-container');
     averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
   });
-}
-
-function getRangeExclusiveEnd(rangeString) {
-  rangeString.trim();
-  return Number(rangeString.substring(rangeString.indexOf(',') + 1, rangeString.length - 1));
-}
- 
-function getRangeInclusiveStart(rangeString) {
-  rangeString.trim();
-  return Number(rangeString.substring(1, rangeString.indexOf(',')));
 }
