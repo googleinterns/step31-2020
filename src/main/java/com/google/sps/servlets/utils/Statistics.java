@@ -83,14 +83,9 @@ public class Statistics {
   private Map<String, Integer> countWordFrequencyMap(List<UserComment> userCommentList) {
     // Flatten all user comment message into a list of words
     Stream<String> allWordStream =
-        userCommentList.stream()
-            .map(
-                comment ->
-                    new Source(comment.getCommentMsg())
-                        .getTextExtractor()
-                        .toString()
-                        .replaceAll("[^a-zA-Z0-9\\s]", "")
-                        .split("\\s+"))
+        // Text extractor removes all HTML tags and returns only the text
+        userCommentList.stream().map(comment -> new Source(comment.getCommentMsg())
+            .getTextExtractor().toString().replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+"))
             .map(wordArray -> new ArrayList<>(Arrays.asList(wordArray)))
             .flatMap(wordList -> wordList.stream())
             .filter(word -> !wordsToIgnore.contains(word.toLowerCase()));
