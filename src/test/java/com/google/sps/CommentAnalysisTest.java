@@ -303,7 +303,7 @@ public class CommentAnalysisTest {
 
     UserComment comment7 = new UserComment("007", htmlMsg, new DateTime(new Date()), -1.0, 0.4);
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment7));
-    Statistics moreThan10Words = new Statistics(inputUserComment, 2);
-    System.out.println("Map: " + moreThan10Words.getWordFrequencyMap());
+    Statistics htmlComment = new Statistics(inputUserComment, 2);
+    Assert.assertEquals(null, htmlComment.getWordFrequencyMap());
   }
 }
