@@ -70,7 +70,7 @@ public class ContextServlet extends HttpServlet {
       throws ServletException {
     try {
       String url = request.getParameter(URL_PARAMETER);
-      VideoListResponse videoResponse = constructExecuteYouTubeRequest(url);
+      VideoListResponse videoResponse = constructAndExecuteYoutubeRequest(url);
       VideoInformation videoInfo = new VideoInformation(videoResponse);
       String json = new Gson().toJson(videoInfo);
       response.setContentType("application/json");
@@ -86,7 +86,7 @@ public class ContextServlet extends HttpServlet {
    *
    * @param url Youtube video id to retrieve information
    */
-  public VideoListResponse constructExecuteYouTubeRequest(String url)
+  public VideoListResponse constructAndExecuteYoutubeRequest(String url)
       throws IOException {
     YouTube.Videos.List videoRequest = youtubeService.videos().list(REQUEST_INFO);
     return videoRequest.setKey(DEVELOPER_KEY).setId(url).execute();

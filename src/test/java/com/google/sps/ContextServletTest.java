@@ -70,13 +70,13 @@ public class ContextServletTest {
     when(mockedVidoes.list(REQUEST_INFO)).thenReturn(mockedVideoList);
     when(mockedYoutubeService.videos()).thenReturn(mockedVidoes);
     when(mockedVideoList.execute()).thenReturn(new VideoListResponse());
-    VideoListResponse response = contestServlet.constructExecuteYouTubeRequest(TEST_URL);
+    VideoListResponse response = contestServlet.constructAndExecuteYoutubeRequest(TEST_URL);
     Assert.assertEquals(response.getClass(), VideoListResponse.class);
     Assert.assertEquals(response.getItems().size(), 0);
   }
 
   @Test
-  public void testContextGet() throws IOException, GeneralSecurityException, ServletException {
+  public void testContextGet_generateExpectedResponse() throws IOException, GeneralSecurityException, ServletException {
     // Test the doGet() method to retrieve youtube vidoe context with mocked service
     ContextServlet contextServlet = spy(ContextServlet.class);
     HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
@@ -95,7 +95,7 @@ public class ContextServletTest {
     VideoListResponse mockedVideoList =
         new VideoListResponse().setItems(Collections.singletonList(mockedVideo));
     when(mockedRequest.getParameter(URL_PARAMETER)).thenReturn(TEST_URL);
-    when(contextServlet.constructExecuteYouTubeRequest(TEST_URL)).thenReturn(mockedVideoList);
+    when(contextServlet.constructAndExecuteYoutubeRequest(TEST_URL)).thenReturn(mockedVideoList);
     when(mockedResponse.getWriter()).thenReturn(writer);
     contextServlet.doGet(mockedRequest, mockedResponse);
     verify(mockedRequest, atLeast(1)).getParameter(URL_PARAMETER);
