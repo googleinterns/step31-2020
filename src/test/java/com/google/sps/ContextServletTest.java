@@ -13,12 +13,6 @@
 // limitations under the License.
 package com.google.sps;
 
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.YouTube.Videos;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
@@ -26,7 +20,11 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
+import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
 import com.google.api.services.youtube.model.VideoSnippet;
@@ -60,9 +58,10 @@ public class ContextServletTest {
   private static final int NUM_DISLIKES_VAL = 1;
 
   @Test
-  public void testYoutubeAPIConstructed() throws IOException,GeneralSecurityException  {
+  public void testYoutubeAPIConstructed() throws IOException, GeneralSecurityException {
     // Test the constructeExecuteYoutubeReuest method for returning a youtube request
-    YouTube youtubeService = new YouTube(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, null);
+    YouTube youtubeService =
+        new YouTube(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, null);
     YouTube mockedYoutubeService = spy(youtubeService);
     YouTube.Videos mockedVidoes = mock(YouTube.Videos.class);
     YouTube.Videos.List mockedVideoList = mock(YouTube.Videos.List.class, RETURNS_DEEP_STUBS);
