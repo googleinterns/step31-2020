@@ -270,7 +270,7 @@ public class CommentAnalysisTest {
   public void testWordMapSort() {
     String sampleMsg =
         "This is interesting. I am watching this <br> video. "
-        + "This video is good. Where was this made? <br>";
+            + "This video is good. Where was this made? <br>";
 
     UserComment comment5 = new UserComment("005", sampleMsg, new DateTime(new Date()), -1.0, 0.4);
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment5));
