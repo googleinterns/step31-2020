@@ -75,7 +75,8 @@ public class ContextServletTest {
   }
 
   @Test
-  public void testContextGet_generateExpectedResponse() throws IOException, GeneralSecurityException, ServletException {
+  public void testContextGet_generateExpectedResponse()
+      throws IOException, GeneralSecurityException, ServletException {
     // Test the doGet() method to retrieve youtube vidoe context with mocked service
     ContextServlet contextServlet = spy(ContextServlet.class);
     HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
