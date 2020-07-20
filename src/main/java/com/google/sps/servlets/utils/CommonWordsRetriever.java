@@ -24,7 +24,7 @@ public class CommonWordsRetriever {
   public static List<String> getCommonWords() {
     // TODO: Get words by parsing text file  
     commonWordsList = new ArrayList<>(
-        Arrays.asList("the", "it", "at", "and", "to", "we", "can", "are", "of", "is", "am", "i"));
+        Arrays.asList("the", "it", "at", "and", "to", "we", "can", "are", "of", "is", "am", "i", "this", "was"));
     return commonWordsList;
   }
 }
