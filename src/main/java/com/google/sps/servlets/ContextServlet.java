@@ -44,6 +44,7 @@ public class ContextServlet extends HttpServlet {
 
   /**
    * Constructor for mocking servlet to call the doGet.
+   *
    * @throws GeneralSecurityException
    * @throws IOException
    */
@@ -53,7 +54,8 @@ public class ContextServlet extends HttpServlet {
 
   /**
    * Constructor for mocking and testing constructExecuteYouTubeRequest with Youtube
-    * @param constructedService mocked & pre-constructed Youtube Service
+   *
+   * @param constructedService mocked & pre-constructed Youtube Service
    */
   public ContextServlet(YouTube constructedService) {
     youtubeService = constructedService;
