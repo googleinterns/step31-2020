@@ -270,12 +270,14 @@ public class CommentAnalysisTest {
   public void sampleTest() {
     String sampleMsg =
         "You can use HtmlUnit to parse the article's HTML and query for the parts of the document"
-            + " you <br> are interested in searching. Then you can apply a simple algorithm of your own"
-            + " design to <br> determine tags/keywords.\n"
+            + " you <br> are interested in searching. Then you can apply a simple algorithm of"
+            + " your own design to <br> determine tags/keywords.\n"
             + "\n"
-            + "Like for \n instance, <br> split() the text on whitespace \n and then count how many times"
-            + " each word occurs. The words that occur the most <br> (ignoring things like \"and\","
-            + " \"the\", \"if\", etc.) are good candidates for keywords.";
+            + "Like for \n"
+            + " instance, <br> split() the text on whitespace \n"
+            + " and then count how many times each word occurs. The words that occur the most <br>"
+            + " (ignoring things like \"and\", \"the\", \"if\", etc.) are good candidates for"
+            + " keywords.";
     // TODO: make this work!!!
     System.out.println("Split at space" + sampleMsg.split("\\s+"));
 
