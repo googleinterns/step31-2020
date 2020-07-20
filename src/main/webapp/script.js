@@ -14,17 +14,17 @@
 
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
-const HIGHEST_SCORE = 1.0;
-const LOWEST_SCORE = -1.0;
-const INTERVAL = 0.2;
 
-google.charts.load('current', {'packages':['corechart']});
-google.setOnLoadCallback(getChart)
+google.charts.load('current', {'packages': ['corechart']});
+google.setOnLoadCallback(getChart);
 
-async function getYouTubeComments() { 
+/**
+ * Fetches comment data from video ID
+ */
+async function getYouTubeComments() {
   const urlInput = document.getElementById('link-input');
   const url = cleanseUrl(urlInput.value);
-  const response = await fetch("/YouTubeComments?url="+url);
+  const response = await fetch('/YouTubeComments?url='+url);
   const comments = await response.json();
   return comments;
 }
@@ -34,51 +34,58 @@ async function getYouTubeComments() {
  */
 async function getChart() {
   $('form').submit(async function() {
-    document.getElementById('loading-img').style.display = "block";  
+    document.getElementById('loading-img').style.display = 'block';
     commentStats = await getYouTubeComments();
     averageScore = commentStats.averageScore;
-    aggregateValues = commentStats.aggregateValues; 
+    averageMagnitude = commentStats.averageMagnitude;
+    sentimentBucketList = commentStats.sentimentBucketList;
 
     const CommentSentimentTable = new google.visualization.DataTable();
     CommentSentimentTable.addColumn('number', 'InclusiveStart');
     CommentSentimentTable.addColumn('string', 'SentimentRange');
     CommentSentimentTable.addColumn('number', 'CommentCount');
 
-    // The json keys (ranges of scores) are sorted through their starting values
-    Object.keys(aggregateValues).forEach(function(key) {
-      var inclusiveStart = getRangeInclusiveStart(key);  
-      var exclusiveEnd = getRangeExclusiveEnd(key);
-      CommentSentimentTable.addRow([inclusiveStart, inclusiveStart + ' to ' + exclusiveEnd, aggregateValues[key]]);  
-    });
+    for (i = 0; i < sentimentBucketList.length; i++) {
+      currentSentimentBucket = sentimentBucketList[i];
+      rangeAsString = convertRangeToString(
+          currentSentimentBucket.intervalRange);
+      highestMagnitudeComments = currentSentimentBucket.topNComments;
+
+      CommentSentimentTable.addRow([rangeAsString, 
+          currentSentimentBucket.frequency, 
+          toTooltipString(highestMagnitudeComments)]);
+    }
 
     const options = {
       'title': 'Comment Sentiment Range',
       'width': CHART_WIDTH,
-      'height':CHART_HEIGHT,
-      'bar': {groupWidth: "100"}
+      'height': CHART_HEIGHT,
+      'bar': {groupWidth: '100'},
+      'tooltip': {isHtml: true}
     };
 
-    document.getElementById('loading-img').style.display = "none";  
+    // Hide loading image once chart is drawn
+    document.getElementById('loading-img').style.display = 'none';
 
-    CommentSentimentTable.sort({column: 0, desc: false}); 
-    var view = new google.visualization.DataView(CommentSentimentTable);
-    view.setColumns([1, 2]); 
-
+    const view = new google.visualization.DataView(CommentSentimentTable);
     const chart = new google.visualization.ColumnChart(
         document.getElementById('chart-container'));
-    chart.draw(view, options);    
+    chart.draw(view, options);
 
     const averageContainer = document.getElementById('average-score-container');
-    averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
+    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
   });
 }
 
-function getRangeExclusiveEnd(rangeString) {
-  rangeString.trim();
-  return Number(rangeString.substring(rangeString.indexOf(',') + 1, rangeString.length - 1));
+function toTooltipString(userComments) {
+  return userComments.map(comment => userCommentAsString(comment)).join("<br>");
 }
- 
-function getRangeInclusiveStart(rangeString) {
-  rangeString.trim();
-  return Number(rangeString.substring(1, rangeString.indexOf(',')));
+
+function userCommentAsString(comment) {
+  commentMagnitude = comment.magnitude;  
+  return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
+}
+
+function convertRangeToString(range) {
+  return range.inclusiveStart + ' to ' + range.exclusiveEnd; 
 }
