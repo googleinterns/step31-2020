@@ -62,6 +62,7 @@ async function getChart() {
       'tooltip': {isHtml: true}
     };
 
+    // Hide loading image once chart is drawn
     document.getElementById('loading-img').style.display = "none";  
 
     var view = new google.visualization.DataView(CommentSentimentTable);
