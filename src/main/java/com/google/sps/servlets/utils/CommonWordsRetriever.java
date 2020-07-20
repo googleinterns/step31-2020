@@ -18,6 +18,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Class provides commonly used words that should be ignored
+ * within the word map
+ */
 public class CommonWordsRetriever {
   private static List<String> commonWordsList;
 
