@@ -44,8 +44,8 @@ public class ContextServlet extends HttpServlet {
 
   public ContextServlet() throws GeneralSecurityException, IOException {
     youtubeService = getService();
-
   }
+
   public ContextServlet(YouTube constructedService) {
     youtubeService = constructedService;
   }
@@ -86,8 +86,7 @@ public class ContextServlet extends HttpServlet {
    *
    * @param url Youtube video id to retrieve information
    */
-  public VideoListResponse constructExecuteYouTubeRequest(String url)
-      throws IOException {
+  public VideoListResponse constructExecuteYouTubeRequest(String url) throws IOException {
     YouTube.Videos.List videoRequest = youtubeService.videos().list(REQUEST_INFO);
     return videoRequest.setKey(DEVELOPER_KEY).setId(url).execute();
   }
