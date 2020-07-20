@@ -67,7 +67,7 @@ public class Statistics {
    * @param topNComments the number of highest magnitudes to retrieve
    */
   public Statistics(List<UserComment> userCommentList, int topNComments) {
-    wordsToIgnore = CommonWordsRetriever.getCommonWords();  
+    wordsToIgnore = CommonWordsRetriever.getCommonWords();
     sentimentBucketList = categorizeToBucketList(userCommentList, topNComments);
     averageScore = getAverageValue(userCommentList, "score");
     averageMagnitude = getAverageValue(userCommentList, "Magnitude");
@@ -84,8 +84,13 @@ public class Statistics {
     // Flatten all user comment message into a list of words
     Stream<String> allWordStream =
         userCommentList.stream()
-            .map(comment -> new Source(comment.getCommentMsg()).getTextExtractor().toString()
-                .replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+"))
+            .map(
+                comment ->
+                    new Source(comment.getCommentMsg())
+                        .getTextExtractor()
+                        .toString()
+                        .replaceAll("[^a-zA-Z0-9\\s]", "")
+                        .split("\\s+"))
             .map(wordArray -> new ArrayList<>(Arrays.asList(wordArray)))
             .flatMap(wordList -> wordList.stream())
             .filter(word -> !wordsToIgnore.contains(word.toLowerCase()));
@@ -93,7 +98,7 @@ public class Statistics {
     Map<String, Integer> wordPairMap =
         allWordStream.collect(
             Collectors.groupingBy(word -> word, Collectors.summingInt(word -> 1)));
-    
+
     if (wordPairMap.size() < MINIMUM_WORDMAP_SIZE) {
       return null;
     } else {
@@ -171,9 +176,13 @@ public class Statistics {
    */
   private double getAverageValue(List<UserComment> userCommentList, String scoreMagCheck) {
     return userCommentList.stream()
-        .mapToDouble(userComment -> scoreMagCheck == "score" ? 
-        userComment.getScore() : userComment.getMagnitude())
+        .mapToDouble(
+            userComment ->
+                scoreMagCheck == "score" ? userComment.getScore() : userComment.getMagnitude())
         .average()
-        .orElseThrow(() -> new RuntimeException("Unable to calculate average magnitude due to empty input list."));
+        .orElseThrow(
+            () ->
+                new RuntimeException(
+                    "Unable to calculate average magnitude due to empty input list."));
   }
 }
