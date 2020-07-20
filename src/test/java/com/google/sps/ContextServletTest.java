@@ -70,7 +70,7 @@ public class ContextServletTest {
     VideoListResponse mockedVideoList =
         new VideoListResponse().setItems(Collections.singletonList(mockedVideo));
     when(mockedRequest.getParameter(URL_PARAMETER)).thenReturn(TEST_URL);
-    when(contextServlet.generateYouTubeRequest(TEST_URL)).thenReturn(mockedVideoList);
+    when(contextServlet.constructExecuteYouTubeRequest(TEST_URL)).thenReturn(mockedVideoList);
     when(mockedResponse.getWriter()).thenReturn(writer);
     try {
       contextServlet.doGet(mockedRequest, mockedResponse);
