@@ -25,9 +25,10 @@
         <form onsubmit="return false">
           <p>Enter a YouTube video link:</p>
           <input id="link-input" name="link-input" required pattern="https?://www.youtube.com/watch\?v=.+"/>
+          <small id="url-help" class="form-text text-muted">Format: https://youtube.com/watch?v=...</small>
           <p>Enter the maximum number of comments to be analyzed: </p>
           <input type="number" id="numComments-input" name="numComments-input" min="100" max="1000" value = "100" step="10">
-          <small id="url-help" class="form-text text-muted">Format: https://youtube.com/watch?v=...</small>
+          <small id="numComments-help" class="form-text text-muted">Minimum 100, Maximum 1000</small>
           </br>
           <input type="submit" id="submit-btn"/>
           </br>
