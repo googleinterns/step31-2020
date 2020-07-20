@@ -14,7 +14,6 @@
 
 package com.google.sps;
 
-import java.util.Collections;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -36,6 +35,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -216,7 +216,7 @@ public class CommentAnalysisTest {
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
     Statistics twoHighestStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(0.105, twoHighestStat.getAverageScore(), 0.01);
-   Map<String, Integer> expectedMap =
+    Map<String, Integer> expectedMap =
         new HashMap<String, Integer>() {
           {
             put("Normal", 2);
