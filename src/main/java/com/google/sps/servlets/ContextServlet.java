@@ -97,8 +97,7 @@ public class ContextServlet extends HttpServlet {
    *
    * @param url Youtube video id to retrieve information
    */
-  public VideoListResponse constructAndExecuteYoutubeRequest(String url)
-      throws IOException {
+  public VideoListResponse constructAndExecuteYoutubeRequest(String url) throws IOException {
     YouTube.Videos.List videoRequest = youtubeService.videos().list(REQUEST_INFO);
     return videoRequest.setKey(DEVELOPER_KEY).setId(url).execute();
   }
