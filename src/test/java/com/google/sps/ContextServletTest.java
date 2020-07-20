@@ -13,6 +13,13 @@
 // limitations under the License.
 package com.google.sps;
 
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.YouTube.Videos;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -43,15 +50,33 @@ import org.junit.runners.JUnit4;
 /** This is a JUnit test for sentiment mockedAnalysis */
 @RunWith(JUnit4.class)
 public class ContextServletTest {
+  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
   private static final String URL_PARAMETER = "url";
   private static final String TEST_URL = "WkZ5e94QnWk";
   private static final String TEST_TITLE = "Test Title";
   private static final String TEST_CHANNEL = "Test Channel";
+  private static final String REQUEST_INFO = "snippet,statistics";
   private static final int NUM_LIKES_VAL = 10;
   private static final int NUM_DISLIKES_VAL = 1;
 
   @Test
-  public void testContextGet() throws IOException, GeneralSecurityException {
+  public void testYoutubeAPIConstructed() throws IOException,GeneralSecurityException  {
+    // Test the constructeExecuteYoutubeReuest method for returning a youtube request
+    YouTube youtubeService = new YouTube(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, null);
+    YouTube mockedYoutubeService = spy(youtubeService);
+    YouTube.Videos mockedVidoes = mock(YouTube.Videos.class);
+    YouTube.Videos.List mockedVideoList = mock(YouTube.Videos.List.class, RETURNS_DEEP_STUBS);
+    ContextServlet contestServlet = new ContextServlet(mockedYoutubeService);
+    when(mockedVidoes.list(REQUEST_INFO)).thenReturn(mockedVideoList);
+    when(mockedYoutubeService.videos()).thenReturn(mockedVidoes);
+    when(mockedVideoList.execute()).thenReturn(new VideoListResponse());
+    VideoListResponse response = contestServlet.constructExecuteYouTubeRequest(TEST_URL);
+    Assert.assertEquals(response.getClass(), VideoListResponse.class);
+    Assert.assertEquals(response.getItems().size(), 0);
+  }
+
+  @Test
+  public void testContextGet() throws IOException, GeneralSecurityException, ServletException {
     // Test the doGet() method to retrieve youtube vidoe context with mocked service
     ContextServlet contextServlet = spy(ContextServlet.class);
     HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
@@ -72,12 +97,7 @@ public class ContextServletTest {
     when(mockedRequest.getParameter(URL_PARAMETER)).thenReturn(TEST_URL);
     when(contextServlet.constructExecuteYouTubeRequest(TEST_URL)).thenReturn(mockedVideoList);
     when(mockedResponse.getWriter()).thenReturn(writer);
-    try {
-      contextServlet.doGet(mockedRequest, mockedResponse);
-    } catch (ServletException e) {
-      System.err.println("Mocked Servlet still calls original Youtube Service");
-      throw new IOException(e.getMessage());
-    }
+    contextServlet.doGet(mockedRequest, mockedResponse);
     verify(mockedRequest, atLeast(1)).getParameter(URL_PARAMETER);
     Assert.assertTrue(stringWriter.toString().contains("\"videoName\":\"" + TEST_TITLE + "\""));
     Assert.assertTrue(stringWriter.toString().contains("\"videoAuthor\":\"" + TEST_CHANNEL + "\""));

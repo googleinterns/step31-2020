@@ -40,7 +40,24 @@ public class ContextServlet extends HttpServlet {
   private static final String APPLICATION_NAME = "SAY";
   private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
   private static final String REQUEST_INFO = "snippet,statistics";
+  private YouTube youtubeService;
 
+  public ContextServlet() throws GeneralSecurityException, IOException {
+    youtubeService = getService();
+
+  }
+  public ContextServlet(YouTube constructedService) {
+    youtubeService = constructedService;
+  }
+
+  @Override
+  public void init() throws ServletException {
+    try {
+      youtubeService = getService();
+    } catch (GeneralSecurityException | IOException e) {
+      throw new ServletException(e.getMessage());
+    }
+  }
   /**
    * Retrieves video information from designated URL, wraps them into information object, then
    * writes the VideoInformation object to the frontend.
@@ -70,8 +87,8 @@ public class ContextServlet extends HttpServlet {
    * @param url Youtube video id to retrieve information
    */
   public VideoListResponse constructExecuteYouTubeRequest(String url)
-      throws GeneralSecurityException, IOException {
-    YouTube.Videos.List videoRequest = getService().videos().list(REQUEST_INFO);
+      throws IOException {
+    YouTube.Videos.List videoRequest = youtubeService.videos().list(REQUEST_INFO);
     return videoRequest.setKey(DEVELOPER_KEY).setId(url).execute();
   }
 
