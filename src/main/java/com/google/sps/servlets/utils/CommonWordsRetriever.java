@@ -18,10 +18,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public static class CommonWordsRetriever {
+public class CommonWordsRetriever {
   private static List<String> commonWordsList;
 
-  public List<String> getCommonWords() {
+  public static List<String> getCommonWords() {
     // TODO: Get words by parsing text file  
     commonWordsList = new ArrayList<>(
         Arrays.asList("the", "it", "at", "and", "to", "we", "can", "are", "of", "is"));
