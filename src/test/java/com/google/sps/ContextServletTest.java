@@ -60,9 +60,7 @@ public class ContextServletTest {
   @Test
   public void testYoutubeAPIConstructed() throws IOException, GeneralSecurityException {
     // Test the constructeExecuteYoutubeReuest method for returning a youtube request
-    YouTube youtubeService =
-        new YouTube(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, null);
-    YouTube mockedYoutubeService = spy(youtubeService);
+    YouTube mockedYoutubeService = mock(YouTube.class);
     YouTube.Videos mockedVidoes = mock(YouTube.Videos.class);
     YouTube.Videos.List mockedVideoList = mock(YouTube.Videos.List.class, RETURNS_DEEP_STUBS);
     ContextServlet contestServlet = new ContextServlet(mockedYoutubeService);
