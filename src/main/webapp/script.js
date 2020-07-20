@@ -109,7 +109,7 @@ function getWordCloudChart(wordFrequencyMap) {
 
     // set the chart title
     chart.title('Most Popular Comments')
-    // set array of angles, by which words will be placed
+    // set array of angles to 0, make all the words display horizontally
     chart.angles([0])
 
     // display chart
