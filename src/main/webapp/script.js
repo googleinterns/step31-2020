@@ -17,10 +17,10 @@ const CHART_HEIGHT = 400;
 const HIGHEST_SCORE = 1.0;
 const LOWEST_SCORE = -1.0;
 const INTERVAL = 0.2;
- 
+
 google.charts.load('current', {'packages':['corechart']});
 google.setOnLoadCallback(getChart)
- 
+
 async function getYouTubeComments() { 
   const urlInput = document.getElementById('link-input');
   const url = cleanseUrl(urlInput.value);
@@ -28,47 +28,32 @@ async function getYouTubeComments() {
   const comments = await response.json();
   return comments;
 }
- 
-/*
- * Extracts video id from full url
- */ 
-function cleanseUrl(url) {
-  // Split web address from parameters, extract first parameter
-  // TODO: Add checks to make this work if video is not first parameter.
-  var videoId = url.split("?");
-  videoId = (videoId.length > 1) ? videoId[1].split("&")[0] : videoId[0];
- 
-  // If param name present, remove it to isolate video Id.
-  videoId = videoId.replace("v=", "");
-  
-  return videoId;
-}
- 
+
 /**
  * Fetches data and adds to html
  */
 async function getChart() {
   $('form').submit(async function() {
-    //document.getElementById('loading-img').style.display = "block";  
+    document.getElementById('loading-img').style.display = "block";  
     commentStats = await getYouTubeComments();
     averageScore = commentStats.averageScore;
     averageMagnitude = commentStats.averageMagnitude;
     sentimentBucketList = commentStats.sentimentBucketList; 
- 
+
     const CommentSentimentTable = new google.visualization.DataTable();
-    CommentSentimentTable.addColumn('string', 'Sentiment Range');
-    CommentSentimentTable.addColumn('number', 'Comment Count');
-    CommentSentimentTable.addColumn({type: 'string', role:'tooltip', 'p': {'html': true}});
- 
+    CommentSentimentTable.addColumn('number', 'InclusiveStart');
+    CommentSentimentTable.addColumn('string', 'SentimentRange');
+    CommentSentimentTable.addColumn('number', 'CommentCount');
+
     for(i = 0; i < sentimentBucketList.length; i++) {
       currentSentimentBucket = sentimentBucketList[i];
       rangeAsString = convertRangeToString(currentSentimentBucket.intervalRange);
       highestMagnitudeComments = currentSentimentBucket.topNComments;
 
       CommentSentimentTable.addRow([rangeAsString, currentSentimentBucket.frequency, 
-        toTooltipString(highestMagnitudeComments)]);
+          toTooltipString(highestMagnitudeComments)]);
     }
- 
+
     const options = {
       'title': 'Comment Sentiment Range',
       'width': CHART_WIDTH,
@@ -77,16 +62,18 @@ async function getChart() {
       'tooltip': {isHtml: true}
     };
 
+    document.getElementById('loading-img').style.display = "none";  
+
     var view = new google.visualization.DataView(CommentSentimentTable);
     const chart = new google.visualization.ColumnChart(
         document.getElementById('chart-container'));
-    chart.draw(view, options);    
+    chart.draw(view, options);
 
     const averageContainer = document.getElementById('average-score-container');
     averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
   });
 }
- 
+
 function toTooltipString(userComments) {
   return userComments.map(comment => userCommentAsString(comment)).join("<br>"); 
 }
