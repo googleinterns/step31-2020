@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import java.util.Collections;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -88,12 +89,12 @@ public class CommentAnalysisTest {
         tempPoint = tempPoint.add(SCORE_INTERVAL)) {
       BigDecimal nextPoint = UPPER_SCORE.min(tempPoint.add(SCORE_INTERVAL));
       Range currentRange = new Range(tempPoint, nextPoint);
-      List<UserComment> curUserCommentList =
+      List<UserComment> curMagnitudeList =
           userCommentList.get(listIndex) == null
               ? new ArrayList<>()
               : userCommentList.get(listIndex);
       expectedBucketList.add(
-          new SentimentBucket(curUserCommentList, frequency.get(listIndex), currentRange));
+          new SentimentBucket(curMagnitudeList, frequency.get(listIndex), currentRange));
       listIndex = listIndex + 1;
     }
     return expectedBucketList;
@@ -129,8 +130,22 @@ public class CommentAnalysisTest {
     // Compute and test the sentiment bucket from mocked language service
     // TODO: Add the top magnitude comment message in list as we don't currently have it, which
     // means expectedUserComment is all empty.
+    UserComment testUserComment =
+        new UserComment(
+            TEST_ID, TEST_MESSAGE, new DateTime(new Date()), TEST_SCORE, TEST_MAGNITUDE);
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
+        new ArrayList<>(
+            Arrays.asList(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Collections.singletonList(testUserComment),
+                null,
+                null,
+                null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0));
     // Compute and test the score from mocked language service
     Statistics testStat = commentAnalysis.computeOverallStats(testCommentThreadList);
@@ -145,7 +160,7 @@ public class CommentAnalysisTest {
 
   @Test
   public void testTopOneMagnitude() {
-    // cases: two user comments with sentiment score in the same interval and only reuqire top 1
+    // Cases: two user comments with sentiment score in the same interval and only reuqire top 1
     // comment
     UserComment comment1 =
         new UserComment("001", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4);
@@ -153,21 +168,29 @@ public class CommentAnalysisTest {
         new UserComment("002", "Second Normal Comment", new DateTime(new Date()), 0.11, 0.5);
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
-    // TODO: Add the top magnitude comment message in list as we don't currently have it, which
-    // means expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
+        new ArrayList<>(
+            Arrays.asList(
+                null,
+                null,
+                null,
+                null,
+                null,
+                new ArrayList<>(Arrays.asList(comment2)),
+                null,
+                null,
+                null,
+                null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
-    Statistics normalStat = new Statistics(inputUserComment, 2);
-    Assert.assertEquals(0.105, normalStat.getAverageScore(), 0.01);
+    Statistics highestStat = new Statistics(inputUserComment, 1);
     Assert.assertEquals(
         constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
-        normalStat.getSentimentBucketList());
+        highestStat.getSentimentBucketList());
   }
 
   @Test
   public void testMoreThanOneMagnitude() {
-    // cases: two user comments with sentiment score in the same interval and require more than 1
+    // Cases: two user comments with sentiment score in the same interval and require more than 1
     // top comments
     UserComment comment1 =
         new UserComment("001", "First Normal Comment", new DateTime(new Date()), 0.1, 0.4);
@@ -178,14 +201,22 @@ public class CommentAnalysisTest {
     // TODO: Add the top magnitude comment message in list as we don't currently have it, which
     // means expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
+        new ArrayList<>(
+            Arrays.asList(
+                null,
+                null,
+                null,
+                null,
+                null,
+                new ArrayList<>(Arrays.asList(comment1, comment2)),
+                null,
+                null,
+                null,
+                null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
-    Statistics twohighestStat = new Statistics(inputUserComment, 2);
-    Assert.assertEquals(0.105, twohighestStat.getAverageScore(), 0.01);
-    Assert.assertEquals(
-        constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
-        twohighestStat.getSentimentBucketList());
-    Map<String, Integer> expectedMap =
+    Statistics twoHighestStat = new Statistics(inputUserComment, 2);
+    Assert.assertEquals(0.105, twoHighestStat.getAverageScore(), 0.01);
+   Map<String, Integer> expectedMap =
         new HashMap<String, Integer>() {
           {
             put("Normal", 2);
@@ -194,22 +225,31 @@ public class CommentAnalysisTest {
             put("Second", 1);
           }
         };
-    Assert.assertEquals(expectedMap, twohighestStat.getWordFrequencyMap());
+    Assert.assertEquals(expectedMap, twoHighestStat.getWordFrequencyMap());
   }
 
   @Test
   public void testDistributeScore() {
-    // cases: two user comments with sentiment score in the same interval
+    // Cases: two user comments with sentiment score on the two edge cases
     UserComment comment1 =
         new UserComment("003", "Third Comment neg 1", new DateTime(new Date()), -1.0, 0.4);
     UserComment comment2 =
         new UserComment("004", "Forth Comment pos 1", new DateTime(new Date()), 0.8, 0.5);
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
-    // TODO: Add the top magnitude comment message in list as we don't currently have it, which
-    // means expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
+        new ArrayList<>(
+            Arrays.asList(
+                new ArrayList<>(Arrays.asList(comment1)),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                new ArrayList<>(Arrays.asList(comment2))));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 0, 0, 0, 0, 1));
     Statistics distStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(
