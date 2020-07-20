@@ -18,13 +18,27 @@ const HIGHEST_SCORE = 1.0;
 const LOWEST_SCORE = -1.0;
 const INTERVAL = 0.2;
 
+var numCommentsSlider;
+
 google.charts.load('current', {'packages':['corechart']});
 google.setOnLoadCallback(getChart)
+
+
+window.onload = init;
+
+function init(){
+  numCommentsSlider = document.getElementById('numComments-input');
+  var numCommentsIndicator = document.getElementById('slider-output');
+
+  numCommentsSlider.oninput = function() {
+    numCommentsIndicator.innerText = this.value;
+  }
+}
 
 async function getYouTubeComments() { 
   const urlInput = document.getElementById('link-input');
   const url = cleanseUrl(urlInput.value);
-  const numComments = document.getElementById('numComments-input').value;
+  const numComments = numCommentsSlider.value;
   const response = await fetch("/YouTubeComments?url="+url+"&numComments="+numComments);
   const comments = await response.json();
   return comments;
@@ -44,6 +58,7 @@ function cleanseUrl(url) {
   
   return videoId;
 }
+
 
 /**
  * Fetches data and adds to html
