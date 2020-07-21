@@ -59,6 +59,8 @@ public class ContextServletTest {
   @Test
   public void testYoutubeAPIConstructed() throws IOException, GeneralSecurityException {
     // Test the constructeAndExecuteYoutubeReuest method for returning a youtube request
+
+    // Set up the mocking environment
     YouTube mockedYoutubeService = mock(YouTube.class);
     YouTube.Videos mockedVidoes = mock(YouTube.Videos.class);
     YouTube.Videos.List mockedVideoList = mock(YouTube.Videos.List.class, RETURNS_DEEP_STUBS);
@@ -67,14 +69,15 @@ public class ContextServletTest {
     when(mockedYoutubeService.videos()).thenReturn(mockedVidoes);
     when(mockedVideoList.execute()).thenReturn(new VideoListResponse());
     VideoListResponse response = contestServlet.constructAndExecuteYoutubeRequest(TEST_URL);
-    Assert.assertEquals(response.getClass(), VideoListResponse.class);
+
+    // Test the expected and actual result
     Assert.assertEquals(response.getItems().size(), 0);
   }
 
   @Test
   public void testContextGet_generateExpectedResponse()
       throws IOException, GeneralSecurityException, ServletException {
-    // Test the doGet() method to retrieve youtube vidoe context with mocked service
+    // Set up the mocking environment
     ContextServlet contextServlet = spy(ContextServlet.class);
     HttpServletRequest mockedRequest = mock(HttpServletRequest.class);
     HttpServletResponse mockedResponse = mock(HttpServletResponse.class);
@@ -95,6 +98,8 @@ public class ContextServletTest {
     when(contextServlet.constructAndExecuteYoutubeRequest(TEST_URL)).thenReturn(mockedVideoList);
     when(mockedResponse.getWriter()).thenReturn(writer);
     contextServlet.doGet(mockedRequest, mockedResponse);
+
+    // Test the expected and actual result
     verify(mockedRequest, atLeast(1)).getParameter(URL_PARAMETER);
     Assert.assertTrue(stringWriter.toString().contains("\"videoName\":\"" + TEST_TITLE + "\""));
     Assert.assertTrue(stringWriter.toString().contains("\"videoAuthor\":\"" + TEST_CHANNEL + "\""));
