@@ -29,6 +29,11 @@ public class Statistics {
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
   private static final Comparator<UserComment> ascendingScoreComparator =
       (UserComment o1, UserComment o2) -> Double.compare(o1.getScore(), o2.getScore());
+<<<<<<< HEAD
+=======
+  private static final Comparator<UserComment> descendingMagnitudeComparator =
+      (UserComment o1, UserComment o2) -> Double.compare(o1.getMagnitude(), o2.getMagnitude());
+>>>>>>> 524b5f4538171a272d02294b50fc0e9d67c4340c
 
   // Contains sentiment bucket information for all SCORE_INTERVALs
   private List<SentimentBucket> sentimentBucketList;
@@ -82,9 +87,17 @@ public class Statistics {
       BigDecimal nextPoint = UPPER_SCORE.min(tempPoint.add(SCORE_INTERVAL));
       Range currentRange = new Range(tempPoint, nextPoint);
       int currentFrequency = 0;
+<<<<<<< HEAD
       PriorityQueue<UserComment> highMagnitudeComments = new PriorityQueue<>();
       // loop through sorted scores within currentRange from updated score pointer and update its
       // corresponding appearance frequency
+=======
+      PriorityQueue<UserComment> descendingCommentMagnitudeQueue =
+          new PriorityQueue<>(topNumComments, descendingMagnitudeComparator);
+      // loop through sorted scores within currentRange from updated score pointer, update its
+      // corresponding appearance frequency, and store the comments with topNumComments high
+      // magnitude
+>>>>>>> 524b5f4538171a272d02294b50fc0e9d67c4340c
       for (updatingScoreIdx = updatingScoreIdx;
           updatingScoreIdx < userCommentList.size();
           updatingScoreIdx++) {
@@ -92,19 +105,38 @@ public class Statistics {
             BigDecimal.valueOf(userCommentList.get(updatingScoreIdx).getScore());
         if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_SCORE) == 0) {
           currentFrequency += 1;
+<<<<<<< HEAD
           // TODO: add topNumComments to the priority queue highMagnitudeList
+=======
+          addToFixedQueue(
+              userCommentList.get(updatingScoreIdx),
+              descendingCommentMagnitudeQueue,
+              topNumComments);
+>>>>>>> 524b5f4538171a272d02294b50fc0e9d67c4340c
         } else {
           break;
         }
       }
       sentimentBucketList.add(
           new SentimentBucket(
-              convertQueueToList(highMagnitudeComments), currentFrequency, currentRange));
+              convertQueueToDescendingList(descendingCommentMagnitudeQueue),
+              currentFrequency,
+              currentRange));
     }
     return sentimentBucketList;
   }
 
-  private ArrayList convertQueueToList(PriorityQueue<UserComment> inputQueue) {
+  /**
+   * Convert a priority queue of userComments with high magnitude to a list of userComments with
+   * descending magnitudes. Note: direcly call toArray() will not preserve the order of priority
+   * queue
+   *
+   * @param inputQueue fixed size priority queue that stores userComment based on descending order
+   *     of magnitude
+   * @return a list of userComment with descending magnitudes
+   */
+  private ArrayList<UserComment> convertQueueToDescendingList(
+      PriorityQueue<UserComment> inputQueue) {
     ArrayList<UserComment> returnList = new ArrayList<>();
     while (!inputQueue.isEmpty()) {
       returnList.add(inputQueue.poll());
@@ -130,4 +162,31 @@ public class Statistics {
                 new RuntimeException(
                     "Unable to calculate average magnitude due to empty input list."));
   }
+<<<<<<< HEAD
+=======
+
+  /**
+   * Add a new comment to priority queue. If the priority queue has not been filled to maxQueueSize,
+   * directly add the comment in; If the last element in priority queue has smaller magnitude,
+   * replace that with new comment; If they have the same magnitude, replace the last element with
+   * new incoming comment that has higher score.
+   *
+   * @param newComment userComment to add into currentQueue
+   * @param currentQueue priority queue of userComment sorted based on descending order of magnitude
+   * @param maxQueueSize maximum size of priority queue
+   */
+  private void addToFixedQueue(
+      UserComment newComment, PriorityQueue<UserComment> currentQueue, int maxQueueSize) {
+    UserComment commentToAdd = newComment;
+    if (currentQueue.size() == maxQueueSize) {
+      commentToAdd = currentQueue.poll();
+      // Since userCommentList has been sorted, if newComment and commentToAdd have same magnitude,
+      // add newComment since it has higher score.
+      if (newComment.getMagnitude() >= commentToAdd.getMagnitude()) {
+        commentToAdd = newComment;
+      }
+    }
+    currentQueue.add(commentToAdd);
+  }
+>>>>>>> 524b5f4538171a272d02294b50fc0e9d67c4340c
 }

@@ -24,23 +24,9 @@ google.setOnLoadCallback(getChart)
 async function getYouTubeComments() {
   const urlInput = document.getElementById('link-input');
   const url = cleanseUrl(urlInput.value);
-  const response = await fetch("/YouTubeComments?url="+url);
+  const response = await fetch('/YouTubeComments?url='+url);
   const comments = await response.json();
   return comments;
-}
-
-/*
- * Extracts video id from full url
- */
-function cleanseUrl(url) {
-  // Split web address from parameters, extract first parameter
-  // TODO: Add checks to make this work if video is not first parameter.
-  var videoId = url.split("?");
-  videoId = (videoId.length > 1) ? videoId[1].split("&")[0] : videoId[0];
-
-  // If param name present, remove it to isolate video Id.
-  videoId = videoId.replace("v=", "");
-  return videoId;
 }
 
 /**
@@ -113,13 +99,15 @@ function getWordCloudChart(wordFrequencyMap) {
     chart.container("word-cloud");
     chart.draw();
 };
-
-function getRangeExclusiveEnd(rangeString) {
-  rangeString.trim();
-  return Number(rangeString.substring(rangeString.indexOf(',') + 1, rangeString.length - 1));
+function toTooltipString(userComments) {
+  return userComments.map(comment => userCommentAsString(comment)).join("<br>");
 }
- 
-function getRangeInclusiveStart(rangeString) {
-  rangeString.trim();
-  return Number(rangeString.substring(1, rangeString.indexOf(',')));
+
+function userCommentAsString(comment) {
+  commentMagnitude = comment.magnitude;
+  return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
+}
+
+function convertRangeToString(range) {
+  return range.inclusiveStart + ' to ' + range.exclusiveEnd;
 }
