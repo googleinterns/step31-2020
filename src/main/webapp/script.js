@@ -14,9 +14,6 @@
 
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
-const HIGHEST_SCORE = 1.0;
-const LOWEST_SCORE = -1.0;
-const INTERVAL = 0.2;
 
 google.charts.load('current', {'packages': ['corechart']});
 google.setOnLoadCallback(getChart);
@@ -29,18 +26,17 @@ async function getYouTubeComments() {
   return comments;
 }
 
-/**
- * Fetches data and adds to html
- */
+/* Fetches data and adds to html */
 async function getChart() {
   $('form').submit(async function() {
-    document.getElementById('loading-img').style.display = "block"; 
+    document.getElementById('loading-img').style.display = 'block';
     commentStats = await getYouTubeComments();
     sentimentBucketList = commentStats.sentimentBucketList;
     wordFrequencyMap = commentStats.wordFrequencyMap;
 
     getBarChart(sentimentBucketList);
     getWordCloudChart(wordFrequencyMap);
+    console.log(wordFrequencyMap);
     averageScore = commentStats.averageScore;
     const averageContainer = document.getElementById('average-score-container');
     averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
@@ -111,6 +107,3 @@ function userCommentAsString(comment) {
   return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
 }
 
-function convertRangeToString(range) {
-  return range.inclusiveStart + ' to ' + range.exclusiveEnd;
-}
