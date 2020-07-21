@@ -14,24 +14,31 @@
 
 const URL_STRUCTURE = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=";
 const YOUTUBE_API_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
+var tabHtml = '';
+var contentHtml ='<div class="col-8">' +
+                    '<div class="tab-content" id="nav-tabContent">';
 
 function getVideoResults() {
   // Clear the video results after a new search is made  
-  const videoResults = document.getElementById("video-results");
-  while (videoResults.firstChild) {
-    myNode.removeChild(myNode.lastChild);
-  }  
+  const tabResult = document.getElementById("tab_list");
+  const contentResult = document.getElementById("info_list");
+  tabResult.innerHTML = '';
+  contentResult.innerHTML = '';
 
   url = getRequestUrl();  
   fetch(url).then(response => response.json()).then(data => {
     videos = data.items; 
     videos.forEach(function(video) {
-      addVideoToResults(video);
+      tabHtml = tabHtml.concat(addVideoTitle(video));
+      contentResult.appendChild(addVideoInfo(video));
     });
+    document.getElementById("tab_list").innerHTML = tabHtml;
   });
 }
 
-function addVideoToResults(video) {
+function addVideoTitle(video) {
+  console.log(video.id);
+  return '<a class="list-group-item list-group-item-action" id=list-' + video.id.videoId +'-tab' + ' data-toggle="list" href="#'+ video.id.videoId + '" role="tab">' + video.snippet.title + '</a>';
   youtubeUrl = "https://youtube.com/watch?v=" + video.id.videoId;
   thumbnail = video.snippet.thumbnails.default.url;
   description = video.snippet.title  + " - Channel: " + video.snippet.channelTitle;
@@ -53,13 +60,30 @@ function addVideoToResults(video) {
   label.appendChild(image);
   label.appendChild(description);
   label.appendChild(button);
+}
 
-  var element = document.getElementById("video-results");
-  element.appendChild(label); 
+function addVideoInfo(video) {
+  var infoDiv = document.createElement("div");
+  infoDiv.className = "tab-pane fade";
+  infoDiv.id = video.id.videoId ;
+  infoDiv.role = "tabpanel";
+  infoDiv.setAttribute("role", "tabpanel");
+  infoDiv.setAttribute("aria-labelledby", 'list-' + video.id.videoId );
+  var cardDiv = document.createElement("div");
+  cardDiv.className = "card";
+  cardDiv.style.width = "30rem";
+  var cardBodyDiv = document.createElement("div");
+  cardBodyDiv.className = "card-body";
+  cardBodyDiv.innerHTML = '<p class="card-text">' + video.snippet.description + '</p';
+  console.log(video.snippet.thumbnails);
+  cardDiv.innerHTML = '<IMG class="card-img-top" src=' + video.snippet.thumbnails.default.url + ' alt="Card image cap">';
+  cardDiv.appendChild(cardBodyDiv);
+  infoDiv.appendChild(cardDiv);
+  return infoDiv;
 }
 
 function getRequestUrl() {
   userSearchInput = document.getElementById('search-input').value;
-  url = URL_STRUCTURE + getSearchTerm() + "&key=" + YOUTUBE_API_KEY;
+  url = URL_STRUCTURE + "good morning"+ "&key=" + YOUTUBE_API_KEY;
   return url;
 }
