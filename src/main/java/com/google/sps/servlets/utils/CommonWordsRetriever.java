@@ -20,15 +20,11 @@ import java.util.List;
 
 /** Class provides commonly used words that should be ignored within the word map */
 public class CommonWordsRetriever {
-  private static List<String> commonWordsList;
+  // TODO: Parse text file for common words  
+  private static final List<String> commonWordsList = new ArrayList<>(
+        Arrays.asList("the", "it", "at", "and", "to", "we", "can", "are", "of", "is", "am", "i", "this", "was"));
 
   public static List<String> getCommonWords() {
-    // TODO: Get words by parsing text file
-    commonWordsList =
-        new ArrayList<>(
-            Arrays.asList(
-                "the", "it", "at", "and", "to", "we", "can", "are", "of", "is", "am", "i", "this",
-                "was"));
     return commonWordsList;
   }
 }
