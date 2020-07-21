@@ -219,10 +219,10 @@ public class CommentAnalysisTest {
     Map<String, Integer> expectedMap =
         new HashMap<String, Integer>() {
           {
-            put("Normal", 2);
-            put("Comment", 2);
-            put("First", 1);
-            put("Second", 1);
+            put("normal", 2);
+            put("comment", 2);
+            put("first", 1);
+            put("second", 1);
           }
         };
     Assert.assertEquals(expectedMap, twoHighestStat.getWordFrequencyMap());
@@ -259,9 +259,9 @@ public class CommentAnalysisTest {
         new HashMap<String, Integer>() {
           {
             put("1", 2);
-            put("Comment", 2);
-            put("Third", 1);
-            put("Forth", 1);
+            put("comment", 2);
+            put("third", 1);
+            put("forth", 1);
             put("pos", 1);
             put("neg", 1);
           }
@@ -323,7 +323,7 @@ public class CommentAnalysisTest {
             put("video", 2);
             put("watching", 1);
             put("good", 1);
-            put("Where", 1);
+            put("where", 1);
           }
         };
     System.out.println("Map: " + moreThan10Words.getWordFrequencyMap());

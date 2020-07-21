@@ -86,13 +86,8 @@ public class Statistics {
     Stream<String> allWordStream =
         // Text extractor removes all HTML tags and returns only the text
         userCommentList.stream()
-            .map(
-                comment ->
-                    new Source(comment.getCommentMsg())
-                        .getTextExtractor()
-                        .toString()
-                        .replaceAll("[^a-zA-Z0-9\\s]", "").toLowerCase().
-                        .split("\\s+"))
+            .map(comment -> new Source(comment.getCommentMsg()).getTextExtractor()
+                .toString().replaceAll("[^a-zA-Z0-9\\s]", "").toLowerCase().split("\\s+"))
             .map(wordArray -> new ArrayList<>(Arrays.asList(wordArray)))
             .flatMap(wordList -> wordList.stream())
             .filter(word -> !wordsToIgnore.contains(word));
