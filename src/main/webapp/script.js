@@ -18,8 +18,8 @@ const HIGHEST_SCORE = 1.0;
 const LOWEST_SCORE = -1.0;
 const INTERVAL = 0.2;
 
-google.charts.load('current', {'packages':['corechart']});
-google.setOnLoadCallback(getChart)
+google.charts.load('current', {'packages': ['corechart']});
+google.setOnLoadCallback(getChart);
 
 async function getYouTubeComments() {
   const urlInput = document.getElementById('link-input');
@@ -58,21 +58,24 @@ function getBarChart(sentimentBucketList) {
     CommentSentimentTable.addColumn('string', 'SentimentRange');
     CommentSentimentTable.addColumn('number', 'CommentCount');
 
+
     // The json keys (ranges of scores) are sorted through their starting values
-    Object.keys(aggregateValues).forEach(function(key) {
-      var inclusiveStart = getRangeInclusiveStart(key);  
-      var exclusiveEnd = getRangeExclusiveEnd(key);
-      CommentSentimentTable.addRow([inclusiveStart, inclusiveStart + ' to ' + exclusiveEnd, aggregateValues[key]]);  
+    sentimentBucketList.forEach(sentimentBucket => {
+      var inclusiveStart = sentimentBucket.intervalRange.inclusiveStart;
+      var exclusiveEnd = sentimentBucket.intervalRange.exclusiveEnd;
+      CommentSentimentTable.addRow([inclusiveStart, inclusiveStart + ' to ' + exclusiveEnd, sentimentBucket.frequency]);  
     });
 
     const options = {
       'title': 'Comment Sentiment Range',
       'width': CHART_WIDTH,
-      'height':CHART_HEIGHT,
-      'bar': {groupWidth: "100"}
+      'height': CHART_HEIGHT,
+      'bar': {groupWidth: '100'},
+      'tooltip': {isHtml: true}
     };
 
-    document.getElementById('loading-img').style.display = "none";  
+    // Hide loading image once chart is drawn
+    document.getElementById('loading-img').style.display = 'none';
 
     CommentSentimentTable.sort({column: 0, desc: false}); 
     var view = new google.visualization.DataView(CommentSentimentTable);
