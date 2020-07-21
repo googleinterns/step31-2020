@@ -14,9 +14,6 @@
 
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
-const HIGHEST_SCORE = 1.0;
-const LOWEST_SCORE = -1.0;
-const INTERVAL = 0.2;
 
 google.charts.load('current', {'packages': ['corechart']});
 google.setOnLoadCallback(getChart);
@@ -24,9 +21,9 @@ google.setOnLoadCallback(getChart);
 /**
  * Fetches comment data from video ID
  */
-async function getYouTubeCommengitts(currUrl) {
-  const urlInput = currUrl; // document.getElementById('link-input');
-  const url = cleanseUrl(currUrl);
+async function getYouTubeComments() {
+  const urlInput = document.getElementById('link-input');
+  const url = cleanseUrl(urlInput.value);
   const response = await fetch('/YouTubeComments?url='+url);
   const comments = await response.json();
   return comments;
@@ -80,7 +77,7 @@ async function getChart(url) {
     chart.draw(view, options);
 
     const averageContainer = document.getElementById('average-score-container');
-    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+    averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
   });
 }
 
@@ -89,10 +86,10 @@ function toTooltipString(userComments) {
 }
 
 function userCommentAsString(comment) {
-  commentMagnitude = comment.magnitude;
-  return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
+  commentMagnitude = comment.magnitude;  
+  return comment.commentMsg + "<br> Magnitude Score: " + commentMagnitude;
 }
 
 function convertRangeToString(range) {
-  return range.inclusiveStart + ' to ' + range.exclusiveEnd;
+  return range.inclusiveStart + " to " + range.exclusiveEnd;  
 }

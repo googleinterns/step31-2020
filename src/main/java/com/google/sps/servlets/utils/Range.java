@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 
 /** Range for the start and end point of sentiment scores. */
 public class Range {
-  // TODO: change the double to BigDecimal or int type to avoid imprecision in floating points
   private BigDecimal inclusiveStart;
   private BigDecimal exclusiveEnd;
 
@@ -56,6 +55,6 @@ public class Range {
 
   @Override
   public String toString() {
-    return "(" + inclusiveStart + ", " + exclusiveEnd + ")";
+    return inclusiveStart + " to " + exclusiveEnd;
   }
 }
