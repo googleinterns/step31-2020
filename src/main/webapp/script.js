@@ -23,7 +23,6 @@ var numCommentsSlider;
 google.charts.load('current', {'packages':['corechart']});
 google.setOnLoadCallback(getChart)
 
-
 window.onload = init;
 
 function init(){
