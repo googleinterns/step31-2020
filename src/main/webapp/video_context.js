@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-google.charts.load('current', {'packages': ['corechart']});
+google.charts.load('current', { 'packages': ['corechart'] });
 google.setOnLoadCallback(updateUIWithVideoContext);
 
 /**
@@ -22,7 +22,7 @@ google.setOnLoadCallback(updateUIWithVideoContext);
 async function getVideoContext() {
   const urlInput = document.getElementById('link-input');
   const url = cleanseUrl(urlInput.value);
-  const response = await fetch('/VideoContext?url='+url);
+  const response = await fetch('/VideoContext?url=' + url);
   const context = await response.json();
   return context;
 }
@@ -40,20 +40,20 @@ async function updateUIWithVideoContext() {
 
 /**
  * Convert a video context json object into html format
- * @param {Json object} videoContext Json object of video context information
- * @returns {String} html format of video context
+ * @param {Json} videoContext Json object of video context information
+ * @return {String} html format of video context
  */
 function videoInfoAsHTML(videoContext) {
-  return '<ul class="list-group">'+
-    '<li class="list-group-item">'+ 'Video Name: ' +
+  return '<ul class="list-group">' +
+    '<li class="list-group-item">' + 'Video Name: ' +
     videoContext.videoName + '</li>' +
-    '<li class="list-group-item">'+ 'Channel: ' +
+    '<li class="list-group-item">' + 'Channel: ' +
     videoContext.videoAuthor + '</li>' +
-    '<li class="list-group-item">'+ 'Date Published: ' +
+    '<li class="list-group-item">' + 'Date Published: ' +
     videoContext.videoDate + '</li>' +
-    '<li class="list-group-item">'+ 'Likes: ' +
+    '<li class="list-group-item">' + 'Likes: ' +
     videoContext.videoLikes + '</li>' +
-    '<li class="list-group-item">'+ 'DisLikes: ' +
+    '<li class="list-group-item">' + 'DisLikes: ' +
     videoContext.videoDislikes + '</li>' +
     '</ul>';
 }
