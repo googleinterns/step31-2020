@@ -12,13 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-google.charts.load('current', {'packages':['corechart']});
-google.setOnLoadCallback(updateUIWithVideoContext)
+google.charts.load('current', {'packages': ['corechart']});
+google.setOnLoadCallback(updateUIWithVideoContext);
 
+/**
+ * Retrieve the context of a Youtube video
+ * @return {Json} Json object of video context information
+ */
 async function getVideoContext() {
   const urlInput = document.getElementById('link-input');
   const url = cleanseUrl(urlInput.value);
-  const response = await fetch("/VideoContext?url="+url);
+  const response = await fetch('/VideoContext?url='+url);
   const context = await response.json();
   return context;
 }
@@ -28,17 +32,28 @@ async function getVideoContext() {
  */
 async function updateUIWithVideoContext() {
   $('form').submit(async function() {
-     videoContext = await getVideoContext();
-     document.getElementById('video-context').innerHTML = videoInfoAsString(videoContext);
+    videoContext = await getVideoContext();
+    document.getElementById('video-context').innerHTML =
+      videoInfoAsHTML(videoContext);
   });
 }
 
-function videoInfoAsString(videoContext) { 
+/**
+ * Convert a video context json object into html format
+ * @param {Json object} videoContext Json object of video context information
+ * @returns {String} html format of video context
+ */
+function videoInfoAsHTML(videoContext) {
   return '<ul class="list-group">'+
-  '<li class="list-group-item">'+ "Video Name: " + videoContext.videoName + '</li>' +
-  '<li class="list-group-item">'+ "Channel: " + videoContext.videoAuthor + '</li>' +
-  '<li class="list-group-item">'+ "Date Published: " + videoContext.videoDate + '</li>' +
-  '<li class="list-group-item">'+ "Likes: " + videoContext.videoLikes + '</li>' +
-  '<li class="list-group-item">'+ "DisLikes: " + videoContext.videoDislikes + '</li>' +
-  '</ul>';
+    '<li class="list-group-item">'+ 'Video Name: ' +
+    videoContext.videoName + '</li>' +
+    '<li class="list-group-item">'+ 'Channel: ' +
+    videoContext.videoAuthor + '</li>' +
+    '<li class="list-group-item">'+ 'Date Published: ' +
+    videoContext.videoDate + '</li>' +
+    '<li class="list-group-item">'+ 'Likes: ' +
+    videoContext.videoLikes + '</li>' +
+    '<li class="list-group-item">'+ 'DisLikes: ' +
+    videoContext.videoDislikes + '</li>' +
+    '</ul>';
 }
