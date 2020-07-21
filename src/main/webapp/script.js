@@ -24,7 +24,7 @@ google.setOnLoadCallback(getChart);
 /**
  * Fetches comment data from video ID
  */
-async function getYouTubeComments(currUrl) {
+async function getYouTubeCommengitts(currUrl) {
   const urlInput = currUrl; // document.getElementById('link-input');
   const url = cleanseUrl(currUrl);
   const response = await fetch('/YouTubeComments?url='+url);
