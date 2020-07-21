@@ -45,10 +45,7 @@ public class YoutubeServlet extends HttpServlet {
       String url = request.getParameter(URL_PARAMETER);
       String numCommentsInput = request.getParameter(NUM_COMMENTS_PARAMETER);
       // If nothing is inputted, length of list is default, otherwise it's what was inputted.
-      long numComments =
-          (numCommentsInput == null || numCommentsInput.trim().equals(""))
-              ? DEFAULT_COMMENTS
-              : Long.valueOf(numCommentsInput);
+      long numComments = Long.valueOf(numCommentsInput);
 
       List<CommentThread> commentThreads =
           new YouTubeCommentRetriever().retrieveComments(url, numComments);

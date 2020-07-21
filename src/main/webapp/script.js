@@ -27,7 +27,7 @@ google.setOnLoadCallback(getChart)
 window.onload = init;
 
 function init(){
-  numCommentsSlider = document.getElementById('numComments-input');
+  numCommentsSlider = document.getElementById('num-comments-input');
   var numCommentsIndicator = document.getElementById('slider-output');
 
   numCommentsSlider.oninput = function() {
@@ -58,7 +58,6 @@ function cleanseUrl(url) {
   
   return videoId;
 }
-
 
 /**
  * Fetches data and adds to html
