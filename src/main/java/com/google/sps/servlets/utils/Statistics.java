@@ -43,7 +43,6 @@ public class Statistics {
   private Map<String, Integer> wordFrequencyMap;
   private double averageMagnitude;
   private double averageScore;
-  private List<String> wordsToIgnore;
 
   public List<SentimentBucket> getSentimentBucketList() {
     return sentimentBucketList;
@@ -69,7 +68,6 @@ public class Statistics {
    * @param topNComments the number of highest magnitudes to retrieve
    */
   public Statistics(List<UserComment> userCommentList, int topNComments) {
-    wordsToIgnore = CommonWordsRetriever.getCommonWords();
     sentimentBucketList = categorizeToBucketList(userCommentList, topNComments);
     averageScore = getAverageValue(userCommentList, "score");
     averageMagnitude = getAverageValue(userCommentList, "Magnitude");
@@ -83,6 +81,7 @@ public class Statistics {
    * @return wordFrequencyMap to represent each word appearance time
    */
   private Map<String, Integer> countWordFrequencyMap(List<UserComment> userCommentList) {
+    List<String> wordsToIgnore = CommonWordsRetriever.getCommonWords();
     // Flatten all user comment message into a list of words
     Stream<String> allWordStream =
         // Text extractor removes all HTML tags and returns only the text
@@ -92,11 +91,11 @@ public class Statistics {
                     new Source(comment.getCommentMsg())
                         .getTextExtractor()
                         .toString()
-                        .replaceAll("[^a-zA-Z0-9\\s]", "")
+                        .replaceAll("[^a-zA-Z0-9\\s]", "").toLowerCase().
                         .split("\\s+"))
             .map(wordArray -> new ArrayList<>(Arrays.asList(wordArray)))
             .flatMap(wordList -> wordList.stream())
-            .filter(word -> !wordsToIgnore.contains(word.toLowerCase()));
+            .filter(word -> !wordsToIgnore.contains(word));
     // Group and sum the appearances of each word
     Map<String, Integer> wordPairMap =
         allWordStream.collect(
