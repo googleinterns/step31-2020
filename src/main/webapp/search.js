@@ -81,6 +81,7 @@ function addVideoInfo(video) {
   button.onclick = getChart(youtubeUrl);
   button.className = 'button';
   // Append the card into general overall list group explanation.
+  cardBodyDiv.appendChild(button);
   cardDiv.appendChild(cardBodyDiv);
   infoDiv.appendChild(cardDiv);
   return infoDiv;
