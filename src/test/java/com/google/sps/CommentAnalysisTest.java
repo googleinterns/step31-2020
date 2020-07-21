@@ -34,6 +34,7 @@ import com.google.sps.servlets.utils.UserComment;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.junit.Assert;
@@ -56,7 +57,8 @@ public class CommentAnalysisTest {
 
   private static final float TEST_SCORE = 0.23f;
   private static final float TEST_MAGNITUDE = 1.5f;
-
+  private static final String TEST_MESSAGE = "Test Message";
+  private static final String TEST_ID = "000";
   /**
    * It constructs a List with sentiment bucket for expected score categorizations, frequency and
    * top comments for testing
@@ -95,8 +97,9 @@ public class CommentAnalysisTest {
 
     // Declarations of mocked variables and set the dependencies between constructed comments and
     // threads
-    CommentSnippet topCommentSnippet = new CommentSnippet().setTextDisplay("Test Message");
+    CommentSnippet topCommentSnippet = new CommentSnippet().setTextDisplay(TEST_MESSAGE);
     Comment testTopComment = new Comment().setSnippet(topCommentSnippet);
+    testTopComment.setId(TEST_ID);
     CommentThreadSnippet testThreadSnippet =
         new CommentThreadSnippet().setTopLevelComment(testTopComment);
     CommentThread testCommentThread = new CommentThread().setSnippet(testThreadSnippet);
@@ -119,7 +122,18 @@ public class CommentAnalysisTest {
         new UserComment(
             TEST_ID, TEST_MESSAGE, new DateTime(new Date()), TEST_SCORE, TEST_MAGNITUDE);
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
+        new ArrayList<>(
+            Arrays.asList(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Collections.singletonList(testUserComment),
+                null,
+                null,
+                null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0));
     Assert.assertNotNull(testStat);
     Assert.assertNotNull(testStat.getSentimentBucketList());
@@ -171,7 +185,18 @@ public class CommentAnalysisTest {
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
     List<List<UserComment>> expectedUserComment =
-        new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null, null));
+        new ArrayList<>(
+            Arrays.asList(
+                null,
+                null,
+                null,
+                null,
+                null,
+                new ArrayList<>(Arrays.asList(comment1, comment2)),
+                null,
+                null,
+                null,
+                null));
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
     Statistics twoHighestStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(0.105, twoHighestStat.getAverageScore(), 0.01);
