@@ -21,6 +21,9 @@ const INTERVAL = 0.2;
 google.charts.load('current', {'packages': ['corechart']});
 google.setOnLoadCallback(getChart);
 
+/**
+ * Fetches comment data from video ID
+ */
 async function getYouTubeComments(currUrl) {
   const urlInput = currUrl; // document.getElementById('link-input');
   const url = cleanseUrl(currUrl);
@@ -39,7 +42,6 @@ async function getChart(url) {
     document.getElementById('loading-img').style.display = 'block';
 
     commentStats = await getYouTubeComments(url);
-    console.log(commentStats);
     averageScore = commentStats.averageScore;
     averageMagnitude = commentStats.averageMagnitude;
     sentimentBucketList = commentStats.sentimentBucketList;
@@ -56,9 +58,9 @@ async function getChart(url) {
           currentSentimentBucket.intervalRange);
       highestMagnitudeComments = currentSentimentBucket.topNComments;
 
-      CommentSentimentTable.addRow(
-          [rangeAsString, currentSentimentBucket.frequency,
-            toTooltipString(highestMagnitudeComments)]);
+      CommentSentimentTable.addRow([rangeAsString,
+          currentSentimentBucket.frequency,
+          toTooltipString(highestMagnitudeComments)]);
     }
 
     const options = {
@@ -66,8 +68,11 @@ async function getChart(url) {
       'width': CHART_WIDTH,
       'height': CHART_HEIGHT,
       'bar': {groupWidth: '100'},
-      'tooltip': {isHtml: true},
+      'tooltip': {isHtml: true}
     };
+
+    // Hide loading image once chart is drawn
+    document.getElementById('loading-img').style.display = 'none';
 
     const view = new google.visualization.DataView(CommentSentimentTable);
     const chart = new google.visualization.ColumnChart(
@@ -80,7 +85,7 @@ async function getChart(url) {
 }
 
 function toTooltipString(userComments) {
-  return userComments.map((comment) => userCommentAsString(comment)).join('<br>');
+  return userComments.map(comment => userCommentAsString(comment)).join("<br>");
 }
 
 function userCommentAsString(comment) {
