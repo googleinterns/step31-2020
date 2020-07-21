@@ -16,7 +16,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <js-tests.skip>false</js-tests.skip>
-    <!-- <bower-components>${basedir}/src/main/resources/static/bower_components</bower-components> -->
   </properties>
 
   <dependencies>
@@ -70,52 +69,22 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>com.github.klieber</groupId>
-        <artifactId>phantomjs-maven-plugin</artifactId>
-        <version>0.4</version>
+        <groupId>com.github.searls</groupId>
+        <artifactId>jasmine-maven-plugin</artifactId>
+        <version>1.3.1.6</version>
         <executions>
           <execution>
             <goals>
-              <goal>install</goal>
+              <goal>test</goal>
             </goals>
           </execution>
         </executions>
         <configuration>
-          <version>1.9.8</version>
-          <skip>${js-tests.skip}</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.github.searls</groupId>
-        <artifactId>jasmine-maven-plugin</artifactId>
-        <version>1.3.1.5</version>
-      <executions>
-    <execution>
-      <goals>
-        <goal>test</goal>
-      </goals>
-    </execution>
-  </executions>
-  <configuration>
-    <skipJasmineTests>${js-tests.skip}</skipJasmineTests>
-        <webDriverClassName>org.openqa.selenium.phantomjs.PhantomJSDriver</webDriverClassName>
-          <webDriverCapabilities>
-            <capability>
-              <name>phantomjs.binary.path</name>
-              <value>${phantomjs.binary}</value>
-            </capability>
-          </webDriverCapabilities>
-          <!-- This is causing a problem. TODO: fix it -->
-          <jsSrcDir>${basedir}/src/main/webapp</jsSrcDir>
-          <jsTestSrcDir>${basedir}/src/test/javascript/controllers</jsTestSrcDir>
+          <jsSrcDir>${project.basedir}/src/main/resources/public/js</jsSrcDir>
+          <jsTestSrcDir>src/test/javascript</jsTestSrcDir>
           <preloadSources>
-            <source>https://www.gstatic.com/charts/loader.js</source>
-            <source>https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js</source>
-            <!-- <source>${bower-components}/angular/angular.js</source>
-            <source>${bower-components}/angular-resource/angular-resource.js</source>
-            <source>${bower-components}/angular-mocks/angular-mocks.js</source> -->
-            <source>${basedir}/src/main/webapp</source>
-            <source>${basedir}/src/main/webapp/script.js</source>
+            <source>${project.basedir}/src/test/javascript/support/jquery-3.2.1.min.js</source>
+            <source>${project.basedir}/src/test/javascript/support/jasmine-jquery.js</source>
           </preloadSources>
         </configuration>
       </plugin>
