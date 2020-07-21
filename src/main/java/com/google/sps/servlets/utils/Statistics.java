@@ -90,20 +90,16 @@ public class Statistics {
                 .toString().replaceAll("[^a-zA-Z0-9\\s]", "").toLowerCase().split("\\s+"))
             .map(wordArray -> new ArrayList<>(Arrays.asList(wordArray)))
             .flatMap(wordList -> wordList.stream())
-            .filter(word -> !wordsToIgnore.contains(word));
+            .filter(word -> !(wordsToIgnore.contains(word) || word.equals("")));
     // Group and sum the appearances of each word
     Map<String, Integer> wordPairMap =
         allWordStream.collect(
             Collectors.groupingBy(word -> word, Collectors.summingInt(word -> 1)));
 
-    if (wordPairMap.size() < MINIMUM_WORDMAP_SIZE) {
-      return null;
-    } else {
-      return wordPairMap.entrySet().stream()
-          .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-          .limit(10)
-          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
+    return wordPairMap.entrySet().stream()
+        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+        .limit(10)
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   /**

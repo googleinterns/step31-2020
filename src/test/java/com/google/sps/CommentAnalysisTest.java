@@ -326,7 +326,6 @@ public class CommentAnalysisTest {
             put("where", 1);
           }
         };
-    System.out.println("Map: " + moreThan10Words.getWordFrequencyMap());
     Assert.assertEquals(expectedMap, moreThan10Words.getWordFrequencyMap());
   }
 
@@ -337,7 +336,8 @@ public class CommentAnalysisTest {
     UserComment comment6 = new UserComment("006", emptyMsg, new DateTime(new Date()), -1.0, 0.4);
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment6));
     Statistics moreThan10Words = new Statistics(inputUserComment, 2);
-    Assert.assertEquals(null, moreThan10Words.getWordFrequencyMap());
+    Map<String, Integer> expectedMap = new HashMap<String, Integer>();
+    Assert.assertEquals(expectedMap, moreThan10Words.getWordFrequencyMap());
   }
 
   @Test
@@ -347,6 +347,19 @@ public class CommentAnalysisTest {
     UserComment comment7 = new UserComment("007", htmlMsg, new DateTime(new Date()), -1.0, 0.4);
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment7));
     Statistics htmlComment = new Statistics(inputUserComment, 2);
-    Assert.assertEquals(null, htmlComment.getWordFrequencyMap());
+    Map<String, Integer> expectedMap = new HashMap<String, Integer>();
+    Assert.assertEquals(expectedMap, htmlComment.getWordFrequencyMap());
+  }
+
+  @Test
+  public void testOneWordMap() {
+    String singleMsg = "nice";
+
+    UserComment comment7 = new UserComment("007", singleMsg, new DateTime(new Date()), -1.0, 0.4);
+    List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment7));
+    Statistics singleComment = new Statistics(inputUserComment, 2);
+    Map<String, Integer> expectedMap = new HashMap<String, Integer>();
+    expectedMap.put("nice", 1);
+    Assert.assertEquals(expectedMap, singleComment.getWordFrequencyMap());
   }
 }
