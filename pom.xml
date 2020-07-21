@@ -16,7 +16,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <js-tests.skip>false</js-tests.skip>
-    <bower-components>${basedir}/src/main/resources/static/bower_components</bower-components>
+    <!-- <bower-components>${basedir}/src/main/resources/static/bower_components</bower-components> -->
   </properties>
 
   <dependencies>
@@ -111,10 +111,11 @@
           <preloadSources>
             <source>https://www.gstatic.com/charts/loader.js</source>
             <source>https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js</source>
-            <source>${bower-components}/angular/angular.js</source>
+            <!-- <source>${bower-components}/angular/angular.js</source>
             <source>${bower-components}/angular-resource/angular-resource.js</source>
-            <source>${bower-components}/angular-mocks/angular-mocks.js</source>
-            <source>${basedir}/src/main/resources/static/app/app.js</source>
+            <source>${bower-components}/angular-mocks/angular-mocks.js</source> -->
+            <source>${basedir}/src/main/webapp</source>
+            <source>${basedir}/src/main/webapp/script.js</source>
           </preloadSources>
         </configuration>
       </plugin>

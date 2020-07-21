@@ -19,7 +19,7 @@ const LOWEST_SCORE = -1.0;
 const INTERVAL = 0.2;
 
 google.charts.load('current', {'packages':['corechart']});
-google.setOnLoadCallback(getChart)
+google.setOnLoadCallback(getChart);
 
 async function getYouTubeComments() { 
   const urlInput = document.getElementById('link-input');
