@@ -11,23 +11,39 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+ 
 package com.google.sps.servlets.utils;
-
+ 
+import java.io.File;
+import java.lang.RuntimeException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-/** Class provides commonly used words that should be ignored within the word map */
+import java.util.Scanner;
+ 
+/**
+ * Class that provides commonly used words that should be ignored
+ * within the word map
+ */
 public class CommonWordsRetriever {
-  // TODO: Parse text file for common words
-  private static final List<String> commonWordsList =
-      new ArrayList<>(
-          Arrays.asList(
-              "the", "it", "at", "and", "to", "we", "can", "are", "of", "is", "am", "i", "this",
-              "was"));
-
-  public static List<String> getCommonWords() {
+  private static final List<String> commonWordsList = populateWordList();
+ 
+  private static List<String> populateWordList() {
+    List<String> commonWords = new ArrayList<String>();  
+    try {
+      File file = new File(System.getProperty("user.dir") + 
+          "/src/main/java/com/google/sps/servlets/utils/resources/common_words.txt");
+      Scanner sc = new Scanner(file);
+      while (sc.hasNextLine()) {
+        commonWords.add(sc.nextLine());
+      }
+    } catch (Exception e) {
+      throw new RuntimeException("Unable to read file.", e);
+    }
+    return commonWords;
+  }
+ 
+  public static List<String> getCommonWords() {  
     return new ArrayList<String>(commonWordsList);
   }
 }
