@@ -28,6 +28,6 @@ public class CommonWordsRetriever {
               "was"));
 
   public static List<String> getCommonWords() {
-    return commonWordsList;
+    return new ArrayList<String>(commonWordsList);
   }
 }
