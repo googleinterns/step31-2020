@@ -17,7 +17,7 @@
   <body>
     <ul class="nav justify-content-center">
       <li class="nav-item">
-        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link" href="index.html">keyword</a>
       </li>
       <li class="nav-item">
         <!-- TODO: Create new html page about the project  -->
@@ -28,27 +28,29 @@
       <div class="form-group">
         <nav>
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Keyword Search</a>
-            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Video Link</a>
+            <a class="nav-item nav-link active" id="nav-keyword-tab" data-toggle="tab" href="#nav-keyword" role="tab" aria-controls="nav-keyword" aria-selected="true">Keyword Search</a>
+            <a class="nav-item nav-link" id="nav-linke-tab" data-toggle="tab" href="#nav-linke" role="tab" aria-controls="nav-linke" aria-selected="false">Video Link</a>
           </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-          <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+          <div class="tab-pane fade show active" id="nav-keyword" role="tabpanel" aria-labelledby="nav-keyword-tab">
             <form onsubmit="return false">
+              <br>
               <p>Enter a YouTube video keyword:</p>
                 <input type="text" id="search-input">
-                <input name="Search" type="submit" id="submit-button" onclick="getVideoResults()"/>
+                <input name="Search" type="submit" value="Search!" id="submit-button" onclick="getVideoResults()"/>
                 <div id="video-results"></div>  </br>
               </br>
             </form>
           </div>
-          <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+          <div class="tab-pane fade" id="nav-linke" role="tabpanel" aria-labelledby="nav-linke-tab">
             <form onsubmit="return false">
+              <br>
               <p>Enter a YouTube link:</p>
               <input id="link-input" name="link-input" required pattern="https?://www.youtube.com/watch\?v=.+"/>
               <small id="url-help" class="form-text text-muted">Format: https://youtube.com/watch?v=...</small>
               </br>
-              <input type="submit" id="submit-btn" onClick="updateUIWithVideoContext()"/>
+              <input type="submit" id="submit-btn" value="Show me!"onClick="updateUIWithVideoContext()"/>
               </br>
             </form>
           </div>
