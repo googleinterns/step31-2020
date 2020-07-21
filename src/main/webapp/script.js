@@ -53,7 +53,7 @@ async function getChart() {
     sentimentBucketList = commentStats.sentimentBucketList;
     wordFrequencyMap = commentStats.wordFrequencyMap;
 
-    // getBarChart(sentimentBucketList);
+    getBarChart(sentimentBucketList);
     getWordCloudChart(wordFrequencyMap);
     averageScore = commentStats.averageScore;
     const averageContainer = document.getElementById('average-score-container');
@@ -104,15 +104,12 @@ function getBarChart(sentimentBucketList) {
 function getWordCloudChart(wordFrequencyMap) {
     var data = [];
     Object.keys(wordFrequencyMap).forEach(wordKey => data.push({"x": wordKey, "value": wordFrequencyMap[wordKey]}));
-    // create a tag cloud chart
+    // Create a tag cloud chart
     var chart = anychart.tagCloud(data);
 
-    // set the chart title
     chart.title('Most Popular Comments')
-    // set array of angles to 0, make all the words display horizontally
+    // Set array of angles to 0, make all the words display horizontally
     chart.angles([0])
-
-    // display chart
     chart.container("word-cloud");
     chart.draw();
 };
