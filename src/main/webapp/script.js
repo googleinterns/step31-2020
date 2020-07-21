@@ -17,91 +17,77 @@ const CHART_HEIGHT = 400;
 const HIGHEST_SCORE = 1.0;
 const LOWEST_SCORE = -1.0;
 const INTERVAL = 0.2;
- 
-google.charts.load('current', {'packages':['corechart']});
-google.setOnLoadCallback(getChart)
- 
-async function getYouTubeComments(currUrl) { 
-  const urlInput = currUrl; //document.getElementById('link-input');
-  console.log(currUrl);
+
+google.charts.load('current', {'packages': ['corechart']});
+google.setOnLoadCallback(getChart);
+
+async function getYouTubeComments(currUrl) {
+  const urlInput = currUrl; // document.getElementById('link-input');
   const url = cleanseUrl(currUrl);
-  const response = await fetch("/YouTubeComments?url="+url);
+  const response = await fetch('/YouTubeComments?url='+url);
   const comments = await response.json();
   return comments;
 }
- 
-/*
- * Extracts video id from full url
- */ 
-function cleanseUrl(url) {
-  // Split web address from parameters, extract first parameter
-  // TODO: Add checks to make this work if video is not first parameter.
-  console.log(url);
-  var videoId = url.split("?");
-  videoId = (videoId.length > 1) ? videoId[1].split("&")[0] : videoId[0];
- 
-  // If param name present, remove it to isolate video Id.
-  videoId = videoId.replace("v=", "");
-  
-  return videoId;
-}
- 
+
 /**
  * Fetches data and adds to html
  */
-async function getChart(url) { 
+async function getChart(url) {
   $('.button').click(async function() {
-    // After video is selected, hide the search results and display the loading icon  
-    document.getElementById("video-results").style.display = "none";
-    document.getElementById('loading-img').style.display = "block";  
+    // After video is selected, hide the search results and display the loading icon
+    document.getElementById('video-results').style.display = 'none';
+    document.getElementById('loading-img').style.display = 'block';
 
     commentStats = await getYouTubeComments(url);
     console.log(commentStats);
     averageScore = commentStats.averageScore;
     averageMagnitude = commentStats.averageMagnitude;
-    sentimentBucketList = commentStats.sentimentBucketList; 
-    
+    sentimentBucketList = commentStats.sentimentBucketList;
+
     const CommentSentimentTable = new google.visualization.DataTable();
     CommentSentimentTable.addColumn('string', 'Sentiment Range');
     CommentSentimentTable.addColumn('number', 'Comment Count');
-    CommentSentimentTable.addColumn({type: 'string', role:'tooltip', 'p': {'html': true}});
- 
-    for(i = 0; i < sentimentBucketList.length; i++) {
+    CommentSentimentTable.addColumn(
+        {'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
+
+    for (i = 0; i < sentimentBucketList.length; i++) {
       currentSentimentBucket = sentimentBucketList[i];
-      rangeAsString = convertRangeToString(currentSentimentBucket.intervalRange);
+      rangeAsString = convertRangeToString(
+          currentSentimentBucket.intervalRange);
       highestMagnitudeComments = currentSentimentBucket.topNComments;
 
-      CommentSentimentTable.addRow([rangeAsString, currentSentimentBucket.frequency, 
-        toTooltipString(highestMagnitudeComments)]);
+      CommentSentimentTable.addRow(
+          [rangeAsString, currentSentimentBucket.frequency,
+            toTooltipString(highestMagnitudeComments)]);
     }
- 
+
     const options = {
       'title': 'Comment Sentiment Range',
       'width': CHART_WIDTH,
-      'height':CHART_HEIGHT,
-      'bar': {groupWidth: "100"},
-      'tooltip': {isHtml: true}
+      'height': CHART_HEIGHT,
+      'bar': {groupWidth: '100'},
+      'tooltip': {isHtml: true},
     };
 
-    var view = new google.visualization.DataView(CommentSentimentTable);
+    const view = new google.visualization.DataView(CommentSentimentTable);
     const chart = new google.visualization.ColumnChart(
         document.getElementById('chart-container'));
-    chart.draw(view, options);    
+    chart.draw(view, options);
 
     const averageContainer = document.getElementById('average-score-container');
-    averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
+    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
   });
 }
- 
+
 function toTooltipString(userComments) {
-  return userComments.map(comment => userCommentAsString(comment)).join("<br>"); 
+  return userComments.map((comment) => userCommentAsString(comment)).join('<br>');
 }
 
 function userCommentAsString(comment) {
-  commentMagnitude = comment.magnitude;  
-  return comment.commentMsg + "<br> Magnitude Score: " + commentMagnitude;
+  commentMagnitude = comment.magnitude;
+  return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
 }
 
 function convertRangeToString(range) {
-  return range.inclusiveStart + " to " + range.exclusiveEnd;  
+  return range.inclusiveStart + ' to ' + range.exclusiveEnd;
 }
