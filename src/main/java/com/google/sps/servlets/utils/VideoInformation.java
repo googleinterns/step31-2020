@@ -1,14 +1,14 @@
 package com.google.sps.servlets.utils;
 
 import com.google.api.services.youtube.model.Video;
-// Data retrieved from HTTP that can be parsed retrieve specific attributes
 import com.google.api.services.youtube.model.VideoListResponse;
-// VideoSnippet contains basic details about a video, such as its title, description, and category.
 import com.google.api.services.youtube.model.VideoSnippet;
-// VideoStatistics contains publicly viewable video statistics like a video's viewcount and ratings
 import com.google.api.services.youtube.model.VideoStatistics;
 import com.google.common.collect.Iterables;
 
+/**
+ * VideoInformation contains detailed information of a Youtube Video's title, channel, number of likes/dislikes and published date. It is used for users to retrieve the key information of a specific video.
+ */
 public class VideoInformation {
   String videoName;
   String videoAuthor;
