@@ -159,7 +159,7 @@ public class CommentAnalysisTest {
   }
 
   @Test
-  public void testTopOneMagnitude() {
+  public void testGetAllStatistics() {
     // Cases: two user comments with sentiment score in the same interval and only reuqire top 1
     // comment
     UserComment comment1 =
