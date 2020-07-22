@@ -18,7 +18,7 @@
  * Credit for RegEx method derived from top answer on: 
  * https://stackoverflow.com/questions/28735459/how-to-validate-youtube-url-in-client-side-in-text-box
  */	 
-function extractYouTubeUrl(url) {	
+function extractYouTubeUrl(url) {
   var videoId = '';
   var idLength = 11; // Length of video Id's in YouTube videos
   if (url != undefined || url != '') {
