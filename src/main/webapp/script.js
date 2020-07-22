@@ -35,10 +35,9 @@ async function getYouTubeComments() {
  */
 async function getChart(url) {
   $('.button').click(async function() {
-    document.getElementById('video-results').style.display = 'none';
     document.getElementById('loading-img').style.display = 'block';
 
-    commentStats = await getYouTubeComments(url);
+    commentStats = await getYouTubeComments();
     averageScore = commentStats.averageScore;
     averageMagnitude = commentStats.averageMagnitude;
     sentimentBucketList = commentStats.sentimentBucketList;
