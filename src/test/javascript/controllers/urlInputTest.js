@@ -11,7 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//import("/src/main/webapp/common_util.js");
+
+//import script
+ var script = document.createElement('script');
+ script.src = 'src/main/webapp/common_util.js'
 
   describe('The application controller', function() {
     it('should pass', function() {
