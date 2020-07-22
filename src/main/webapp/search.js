@@ -66,6 +66,7 @@ function addVideoInfo(video) {
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card';
   cardDiv.style.width = '30rem';
+
   // Include the video description and image for the card body.
   const cardBodyDiv = document.createElement('div');
   cardBodyDiv.className = 'card-body';
@@ -73,13 +74,15 @@ function addVideoInfo(video) {
     video.snippet.description + '</p';
   cardDiv.innerHTML = '<IMG class="card-img-top" src=' +
     video.snippet.thumbnails.default.url + ' alt="Card image cap">';
+
   // Create button to select the video
   const button = document.createElement('INPUT');
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
-  button.value = 'Show me the comments';
+  button.value = 'Select!';
   button.onclick = getChart(youtubeUrl);
   button.className = 'button';
+
   // Append the card into general overall list group explanation.
   cardBodyDiv.appendChild(button);
   cardDiv.appendChild(cardBodyDiv);
