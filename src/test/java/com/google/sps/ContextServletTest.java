@@ -70,7 +70,6 @@ public class ContextServletTest {
     when(mockedVideoList.execute()).thenReturn(new VideoListResponse());
     VideoListResponse response = contestServlet.constructAndExecuteYoutubeRequest(TEST_URL);
 
-    // Test the expected and actual result
     Assert.assertEquals(response.getItems().size(), 0);
   }
 
