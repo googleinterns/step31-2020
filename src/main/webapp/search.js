@@ -14,7 +14,6 @@
 
 const URL_STRUCTURE = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=';
 const YOUTUBE_API_KEY = 'AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs';
-let tabHtml = '';
 
 /**
  * Retrieve the video result from youtube url.
@@ -23,6 +22,8 @@ function getVideoResults() {
   // Clear the video results after a new search is made.
   const tabResult = document.getElementById('tab_list');
   const contentResult = document.getElementById('info_list');
+
+  // Add html for tab bar and content bar
   tabResult.innerHTML = '';
   contentResult.innerHTML = '';
 
