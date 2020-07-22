@@ -31,10 +31,10 @@ async function getYouTubeComments() {
 
 /**
  * Fetches data and adds to html
+ * @param {String} url youtube url to retrieve comments
  */
 async function getChart(url) {
   $('.button').click(async function() {
-    // After video is selected, hide the search results and display the loading icon
     document.getElementById('video-results').style.display = 'none';
     document.getElementById('loading-img').style.display = 'block';
 
@@ -56,8 +56,8 @@ async function getChart(url) {
       highestMagnitudeComments = currentSentimentBucket.topNComments;
 
       CommentSentimentTable.addRow([rangeAsString,
-          currentSentimentBucket.frequency,
-          toTooltipString(highestMagnitudeComments)]);
+        currentSentimentBucket.frequency,
+        toTooltipString(highestMagnitudeComments)]);
     }
 
     const options = {
@@ -65,7 +65,7 @@ async function getChart(url) {
       'width': CHART_WIDTH,
       'height': CHART_HEIGHT,
       'bar': {groupWidth: '100'},
-      'tooltip': {isHtml: true}
+      'tooltip': {isHtml: true},
     };
 
     // Hide loading image once chart is drawn
@@ -77,7 +77,7 @@ async function getChart(url) {
     chart.draw(view, options);
 
     const averageContainer = document.getElementById('average-score-container');
-    averageContainer.innerHTML = "Average Sentiment Score: " + averageScore;
+    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
   });
 }
 
