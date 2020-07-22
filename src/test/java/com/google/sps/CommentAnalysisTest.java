@@ -27,6 +27,7 @@ import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
 import com.google.sps.servlets.utils.CommentAnalysis;
+import com.google.sps.servlets.utils.CommonWordsRetriever;
 import com.google.sps.servlets.utils.Range;
 import com.google.sps.servlets.utils.SentimentBucket;
 import com.google.sps.servlets.utils.Statistics;
@@ -219,10 +220,10 @@ public class CommentAnalysisTest {
     Map<String, Integer> expectedMap =
         new HashMap<String, Integer>() {
           {
-            put("Normal", 2);
-            put("Comment", 2);
-            put("First", 1);
-            put("Second", 1);
+            put("normal", 2);
+            put("comment", 2);
+            put("first", 1);
+            put("second", 1);
             put("normal", 2);
             put("comment", 2);
             put("first", 1);
@@ -353,5 +354,12 @@ public class CommentAnalysisTest {
     Map<String, Integer> expectedMap = new HashMap<String, Integer>();
     expectedMap.put("nice", 1);
     Assert.assertEquals(expectedMap, singleComment.getWordFrequencyMap());
+  }
+
+  @Test
+  public void testCommonWordParse() {
+    List<String> wordList = CommonWordsRetriever.getCommonWords();
+    int expectedWordCount = 22;
+    Assert.assertEquals(expectedWordCount, wordList.size());
   }
 }
