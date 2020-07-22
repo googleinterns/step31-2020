@@ -216,6 +216,20 @@ public class CommentAnalysisTest {
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
     Statistics twoHighestStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(0.105, twoHighestStat.getAverageScore(), 0.01);
+    Map<String, Integer> expectedMap =
+        new HashMap<String, Integer>() {
+          {
+            put("Normal", 2);
+            put("Comment", 2);
+            put("First", 1);
+            put("Second", 1);
+            put("normal", 2);
+            put("comment", 2);
+            put("first", 1);
+            put("second", 1);
+          }
+        };
+    Assert.assertEquals(expectedMap, twoHighestStat.getWordFrequencyMap());
   }
 
   @Test
@@ -245,22 +259,10 @@ public class CommentAnalysisTest {
     Assert.assertEquals(
         constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
         distStat.getSentimentBucketList());
-    Map<String, Integer> expectedMap =
-        new HashMap<String, Integer>() {
-          {
-            put("1", 2);
-            put("comment", 2);
-            put("third", 1);
-            put("forth", 1);
-            put("pos", 1);
-            put("neg", 1);
-          }
-        };
-    Assert.assertEquals(expectedMap, distStat.getWordFrequencyMap());
   }
 
   @Test
-  public void testOver10CommentWords() {
+  public void testShowTopCommentWords() {
     // cases: user comments with more than 10 vocabulary to test the top 10 comments retreived
     UserComment comment5 =
         new UserComment(
