@@ -23,17 +23,16 @@ function getVideoResults() {
   // Clear the video results after a new search is made.
   const tabResult = document.getElementById('tab_list');
   const contentResult = document.getElementById('info_list');
-  tabHtml = '';
+  tabResult.innerHTML = '';
   contentResult.innerHTML = '';
 
   url = getRequestUrl();
   fetch(url).then((response) => response.json()).then((data) => {
     videos = data.items;
     videos.forEach(function(video) {
-      tabHtml = tabHtml.concat(addVideoTitle(video));
+      tabResult.appendChild(addVideoTitle(video));
       contentResult.appendChild(addVideoInfo(video));
     });
-    tabResult.innerHTML = tabHtml;
   });
 }
 
@@ -41,12 +40,22 @@ function getVideoResults() {
  * Add video title to the list group.
  * @param {Json} video object that contains information
  *                     retrieved from Youtube Service
- * @return {String} html format of video's title for list group
+ * @return {String} html format of video's title and channel for list group
  */
 function addVideoTitle(video) {
-  return '<a class="list-group-item list-group-item-action" id=list-' +
-    video.id.videoId +'-tab' + ' data-toggle="list" href="#' +
-    video.id.videoId + '" role="tab">' + video.snippet.title + '</a>';
+  const item = document.createElement('a');
+  item.className = 'list-group-item list-group-item-action';
+  item.href = '#' + video.id.videoId;
+  item.id = 'list-' + video.id.videoId + '-tab';
+  item.setAttribute('data-toggle', 'list');
+  item.setAttribute('role', 'tab');
+  item.innerHTML = '<h5 class="mb-1">' + video.snippet.title + '</h5>' +
+  '<p class="mb-1">Channel: ' + video.snippet.channelTitle + '</p>';
+  return item;
+  // return '<a class="list-group-item list-group-item-action" id=list-' +
+  //   video.id.videoId +'-tab' + ' data-toggle="list" href="#' +
+  //   video.id.videoId + '" role="tab">' + video.snippet.title + '</a>' +
+  //   '<p class="mb-1"> Channel: ' + video.snippet.channelTitle + '</p>';
 }
 
 /**
