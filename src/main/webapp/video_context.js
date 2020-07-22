@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-google.charts.load('current', { 'packages': ['corechart'] });
+google.charts.load('current', {'packages': ['corechart']});
 google.setOnLoadCallback(updateUIWithVideoContext);
 
 /**
