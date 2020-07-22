@@ -14,17 +14,17 @@
 
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
-
-var numCommentsSlider;
+const SLIDER_NAME = 'num-comments-input';
 
 google.charts.load('current', {'packages':['corechart']});
-google.setOnLoadCallback(getChart)
+google.setOnLoadCallback(getChart);
 
-window.onload = init;
+window.onload = initCommentSlider;
 
-function init(){
-  numCommentsSlider = document.getElementById('num-comments-input');
-  var numCommentsIndicator = document.getElementById('slider-output');
+function initCommentSlider(){
+  const numCommentsSlider = document.getElementById(SLIDER_NAME);
+  const numCommentsIndicator = document.getElementById('slider-output');
+  numCommentsIndicator.innerText = numCommentsSlider.value;
 
   numCommentsSlider.oninput = function() {
     numCommentsIndicator.innerText = this.value;
@@ -34,7 +34,7 @@ function init(){
 async function getYouTubeComments() { 
   const urlInput = document.getElementById('link-input');
   const url = cleanseUrl(urlInput.value);
-  const numComments = numCommentsSlider.value;
+  const numComments = document.getElementById(SLIDER_NAME).value;
   const response = await fetch("/YouTubeComments?url="+url+"&numComments="+numComments);
   const comments = await response.json();
   return comments;
