@@ -23,7 +23,7 @@ google.setOnLoadCallback(getChart);
  */
 async function getYouTubeComments() {
   const urlInput = document.getElementById('link-input');
-  const url = cleanseUrl(urlInput.value);
+  const url = extractYouTubeUrl(urlInput.value);
   const response = await fetch('/YouTubeComments?url='+url);
   const comments = await response.json();
   return comments;
