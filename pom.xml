@@ -85,6 +85,7 @@
           <preloadSources>
             <source>${project.basedir}/src/test/javascript/support/jquery-3.2.1.min.js</source>
             <source>${project.basedir}/src/test/javascript/support/jasmine-jquery.js</source>
+            <source>${project.basedir}/src/main/webapp/common_util.js</source>
           </preloadSources>
         </configuration>
       </plugin>
