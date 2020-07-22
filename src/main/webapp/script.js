@@ -39,9 +39,8 @@ async function getChart() {
     sentimentBucketList = commentStats.sentimentBucketList;
     wordFrequencyMap = commentStats.wordFrequencyMap;
 
-    getBarChart(sentimentBucketList);
-    getWordCloudChart(wordFrequencyMap);
-    console.log(wordFrequencyMap);
+    displaySentimentBucketChart(sentimentBucketList);
+    displayWordCloudChart(wordFrequencyMap);
     averageScore = commentStats.averageScore;
     const averageContainer = document.getElementById('average-score-container');
     averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
@@ -53,7 +52,7 @@ async function getChart() {
  * and high magnitude comments
  * @param {Array<sentimentBucket>} sentimentBucketList
  */
-function getBarChart(sentimentBucketList) {
+function displaySentimentBucketChart(sentimentBucketList) {
   const CommentSentimentTable = new google.visualization.DataTable();
   CommentSentimentTable.addColumn('number', 'InclusiveStart');
   CommentSentimentTable.addColumn('string', 'SentimentRange');
@@ -93,17 +92,17 @@ function getBarChart(sentimentBucketList) {
  * @param {Map<String:Integer>} wordFrequencyMap Map that contains
  *                                top popular words and its appearance
  */
-function getWordCloudChart(wordFrequencyMap) {
+function displayWordCloudChart(wordFrequencyMap) {
   const data = [];
   Object.keys(wordFrequencyMap).forEach((wordKey) =>
     data.push({'x': wordKey, 'value': wordFrequencyMap[wordKey]}));
   // Create a tag cloud chart
   const chart = anychart.tagCloud(data);
 
-  chart.title('Most Popular Comments');
+  chart.title('Most Common Words in Comments');
   // Set array of angles to 0, make all the words display horizontally
   chart.angles([0]);
-  chart.container('word-cloud');
+  chart.container('word-cloud-container');
   chart.draw();
 };
 /**
