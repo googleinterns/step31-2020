@@ -7,7 +7,9 @@ import com.google.api.services.youtube.model.VideoStatistics;
 import com.google.common.collect.Iterables;
 
 /**
- * VideoInformation contains detailed information of a Youtube Video's title, channel, number of likes/dislikes and published date. It is used for users to retrieve the key information of a specific video.
+ * VideoInformation contains detailed information of a Youtube Video's title, channel, number of
+ * likes/dislikes and published date. It is used for users to retrieve the key information of a
+ * specific video.
  */
 public class VideoInformation {
   String videoName;
