@@ -24,10 +24,9 @@ import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.htmlparser.jericho.Source;
-import net.htmlparser.jericho.TextExtractor;
 
 public class Statistics {
-  private static final int MAXIMUM_WORDMAP_SIZE = 10;  
+  private static final int MAXIMUM_WORDMAP_SIZE = 10;
   private static final int MINIMUM_WORDMAP_SIZE = 2;
   private static final double LOWER_SCORE_VAL = -1.0;
   private static final double UPPER_SCORE_VAL = 1.0;
