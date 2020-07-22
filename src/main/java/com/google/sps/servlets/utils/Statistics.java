@@ -23,9 +23,11 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import net.htmlparser.jericho.*;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.TextExtractor;
 
 public class Statistics {
+  private static final int MAXIMUM_WORDMAP_SIZE = 10;  
   private static final int MINIMUM_WORDMAP_SIZE = 2;
   private static final double LOWER_SCORE_VAL = -1.0;
   private static final double UPPER_SCORE_VAL = 1.0;
@@ -94,8 +96,7 @@ public class Statistics {
                         .replaceAll("[^a-zA-Z0-9\\s]", "")
                         .toLowerCase()
                         .split("\\s+"))
-            .map(wordArray -> new ArrayList<>(Arrays.asList(wordArray)))
-            .flatMap(wordList -> wordList.stream())
+            .flatMap(wordArray -> Arrays.stream(wordArray))
             .filter(word -> !(wordsToIgnore.contains(word) || word.equals("")));
     // Group and sum the appearances of each word
     Map<String, Integer> wordPairMap =
@@ -104,7 +105,7 @@ public class Statistics {
 
     return wordPairMap.entrySet().stream()
         .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-        .limit(10)
+        .limit(MAXIMUM_WORDMAP_SIZE)
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 

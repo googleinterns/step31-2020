@@ -216,16 +216,6 @@ public class CommentAnalysisTest {
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
     Statistics twoHighestStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(0.105, twoHighestStat.getAverageScore(), 0.01);
-    Map<String, Integer> expectedMap =
-        new HashMap<String, Integer>() {
-          {
-            put("normal", 2);
-            put("comment", 2);
-            put("first", 1);
-            put("second", 1);
-          }
-        };
-    Assert.assertEquals(expectedMap, twoHighestStat.getWordFrequencyMap());
   }
 
   @Test
@@ -314,7 +304,7 @@ public class CommentAnalysisTest {
 
     UserComment comment5 = new UserComment("005", sampleMsg, new DateTime(new Date()), -1.0, 0.4);
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment5));
-    Statistics moreThan10Words = new Statistics(inputUserComment, 2);
+    Statistics commonWordComment = new Statistics(inputUserComment, 2);
     Map<String, Integer> expectedMap =
         new HashMap<String, Integer>() {
           {
@@ -326,7 +316,7 @@ public class CommentAnalysisTest {
             put("where", 1);
           }
         };
-    Assert.assertEquals(expectedMap, moreThan10Words.getWordFrequencyMap());
+    Assert.assertEquals(expectedMap, commonWordComment.getWordFrequencyMap());
   }
 
   @Test
@@ -335,9 +325,9 @@ public class CommentAnalysisTest {
 
     UserComment comment6 = new UserComment("006", emptyMsg, new DateTime(new Date()), -1.0, 0.4);
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment6));
-    Statistics moreThan10Words = new Statistics(inputUserComment, 2);
+    Statistics emptyComment = new Statistics(inputUserComment, 2);
     Map<String, Integer> expectedMap = new HashMap<String, Integer>();
-    Assert.assertEquals(expectedMap, moreThan10Words.getWordFrequencyMap());
+    Assert.assertEquals(expectedMap, emptyComment.getWordFrequencyMap());
   }
 
   @Test
