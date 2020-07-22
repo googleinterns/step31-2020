@@ -51,7 +51,7 @@ public class YoutubeServlet extends HttpServlet {
       List<CommentThread> commentThreads =
           new YouTubeCommentRetriever().retrieveComments(url, numComments);
 
-          System.out.println("COMMENTS RETRIEVED: " + commentThreads.size());////////////
+      System.out.println("COMMENTS RETRIEVED: " + commentThreads.size()); // //////////
       CommentAnalysis commentAnalysis = new CommentAnalysis();
       Statistics statistics = commentAnalysis.computeOverallStats(commentThreads);
       commentAnalysis.closeLanguage();
