@@ -11,28 +11,25 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
- 
+
 package com.google.sps.servlets.utils;
- 
+
 import java.io.File;
-import java.lang.RuntimeException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
- 
-/**
- * Class that provides commonly used words that should be ignored
- * within the word map
- */
+
+/** Class that provides commonly used words that should be ignored within the word map */
 public class CommonWordsRetriever {
   private static final List<String> commonWordsList = populateWordList();
- 
+
   private static List<String> populateWordList() {
-    List<String> commonWords = new ArrayList<String>();  
+    List<String> commonWords = new ArrayList<String>();
     try {
-      File file = new File(System.getProperty("user.dir") + 
-          "/src/main/java/com/google/sps/servlets/utils/resources/common_words.txt");
+      File file =
+          new File(
+              System.getProperty("user.dir")
+                  + "/src/main/java/com/google/sps/servlets/utils/resources/common_words.txt");
       Scanner sc = new Scanner(file);
       while (sc.hasNextLine()) {
         commonWords.add(sc.nextLine());
@@ -42,8 +39,8 @@ public class CommonWordsRetriever {
     }
     return commonWords;
   }
- 
-  public static List<String> getCommonWords() {  
+
+  public static List<String> getCommonWords() {
     return new ArrayList<String>(commonWordsList);
   }
 }
