@@ -13,16 +13,16 @@
 // limitations under the License.
 
 // Import script
-var script = document.createElement('script');
-script.src = 'src/main/webapp/common_util.js'
-var x = 0
+const script = document.createElement('script');
+script.src = 'src/main/webapp/common_util.js';
+var x = 0;
 
 // Test Urls sampled from https://gist.github.com/rodrigoborgesdeoliveira/987683cfbfcc8d800192da1e73adc486
 // These encompass the URL's that the parser is able to handle.
-var outputUrls = ["dQw4w9WgXcQ","-wtIMTCHWuI", "yZv2daTWRZU", "QdK8U-VIH_o",
+const outputUrls = ["dQw4w9WgXcQ","-wtIMTCHWuI", "yZv2daTWRZU", "QdK8U-VIH_o",
     "0zM3nApSvMg","0zM3nApSvMg","1p3vcRhsYGo", "dQw4w9WgXcQ","dQw4w9WgXcQ",
     "dQw4w9WgXcQ", "6L3ZvIMwZFM", "oTJRivZTMLs", "oTJRivZTMLs"];
-var testUrls = ["youtube.com/watch?v=dQw4w9WgXcQ", "http://youtu.be/-wtIMTCHWuI",
+const testUrls = ["youtube.com/watch?v=dQw4w9WgXcQ", "http://youtu.be/-wtIMTCHWuI",
     "https://www.youtube.com/watch?v=yZv2daTWRZU&feature=em-uploademail",
     "https://www.youtube.com/user/IngridMichaelsonVEVO#p/a/u/1/QdK8U-VIH_o",
     "https://www.youtube.com/watch?v=0zM3nApSvMg#t=0m10s",
