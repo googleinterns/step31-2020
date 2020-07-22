@@ -14,7 +14,7 @@
 
 async function getVideoContext() { 
   const urlInput = document.getElementById('link-input');
-  const url = cleanseUrl(urlInput.value);
+  const url = extractYouTubeUrl(urlInput.value);
   const response = await fetch("/VideoContext?URL_PARAMETER="+url);
   const context = await response.json();
   return context;

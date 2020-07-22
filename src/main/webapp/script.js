@@ -14,17 +14,28 @@
 
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
+const SLIDER_NAME = 'num-comments-input';
 
 google.charts.load('current', {'packages':['corechart']});
 google.setOnLoadCallback(getChart);
 
-/**
- * Fetches comment data from video ID
- */
-async function getYouTubeComments() {
+window.onload = initCommentSlider;
+
+function initCommentSlider(){
+  const numCommentsSlider = document.getElementById(SLIDER_NAME);
+  const numCommentsIndicator = document.getElementById('slider-output');
+  numCommentsIndicator.innerText = numCommentsSlider.value;
+
+  numCommentsSlider.oninput = function() {
+    numCommentsIndicator.innerText = this.value;
+  }
+}
+
+async function getYouTubeComments() { 
   const urlInput = document.getElementById('link-input');
   const url = extractYouTubeUrl(urlInput.value);
-  const response = await fetch('/YouTubeComments?url='+url);
+  const numComments = document.getElementById(SLIDER_NAME).value;
+  const response = await fetch("/YouTubeComments?url="+url+"&numComments="+numComments);
   const comments = await response.json();
   return comments;
 }
