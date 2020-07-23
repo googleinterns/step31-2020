@@ -223,10 +223,6 @@ public class CommentAnalysisTest {
             put("comment", 2);
             put("first", 1);
             put("second", 1);
-            put("normal", 2);
-            put("comment", 2);
-            put("first", 1);
-            put("second", 1);
           }
         };
     Assert.assertEquals(expectedMap, twoHighestStat.getWordFrequencyMap());
