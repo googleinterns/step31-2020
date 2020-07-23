@@ -93,7 +93,7 @@ function toTooltipString(userComments) {
 }
 
 function userCommentAsString(comment) {
-  commentMagnitude = comment.magnitude;
+  commentMagnitude = comment.magnitude;g
   return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
 }
 
