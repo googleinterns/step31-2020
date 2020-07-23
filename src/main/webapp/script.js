@@ -40,11 +40,7 @@ async function getYouTubeComments() {
   return comments;
 }
 
-/**
- * Fetches data and adds to html
-  * Credit for RegEx method derived from top answer on: 
-  * https://stackoverflow.com/questions/28735459/how-to-validate-youtube-url-in-client-side-in-text-box
-  */
+// Fetches data and adds to html
 async function getChart() {
   $('form').submit(async function() {
     document.getElementById('loading-img').style.display = 'block';

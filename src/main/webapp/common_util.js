@@ -19,16 +19,12 @@
  * https://stackoverflow.com/questions/28735459/how-to-validate-youtube-url-in-client-side-in-text-box
  */	 
 function extractYouTubeUrl(url) {
-  var videoId = '';
-  var idLength = 11; // Length of video Id's in YouTube videos
+  const idLength = 11; // Length of video Id's in YouTube videos
   if (url != undefined || url != '') {
     // This regular expression represents the different patterns that may occur in a YouTube URL
     var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|e\/|embed\/|watch\?v=|\&v=|\?v=|\?vi=|v\&)([^#\&\?]*).*/;
     var match = url.match(regExp);
-    // Check for proper format, focus on segment that contains videoId
-    if (match && match[2].length == idLength) {
-      videoId = match[2];
-    }
+    // Return segment that contains videoId
+    return match[2];
   }
-  return videoId;
 }
