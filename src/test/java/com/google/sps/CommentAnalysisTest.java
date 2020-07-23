@@ -214,16 +214,13 @@ public class CommentAnalysisTest {
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
     Statistics twoHighestStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(0.105, twoHighestStat.getAverageScore(), 0.01);
-    Assert.assertEquals(
-        constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
-        twoHighestStat.getSentimentBucketList());
     Map<String, Integer> expectedMap =
         new HashMap<String, Integer>() {
           {
             put("normal", 2);
             put("comment", 2);
             put("first", 1);
-            put("second", 1);
+            put("scecond", 1);
           }
         };
     Assert.assertEquals(expectedMap, twoHighestStat.getWordFrequencyMap());
