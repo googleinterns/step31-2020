@@ -1,0 +1,9 @@
+{
+  "name": "step31-2020",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "eslint": "^7.5.0",
+    "eslint-config-google": "^0.14.0"
+  }
+}

@@ -16,11 +16,18 @@ package com.google.sps.servlets.utils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import net.htmlparser.jericho.Source;
 
 public class Statistics {
+  private static final int MAXIMUM_WORDMAP_SIZE = 10;
+  private static final int MINIMUM_WORDMAP_SIZE = 2;
   private static final double LOWER_SCORE_VAL = -1.0;
   private static final double UPPER_SCORE_VAL = 1.0;
   private static final double SCORE_INTERVAL_VAL = 0.2;
@@ -29,9 +36,12 @@ public class Statistics {
   private static final BigDecimal LOWER_SCORE = BigDecimal.valueOf(LOWER_SCORE_VAL);
   private static final Comparator<UserComment> ascendingScoreComparator =
       (UserComment o1, UserComment o2) -> Double.compare(o1.getScore(), o2.getScore());
+  private static final Comparator<UserComment> descendingMagnitudeComparator =
+      (UserComment o1, UserComment o2) -> Double.compare(o1.getMagnitude(), o2.getMagnitude());
 
   // Contains sentiment bucket information for all SCORE_INTERVALs
   private List<SentimentBucket> sentimentBucketList;
+  private Map<String, Integer> wordFrequencyMap;
   private double averageMagnitude;
   private double averageScore;
 
@@ -47,6 +57,10 @@ public class Statistics {
     return averageScore;
   }
 
+  public Map<String, Integer> getWordFrequencyMap() {
+    return wordFrequencyMap;
+  }
+
   /**
    * Constructor of Statistics to get average score and magnitude and create aggregate sorted
    * sentiment bucket list based on SCORE_INTERVALs' ascending ranges.
@@ -58,6 +72,40 @@ public class Statistics {
     sentimentBucketList = categorizeToBucketList(userCommentList, topNComments);
     averageScore = getAverageValue(userCommentList, "score");
     averageMagnitude = getAverageValue(userCommentList, "Magnitude");
+    wordFrequencyMap = countWordFrequencyMap(userCommentList);
+  }
+
+  /**
+   * Convert given userCommentList into a word map: {word: frequency}
+   *
+   * @param userCommentList a list of userComment with all fields updated
+   * @return wordFrequencyMap to represent each word appearance time
+   */
+  private Map<String, Integer> countWordFrequencyMap(List<UserComment> userCommentList) {
+    List<String> wordsToIgnore = CommonWordsRetriever.getCommonWords();
+    // Flatten all user comment message into a list of words
+    Stream<String> allWordStream =
+        // Text extractor removes all HTML tags and returns only the text
+        userCommentList.stream()
+            .map(
+                comment ->
+                    new Source(comment.getCommentMsg())
+                        .getTextExtractor()
+                        .toString()
+                        .replaceAll("[^a-zA-Z0-9\\s]", "")
+                        .toLowerCase()
+                        .split("\\s+"))
+            .flatMap(wordArray -> Arrays.stream(wordArray))
+            .filter(word -> !(wordsToIgnore.contains(word) || word.equals("")));
+    // Group and sum the appearances of each word
+    Map<String, Integer> wordPairMap =
+        allWordStream.collect(
+            Collectors.groupingBy(word -> word, Collectors.summingInt(word -> 1)));
+
+    return wordPairMap.entrySet().stream()
+        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+        .limit(MAXIMUM_WORDMAP_SIZE)
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   /**
@@ -82,9 +130,11 @@ public class Statistics {
       BigDecimal nextPoint = UPPER_SCORE.min(tempPoint.add(SCORE_INTERVAL));
       Range currentRange = new Range(tempPoint, nextPoint);
       int currentFrequency = 0;
-      PriorityQueue<UserComment> highMagnitudeComments = new PriorityQueue<>();
-      // loop through sorted scores within currentRange from updated score pointer and update its
-      // corresponding appearance frequency
+      PriorityQueue<UserComment> descendingCommentMagnitudeQueue =
+          new PriorityQueue<>(topNumComments, descendingMagnitudeComparator);
+      // loop through sorted scores within currentRange from updated score pointer, update its
+      // corresponding appearance frequency, and store the comments with topNumComments high
+      // magnitude
       for (updatingScoreIdx = updatingScoreIdx;
           updatingScoreIdx < userCommentList.size();
           updatingScoreIdx++) {
@@ -92,19 +142,34 @@ public class Statistics {
             BigDecimal.valueOf(userCommentList.get(updatingScoreIdx).getScore());
         if ((scorePoint.compareTo(nextPoint) < 0) || nextPoint.compareTo(UPPER_SCORE) == 0) {
           currentFrequency += 1;
-          // TODO: add topNumComments to the priority queue highMagnitudeList
+          addToFixedQueue(
+              userCommentList.get(updatingScoreIdx),
+              descendingCommentMagnitudeQueue,
+              topNumComments);
         } else {
           break;
         }
       }
       sentimentBucketList.add(
           new SentimentBucket(
-              convertQueueToList(highMagnitudeComments), currentFrequency, currentRange));
+              convertQueueToDescendingList(descendingCommentMagnitudeQueue),
+              currentFrequency,
+              currentRange));
     }
     return sentimentBucketList;
   }
 
-  private ArrayList convertQueueToList(PriorityQueue<UserComment> inputQueue) {
+  /**
+   * Convert a priority queue of userComments with high magnitude to a list of userComments with
+   * descending magnitudes. Note: direcly call toArray() will not preserve the order of priority
+   * queue
+   *
+   * @param inputQueue fixed size priority queue that stores userComment based on descending order
+   *     of magnitude
+   * @return a list of userComment with descending magnitudes
+   */
+  private ArrayList<UserComment> convertQueueToDescendingList(
+      PriorityQueue<UserComment> inputQueue) {
     ArrayList<UserComment> returnList = new ArrayList<>();
     while (!inputQueue.isEmpty()) {
       returnList.add(inputQueue.poll());
@@ -129,5 +194,29 @@ public class Statistics {
             () ->
                 new RuntimeException(
                     "Unable to calculate average magnitude due to empty input list."));
+  }
+
+  /**
+   * Add a new comment to priority queue. If the priority queue has not been filled to maxQueueSize,
+   * directly add the comment in; If the last element in priority queue has smaller magnitude,
+   * replace that with new comment; If they have the same magnitude, replace the last element with
+   * new incoming comment that has higher score.
+   *
+   * @param newComment userComment to add into currentQueue
+   * @param currentQueue priority queue of userComment sorted based on descending order of magnitude
+   * @param maxQueueSize maximum size of priority queue
+   */
+  private void addToFixedQueue(
+      UserComment newComment, PriorityQueue<UserComment> currentQueue, int maxQueueSize) {
+    UserComment commentToAdd = newComment;
+    if (currentQueue.size() == maxQueueSize) {
+      commentToAdd = currentQueue.poll();
+      // Since userCommentList has been sorted, if newComment and commentToAdd have same magnitude,
+      // add newComment since it has higher score.
+      if (newComment.getMagnitude() >= commentToAdd.getMagnitude()) {
+        commentToAdd = newComment;
+      }
+    }
+    currentQueue.add(commentToAdd);
   }
 }
