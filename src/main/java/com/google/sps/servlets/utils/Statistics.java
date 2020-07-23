@@ -16,11 +16,18 @@ package com.google.sps.servlets.utils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import net.htmlparser.jericho.Source;
 
 public class Statistics {
+  private static final int MAXIMUM_WORDMAP_SIZE = 10;
+  private static final int MINIMUM_WORDMAP_SIZE = 2;
   private static final double LOWER_SCORE_VAL = -1.0;
   private static final double UPPER_SCORE_VAL = 1.0;
   private static final double SCORE_INTERVAL_VAL = 0.2;
@@ -34,6 +41,7 @@ public class Statistics {
 
   // Contains sentiment bucket information for all SCORE_INTERVALs
   private List<SentimentBucket> sentimentBucketList;
+  private Map<String, Integer> wordFrequencyMap;
   private double averageMagnitude;
   private double averageScore;
 
@@ -49,6 +57,10 @@ public class Statistics {
     return averageScore;
   }
 
+  public Map<String, Integer> getWordFrequencyMap() {
+    return wordFrequencyMap;
+  }
+
   /**
    * Constructor of Statistics to get average score and magnitude and create aggregate sorted
    * sentiment bucket list based on SCORE_INTERVALs' ascending ranges.
@@ -60,6 +72,40 @@ public class Statistics {
     sentimentBucketList = categorizeToBucketList(userCommentList, topNComments);
     averageScore = getAverageValue(userCommentList, "score");
     averageMagnitude = getAverageValue(userCommentList, "Magnitude");
+    wordFrequencyMap = countWordFrequencyMap(userCommentList);
+  }
+
+  /**
+   * Convert given userCommentList into a word map: {word: frequency}
+   *
+   * @param userCommentList a list of userComment with all fields updated
+   * @return wordFrequencyMap to represent each word appearance time
+   */
+  private Map<String, Integer> countWordFrequencyMap(List<UserComment> userCommentList) {
+    List<String> wordsToIgnore = CommonWordsRetriever.getCommonWords();
+    // Flatten all user comment message into a list of words
+    Stream<String> allWordStream =
+        // Text extractor removes all HTML tags and returns only the text
+        userCommentList.stream()
+            .map(
+                comment ->
+                    new Source(comment.getCommentMsg())
+                        .getTextExtractor()
+                        .toString()
+                        .replaceAll("[^a-zA-Z0-9\\s]", "")
+                        .toLowerCase()
+                        .split("\\s+"))
+            .flatMap(wordArray -> Arrays.stream(wordArray))
+            .filter(word -> !(wordsToIgnore.contains(word) || word.equals("")));
+    // Group and sum the appearances of each word
+    Map<String, Integer> wordPairMap =
+        allWordStream.collect(
+            Collectors.groupingBy(word -> word, Collectors.summingInt(word -> 1)));
+
+    return wordPairMap.entrySet().stream()
+        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+        .limit(MAXIMUM_WORDMAP_SIZE)
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   /**
