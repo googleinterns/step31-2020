@@ -4,3 +4,13 @@
   padding-top: 5vh;
   text-align: center;
 }
+#word-cloud-container {
+  height: 450px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+#video-context {
+  height: 300px;
+  width: 300px;
+}

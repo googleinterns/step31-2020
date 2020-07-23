@@ -31,7 +31,10 @@ function initCommentSlider(){
   }
 }
 
-async function getYouTubeComments() { 
+/**
+ * Retreive the youtube comments from the url.
+ */
+async function getYouTubeComments() {
   const urlInput = document.getElementById('link-input');
   const url = extractYouTubeUrl(urlInput.value);
   const numComments = document.getElementById(SLIDER_NAME).value;
@@ -45,53 +48,94 @@ async function getChart() {
   $('form').submit(async function() {
     document.getElementById('loading-img').style.display = 'block';
     commentStats = await getYouTubeComments();
-    averageScore = commentStats.averageScore;
-    averageMagnitude = commentStats.averageMagnitude;
     sentimentBucketList = commentStats.sentimentBucketList;
+    wordFrequencyMap = commentStats.wordFrequencyMap;
 
-    const CommentSentimentTable = new google.visualization.DataTable();
-    CommentSentimentTable.addColumn('number', 'InclusiveStart');
-    CommentSentimentTable.addColumn('string', 'SentimentRange');
-    CommentSentimentTable.addColumn('number', 'CommentCount');
-
-    for (i = 0; i < sentimentBucketList.length; i++) {
-      currentSentimentBucket = sentimentBucketList[i];
-      rangeAsString = convertRangeToString(
-          currentSentimentBucket.intervalRange);
-      highestMagnitudeComments = currentSentimentBucket.topNComments;
-
-      CommentSentimentTable.addRow([rangeAsString, 
-          currentSentimentBucket.frequency, 
-          toTooltipString(highestMagnitudeComments)]);
-    }
-
-    const options = {
-      'title': 'Comment Sentiment Range',
-      'width': CHART_WIDTH,
-      'height': CHART_HEIGHT,
-      'bar': {groupWidth: '100'},
-      'tooltip': {isHtml: true}
-    };
-
-    // Hide loading image once chart is drawn
-    document.getElementById('loading-img').style.display = 'none';
-
-    const view = new google.visualization.DataView(CommentSentimentTable);
-    const chart = new google.visualization.ColumnChart(
-        document.getElementById('chart-container'));
-    chart.draw(view, options);
-
+    displaySentimentBucketChart(sentimentBucketList);
+    displayWordCloudChart(wordFrequencyMap);
+    averageScore = commentStats.averageScore;
     const averageContainer = document.getElementById('average-score-container');
     averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
   });
 }
 
+/**
+ * Create a bar chart of sentiment score interval, frequency
+ * and high magnitude comments
+ * @param {Array<sentimentBucket>} sentimentBucketList
+ */
+function displaySentimentBucketChart(sentimentBucketList) {
+  const CommentSentimentTable = new google.visualization.DataTable();
+  CommentSentimentTable.addColumn('number', 'InclusiveStart');
+  CommentSentimentTable.addColumn('string', 'SentimentRange');
+  CommentSentimentTable.addColumn('number', 'CommentCount');
+
+  for (i = 0; i < sentimentBucketList.length; i++) {
+    currentSentimentBucket = sentimentBucketList[i];
+    rangeAsString = convertRangeToString(
+        currentSentimentBucket.intervalRange);
+    highestMagnitudeComments = currentSentimentBucket.topNComments;
+
+    CommentSentimentTable.addRow([rangeAsString,
+      currentSentimentBucket.frequency,
+      toTooltipString(highestMagnitudeComments)]);
+  }
+
+  const options = {
+    'title': 'Comment Sentiment Range',
+    'width': CHART_WIDTH,
+    'height': CHART_HEIGHT,
+    'bar': {groupWidth: '100'},
+    'tooltip': {isHtml: true},
+  };
+
+  // Hide loading image once chart is drawn
+  document.getElementById('loading-img').style.display = 'none';
+
+  const view = new google.visualization.DataView(CommentSentimentTable);
+  const chart = new google.visualization.ColumnChart(
+      document.getElementById('chart-container'));
+  chart.draw(view, options);
+
+  const averageContainer = document.getElementById('average-score-container');
+  averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+}
+
+/**
+ * Create a word cloud based on the number of appearance for each word
+ * @param {Map<String:Integer>} wordFrequencyMap Map that contains
+ *                                top popular words and its appearance
+ */
+function displayWordCloudChart(wordFrequencyMap) {
+  const data = [];
+  Object.keys(wordFrequencyMap).forEach((wordKey) =>
+    data.push({'x': wordKey, 'value': wordFrequencyMap[wordKey]}));
+  // Create a tag cloud chart
+  const chart = anychart.tagCloud(data);
+
+  chart.title('Most Common Words in Comments');
+  // Set array of angles to 0, make all the words display horizontally
+  chart.angles([0]);
+  chart.container('word-cloud-container');
+  chart.draw();
+};
+/**
+ * Get the comment content with top high magnitude.
+ * @param {List<UserComment>} userComments a sentiment buckets list
+ *                           with userComment, score, and maginitude
+ * @return {String} Top high comment message.
+ */
 function toTooltipString(userComments) {
   return userComments.map(comment => userCommentAsString(comment)).join("<br>");
 }
 
+/**
+ * Convert a userComment object to html format
+ * @param {*} comment a user comment with high magnitude score
+ * @return {String} HTML format to display its message and magnitude
+ */
 function userCommentAsString(comment) {
-  commentMagnitude = comment.magnitude;  
+  commentMagnitude = comment.magnitude;
   return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
 }
 
