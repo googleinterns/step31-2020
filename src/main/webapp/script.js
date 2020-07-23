@@ -31,7 +31,7 @@ function initCommentSlider(){
   }
 }
 
-async function getYouTubeComments() { 
+async function getYouTubeComments() {
   const urlInput = document.getElementById('link-input');
   const url = cleanseUrl(urlInput.value);
   const numComments = document.getElementById(SLIDER_NAME).value;
@@ -93,7 +93,7 @@ function toTooltipString(userComments) {
 }
 
 function userCommentAsString(comment) {
-  commentMagnitude = comment.magnitude;  
+  commentMagnitude = comment.magnitude;
   return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
 }
 
