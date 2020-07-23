@@ -72,16 +72,16 @@ function displaySentimentBucketChart(sentimentBucketList) {
   CommentSentimentTable.addColumn('string', 'SentimentRange');
   CommentSentimentTable.addColumn('number', 'CommentCount');
 
-    for (i = 0; i < sentimentBucketList.length; i++) {
-      currentSentimentBucket = sentimentBucketList[i];
-      rangeAsString = convertRangeToString(
-          currentSentimentBucket.intervalRange);
-      highestMagnitudeComments = currentSentimentBucket.topNComments;
+  for (i = 0; i < sentimentBucketList.length; i++) {
+    currentSentimentBucket = sentimentBucketList[i];
+    rangeAsString = convertRangeToString(
+        currentSentimentBucket.intervalRange);
+    highestMagnitudeComments = currentSentimentBucket.topNComments;
 
-      CommentSentimentTable.addRow([rangeAsString,
-          currentSentimentBucket.frequency,
-          toTooltipString(highestMagnitudeComments)]);
-    }
+    CommentSentimentTable.addRow([rangeAsString,
+      currentSentimentBucket.frequency,
+      toTooltipString(highestMagnitudeComments)]);
+  }
 
   const options = {
     'title': 'Comment Sentiment Range',
@@ -94,14 +94,13 @@ function displaySentimentBucketChart(sentimentBucketList) {
   // Hide loading image once chart is drawn
   document.getElementById('loading-img').style.display = 'none';
 
-    const view = new google.visualization.DataView(CommentSentimentTable);
-    const chart = new google.visualization.ColumnChart(
-        document.getElementById('chart-container'));
-    chart.draw(view, options);
+  const view = new google.visualization.DataView(CommentSentimentTable);
+  const chart = new google.visualization.ColumnChart(
+      document.getElementById('chart-container'));
+  chart.draw(view, options);
 
-    const averageContainer = document.getElementById('average-score-container');
-    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
-  });
+  const averageContainer = document.getElementById('average-score-container');
+  averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
 }
 
 /**
