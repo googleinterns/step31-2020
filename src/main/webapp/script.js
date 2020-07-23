@@ -96,15 +96,7 @@ function userCommentAsString(comment) {
   commentMagnitude = comment.magnitude;  
   return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
 }
-<<<<<<< HEAD
- 
-function getRangeInclusiveStart(rangeString) {
-  rangeString.trim();
-  return Number(rangeString.substring(1, rangeString.indexOf(',')));
-}
-=======
 
 function convertRangeToString(range) {
   return range.inclusiveStart + ' to ' + range.exclusiveEnd; 
 }
->>>>>>> 906857ec503f153ab35d85c5ecb6bdde8cbc5b43
