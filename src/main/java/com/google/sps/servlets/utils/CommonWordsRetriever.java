@@ -22,11 +22,8 @@ import java.util.Scanner;
 /** Class that provides commonly used words that should be ignored within the word map */
 public class CommonWordsRetriever {
   private static final List<String> commonWordsList = populateWordList();
-  
-  /**
-   * Populate a list of strings from a text file containing the words
-   * to ignore in the word map
-   */
+
+  /** Populate a list of strings from a text file containing the words to ignore in the word map */
   private static List<String> populateWordList() {
     List<String> commonWords = new ArrayList<String>();
     try {
