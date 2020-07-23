@@ -198,8 +198,6 @@ public class CommentAnalysisTest {
         new UserComment("002", "Second Normal Comment", new DateTime(new Date()), 0.11, 0.5);
 
     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment1, comment2));
-    // TODO: Add the top magnitude comment message in list as we don't currently have it, which
-    // means expectedUserComment is all empty.
     List<List<UserComment>> expectedUserComment =
         new ArrayList<>(
             Arrays.asList(
@@ -216,13 +214,12 @@ public class CommentAnalysisTest {
     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
     Statistics twoHighestStat = new Statistics(inputUserComment, 2);
     Assert.assertEquals(0.105, twoHighestStat.getAverageScore(), 0.01);
+    Assert.assertEquals(
+        constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
+        twoHighestStat.getSentimentBucketList());
     Map<String, Integer> expectedMap =
         new HashMap<String, Integer>() {
           {
-            put("Normal", 2);
-            put("Comment", 2);
-            put("First", 1);
-            put("Second", 1);
             put("normal", 2);
             put("comment", 2);
             put("first", 1);
