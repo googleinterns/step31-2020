@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="video_context.js"></script>
-    <script src="script.js"></script>
+    <script type="text/javascript" src="video_context.js"></script>
+    <script type="text/javascript" src="script.js"></script>
   </head>
   <body>
     <ul class="nav justify-content-center">
@@ -31,7 +31,7 @@
           <input type="range" id="num-comments-input" name="num-comments-input" min="100" max="1000" value = "100" step="10"/>
           <small id="slider-output" name = "slider-output">100</small>
           </br>
-          <input type="submit" id="submit-btn" onClick="updateUIWithVideoContext()"/>
+          <input type="submit" id="submit-btn"/>
           </br>
         </form>
       </div>
