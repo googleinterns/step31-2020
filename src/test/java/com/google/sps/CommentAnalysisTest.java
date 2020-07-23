@@ -355,22 +355,4 @@ public class CommentAnalysisTest {
     expectedMap.put("nice", 1);
     Assert.assertEquals(expectedMap, singleComment.getWordFrequencyMap());
   }
-
-  @Test
-  public void testCommonWordParse() {
-    List<String> wordList = CommonWordsRetriever.getCommonWords();
-    int expectedWordCount = 22;
-    Assert.assertEquals(expectedWordCount, wordList.size());
-  }
-
-  @Test
-  public void testCommonWordContent() {
-    List<String> wordList = CommonWordsRetriever.getCommonWords();
-    List<String> expectedList =
-        new ArrayList<String>(
-            Arrays.asList(
-                "the", "it", "at", "and", "to", "we", "can", "are", "of", "its", "it", "am", "my",
-                "or", "by", "for", "i", "my", "this", "was", "is", "a"));
-    Assert.assertEquals(expectedList, wordList);
-  }
 }
