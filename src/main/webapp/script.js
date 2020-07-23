@@ -31,7 +31,7 @@ function initCommentSlider(){
   }
 }
 
-async function getYouTubeComments() {
+async function getYouTubeComments() { 
   const urlInput = document.getElementById('link-input');
   const url = cleanseUrl(urlInput.value);
   const numComments = document.getElementById(SLIDER_NAME).value;
@@ -62,8 +62,8 @@ async function getChart() {
           currentSentimentBucket.intervalRange);
       highestMagnitudeComments = currentSentimentBucket.topNComments;
 
-      CommentSentimentTable.addRow([rangeAsString,
-          currentSentimentBucket.frequency,
+      CommentSentimentTable.addRow([rangeAsString, 
+          currentSentimentBucket.frequency, 
           toTooltipString(highestMagnitudeComments)]);
     }
 
@@ -93,10 +93,10 @@ function toTooltipString(userComments) {
 }
 
 function userCommentAsString(comment) {
-  commentMagnitude = comment.magnitude;
+  commentMagnitude = comment.magnitude;  
   return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
 }
 
 function convertRangeToString(range) {
-  return range.inclusiveStart + ' to ' + range.exclusiveEnd;
+  return range.inclusiveStart + ' to ' + range.exclusiveEnd; 
 }
