@@ -15,6 +15,7 @@
 package com.google.sps.servlets.utils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -35,7 +36,7 @@ public class CommonWordsRetriever {
       while (sc.hasNextLine()) {
         commonWords.add(sc.nextLine());
       }
-    } catch (Exception e) {
+    } catch (FileNotFoundException e) {
       throw new RuntimeException("Unable to read file.", e);
     }
     return commonWords;
