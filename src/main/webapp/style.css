@@ -10,3 +10,7 @@
   margin: 0;
   padding: 0;
 }
+#video-context {
+  height: 300px;
+  width: 300px;
+}

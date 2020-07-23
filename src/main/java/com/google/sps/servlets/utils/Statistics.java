@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import net.htmlparser.jericho.Source;
 
 public class Statistics {
   private static final int MAXIMUM_WORDMAP_SIZE = 10;
@@ -81,19 +82,29 @@ public class Statistics {
    * @return wordFrequencyMap to represent each word appearance time
    */
   private Map<String, Integer> countWordFrequencyMap(List<UserComment> userCommentList) {
+    List<String> wordsToIgnore = CommonWordsRetriever.getCommonWords();
     // Flatten all user comment message into a list of words
     Stream<String> allWordStream =
+        // Text extractor removes all HTML tags and returns only the text
         userCommentList.stream()
-            .map(comment -> comment.getCommentMsg().split("\\s+"))
-            .map(wordArray -> new ArrayList<>(Arrays.asList(wordArray)))
-            .flatMap(wordList -> wordList.stream());
+            .map(
+                comment ->
+                    new Source(comment.getCommentMsg())
+                        .getTextExtractor()
+                        .toString()
+                        .replaceAll("[^a-zA-Z0-9\\s]", "")
+                        .toLowerCase()
+                        .split("\\s+"))
+            .flatMap(wordArray -> Arrays.stream(wordArray))
+            .filter(word -> !(wordsToIgnore.contains(word) || word.equals("")));
     // Group and sum the appearances of each word
     Map<String, Integer> wordPairMap =
         allWordStream.collect(
             Collectors.groupingBy(word -> word, Collectors.summingInt(word -> 1)));
+
     return wordPairMap.entrySet().stream()
         .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-        .limit(10)
+        .limit(MAXIMUM_WORDMAP_SIZE)
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
