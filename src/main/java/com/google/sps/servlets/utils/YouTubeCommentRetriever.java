@@ -37,7 +37,7 @@ public class YouTubeCommentRetriever {
 
   private final String APPLICATION_NAME = "SAY";
   // TODO: have dev key come from centralized location, rather than being hard-coded.
-  private final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
+  private final String DEVELOPER_KEY = KeyRetriever.getApiKey();
 
   private YouTube youtubeService = null;
 

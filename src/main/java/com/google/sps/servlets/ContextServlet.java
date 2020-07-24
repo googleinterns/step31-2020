@@ -22,6 +22,7 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.VideoListResponse;
 import com.google.gson.Gson;
 import com.google.sps.servlets.utils.VideoInformation;
+import com.google.sps.servlets.utils.KeyRetriever;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import javax.servlet.ServletException;
@@ -38,7 +39,7 @@ public class ContextServlet extends HttpServlet {
   // Parameters required by YouTube API to retrieve the comment threads
   // TODO: encapsulate this piece into a YoutubeProvider class to avoid repeating the code
   private static final String APPLICATION_NAME = "SAY";
-  private static final String DEVELOPER_KEY = "AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs";
+  private static final String DEVELOPER_KEY = KeyRetriever.getApiKey();;
   private static final String REQUEST_INFO = "snippet,statistics";
   private YouTube youtubeService;
 
