@@ -14,32 +14,26 @@
 
 package com.google.sps.servlets.utils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 /** Class that provides commonly used words that should be ignored within the word map */
 public class CommonWordsRetriever {
+  private static final String FILE_PATH = "/src/main/java/com/google/sps/servlets/utils/resources/common_words.txt";
   private static final List<String> commonWordsList = populateWordList();
 
   /** Populate a list of strings from a text file containing the words to ignore in the word map */
   private static List<String> populateWordList() {
     List<String> commonWords = new ArrayList<String>();
     try {
-      File file =
-          new File(
-              System.getProperty("user.dir")
-                  + "/src/main/java/com/google/sps/servlets/utils/resources/common_words.txt");
-      Scanner sc = new Scanner(file);
-      while (sc.hasNextLine()) {
-        commonWords.add(sc.nextLine());
-      }
-    } catch (FileNotFoundException e) {
+      String fileName = System.getProperty("user.dir") + FILE_PATH;
+      return Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);  
+    } catch (Exception e) {
       throw new RuntimeException("Unable to read file.", e);
     }
-    return commonWords;
   }
 
   public static List<String> getCommonWords() {
