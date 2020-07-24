@@ -40,7 +40,6 @@ public class ContextServlet extends HttpServlet {
   // TODO: encapsulate this piece into a YoutubeProvider class to avoid repeating the code
   private static final String APPLICATION_NAME = "SAY";
   private static final String DEVELOPER_KEY = KeyRetriever.getApiKey();
-  ;
   private static final String REQUEST_INFO = "snippet,statistics";
   private YouTube youtubeService;
 
