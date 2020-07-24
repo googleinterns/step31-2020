@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
 
 public class KeyRetriever {
-  private static String keyPath = "/apiKey";
+  private static String keyPath = "apiKey";
   public static String getApiKey() {
     try {
       return Files.readAllLines(Paths.get(keyPath), StandardCharsets.US_ASCII).get(0);
