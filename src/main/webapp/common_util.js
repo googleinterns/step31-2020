@@ -15,17 +15,18 @@
 /*
  * @param url: url of the video to be analyzed
  * @returns: just the video id of that video
- * Credit for RegEx method derived from top answer on: 
+ * Credit for RegEx method derived from top answer on:
  * https://stackoverflow.com/questions/28735459/how-to-validate-youtube-url-in-client-side-in-text-box
  * TODO: If YouTube URL is not found, display error to user.
- */	 
+ */
 function extractYouTubeUrl(url) {
   if (url != undefined || url != '') {
-    // This regular expression represents 
+    // This regular expression represents
     // The different patterns that may occur in a YouTube URL
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|e\/|embed\/|watch\?v=|\&v=|\?v=|\?vi=|v\&)([^#\&\?]*).*/;
+    const regExp =
+        /^.*(youtu.be\/|v\/|u\/\w\/|e\/|embed\/|watch\?v=|\&v=|\?v=|\?vi=|v\&)([^#\&\?]*).*/;
     const match = url.match(regExp);
-    if(match == null || match.length < 3) {
+    if (match == null || match.length < 3) {
       return null;
     }
     // Return segment that contains videoId
