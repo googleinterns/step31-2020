@@ -17,13 +17,17 @@
  * @returns: just the video id of that video
  * Credit for RegEx method derived from top answer on: 
  * https://stackoverflow.com/questions/28735459/how-to-validate-youtube-url-in-client-side-in-text-box
+ * TODO: If YouTube URL is not found, display error to user.
  */	 
 function extractYouTubeUrl(url) {
-  const idLength = 11; // Length of video Id's in YouTube videos
   if (url != undefined || url != '') {
-    // This regular expression represents the different patterns that may occur in a YouTube URL
-    var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|e\/|embed\/|watch\?v=|\&v=|\?v=|\?vi=|v\&)([^#\&\?]*).*/;
-    var match = url.match(regExp);
+    // This regular expression represents 
+    // The different patterns that may occur in a YouTube URL
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|e\/|embed\/|watch\?v=|\&v=|\?v=|\?vi=|v\&)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    if(match == null || match.length < 3) {
+      return null;
+    }
     // Return segment that contains videoId
     return match[2];
   }

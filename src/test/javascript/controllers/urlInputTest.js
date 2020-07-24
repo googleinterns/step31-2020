@@ -21,7 +21,7 @@ var x = 0;
 // These encompass the URL's that the parser is able to handle.
 const outputUrls = ['dQw4w9WgXcQ','-wtIMTCHWuI', 'yZv2daTWRZU', 'QdK8U-VIH_o',
     '0zM3nApSvMg','0zM3nApSvMg','1p3vcRhsYGo', 'dQw4w9WgXcQ','dQw4w9WgXcQ',
-    'dQw4w9WgXcQ', '6L3ZvIMwZFM', 'oTJRivZTMLs', 'oTJRivZTMLs'];
+    'dQw4w9WgXcQ', '6L3ZvIMwZFM', 'oTJRivZTMLs', 'oTJRivZTMLs', null];
 const testUrls = ['youtube.com/watch?v=dQw4w9WgXcQ', 'http://youtu.be/-wtIMTCHWuI',
     'https://www.youtube.com/watch?v=yZv2daTWRZU&feature=em-uploademail',
     'https://www.youtube.com/user/IngridMichaelsonVEVO#p/a/u/1/QdK8U-VIH_o',
@@ -33,7 +33,8 @@ const testUrls = ['youtube.com/watch?v=dQw4w9WgXcQ', 'http://youtu.be/-wtIMTCHWu
     'http://www.youtube.com/watch?feature=player_embedded&v=dQw4w9WgXcQ',
     'http://www.youtube-nocookie.com/v/6L3ZvIMwZFM?version=3&hl=en_US&rel=0',
     'http://youtube.com/watch?vi=oTJRivZTMLs&feature=channel',
-    'http://www.youtube.com/user/dreamtheater#p/u/1/oTJRivZTMLs']
+    'http://www.youtube.com/user/dreamtheater#p/u/1/oTJRivZTMLs',
+    'Definitely_Not_a_URL'];
 
 describe('The application controller', function() {
   for(i = 0; i < testUrls.length; i++) {
