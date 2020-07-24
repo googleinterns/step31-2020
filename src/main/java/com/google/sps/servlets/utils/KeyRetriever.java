@@ -15,17 +15,17 @@
 package com.google.sps.servlets.utils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.charset.StandardCharsets;
 
 public class KeyRetriever {
   private static String keyPath = "apiKey";
+
   public static String getApiKey() {
     try {
       return Files.readAllLines(Paths.get(keyPath), StandardCharsets.US_ASCII).get(0);
-    }
-    catch(IOException e) {
+    } catch (IOException e) {
       return null;
     }
   }
