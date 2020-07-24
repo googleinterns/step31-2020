@@ -26,22 +26,11 @@ import org.junit.runners.JUnit4;
 /** JUnit test for Word Retriever class */
 @RunWith(JUnit4.class)
 public class WordRetrievalTest {
-
-  @Test
-  public void testCommonWordParse() {
-    List<String> wordList = CommonWordsRetriever.getCommonWords();
-    int expectedWordCount = 22;
-    Assert.assertEquals(expectedWordCount, wordList.size());
-  }
-
   @Test
   public void testCommonWordContent() {
     List<String> wordList = CommonWordsRetriever.getCommonWords();
-    List<String> expectedList =
-        new ArrayList<String>(
-            Arrays.asList(
-                "the", "it", "at", "and", "to", "we", "can", "are", "of", "its", "it", "am", "my",
-                "or", "by", "for", "i", "my", "this", "was", "is", "a"));
+    List<String> expectedList = Arrays.asList("a", "am", "and", "are", "at", "by", "can", "for", "i", "is", "it",
+                "its", "my", "of", "or", "the", "this", "to", "was", "we");
     Assert.assertEquals(expectedList, wordList);
   }
 }
