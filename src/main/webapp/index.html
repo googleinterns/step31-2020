@@ -43,10 +43,10 @@
               <p>Enter a YouTube video keyword:</p>
               <input type="text" id="search-input">
               <input name="Search" type="submit" value="Search!" id="submit-button" onclick="getVideoResults()"/>
-              <div id="video-results">
+              <div id="video-results" style="margin-top:20px">
                 <div class="row">
                   <div class="col-4">
-                    <div id= "tab_list" class="list-group" role="tablist">
+                    <div id= "tab_list" class="list-group" role="tablist" >
                     </div>
                   </div>
                   <div class="col-8">
@@ -74,12 +74,6 @@
         <input type="range" id="num-comments-input" name="num-comments-input" min="100" max="1000" value = "100" step="10"/>
         <small id="slider-output" name = "slider-output">100</small>
         </br>
-        </div>
-        <div id="video-context"></div>
-        <div class="d-flex justify-content-center">
-          <div id="loading-img" class="spinner-border text-dark" role="status" style="display:none">
-            <span class="sr-only">Loading...</span>
-          </div>
         </div>
       <div id="video-context"></div>
       <div class="d-flex justify-content-center">
