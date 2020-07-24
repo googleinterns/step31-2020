@@ -44,50 +44,18 @@ async function getYouTubeComments() {
 }
 
 /**
- * Fetches data and adds to html
- * @param {String} url youtube url to retrieve comments
+ *  Fetches data and adds to html.
  */
-async function getChart(url) {
-  $('.button').click(async function() {
+async function getChart() {
+  $('form').submit(async function() {
     document.getElementById('loading-img').style.display = 'block';
-
     commentStats = await getYouTubeComments();
     sentimentBucketList = commentStats.sentimentBucketList;
     wordFrequencyMap = commentStats.wordFrequencyMap;
 
-    const CommentSentimentTable = new google.visualization.DataTable();
-    CommentSentimentTable.addColumn('string', 'Sentiment Range');
-    CommentSentimentTable.addColumn('number', 'Comment Count');
-    CommentSentimentTable.addColumn(
-        {'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
-
-    for (i = 0; i < sentimentBucketList.length; i++) {
-      currentSentimentBucket = sentimentBucketList[i];
-      rangeAsString = convertRangeToString(
-          currentSentimentBucket.intervalRange);
-      highestMagnitudeComments = currentSentimentBucket.topNComments;
-
-      CommentSentimentTable.addRow([rangeAsString,
-        currentSentimentBucket.frequency,
-        toTooltipString(highestMagnitudeComments)]);
-    }
-
-    const options = {
-      'title': 'Comment Sentiment Range',
-      'width': CHART_WIDTH,
-      'height': CHART_HEIGHT,
-      'bar': {groupWidth: '100'},
-      'tooltip': {isHtml: true},
-    };
-
-    // Hide loading image once chart is drawn
-    document.getElementById('loading-img').style.display = 'none';
-
-    const view = new google.visualization.DataView(CommentSentimentTable);
-    const chart = new google.visualization.ColumnChart(
-        document.getElementById('chart-container'));
-    chart.draw(view, options);
-
+    displaySentimentBucketChart(sentimentBucketList);
+    displayWordCloudChart(wordFrequencyMap);
+    averageScore = commentStats.averageScore;
     const averageContainer = document.getElementById('average-score-container');
     averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
   });
@@ -174,5 +142,5 @@ function userCommentAsString(comment) {
 }
 
 function convertRangeToString(range) {
-  return range.inclusiveStart + ' to ' + range.exclusiveEnd;
+  return range.inclusiveStart + ' to ' + range.exclusiveEnd; 
 }

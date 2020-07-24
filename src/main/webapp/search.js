@@ -56,10 +56,6 @@ function addVideoTitle(video) {
   item.innerHTML = '<h5 class="mb-1">' + video.snippet.title + '</h5>' +
   '<p class="mb-1">Channel: ' + video.snippet.channelTitle + '</p>';
   return item;
-  // return '<a class="list-group-item list-group-item-action" id=list-' +
-  //   video.id.videoId +'-tab' + ' data-toggle="list" href="#' +
-  //   video.id.videoId + '" role="tab">' + video.snippet.title + '</a>' +
-  //   '<p class="mb-1"> Channel: ' + video.snippet.channelTitle + '</p>';
 }
 
 /**
@@ -75,18 +71,19 @@ function addVideoInfo(video) {
   infoDiv.id = video.id.videoId;
   infoDiv.role = 'tabpanel';
   infoDiv.setAttribute('role', 'tabpanel');
-  infoDiv.setAttribute('aria-labelledby', 'list-' + video.id.videoId );
+  infoDiv.setAttribute('aria-labelledby', 'list-' + video.id.videoId);
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card';
   cardDiv.style.width = '30rem';
 
   // Include the video description and image for the card body.
   const cardBodyDiv = document.createElement('div');
+  console.log(video.snippet);
   cardBodyDiv.className = 'card-body';
   cardBodyDiv.innerHTML = '<p class="card-text">' +
     video.snippet.description + '</p';
   cardDiv.innerHTML = '<IMG class="card-img-top" src=' +
-    video.snippet.thumbnails.maxres.url + ' alt="Card image cap">';
+    video.snippet.thumbnails.high.url + ' alt="Card image cap">';
 
   // Create button to select the video
   const button = document.createElement('INPUT');
