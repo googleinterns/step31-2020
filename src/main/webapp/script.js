@@ -38,7 +38,8 @@ async function getYouTubeComments() {
   const urlInput = document.getElementById('link-input');
   const url = extractYouTubeUrl(urlInput.value);
   const numComments = document.getElementById(SLIDER_NAME).value;
-  const response = await fetch('/YouTubeComments?url='+url+'&numComments='+numComments);
+  const response = 
+      await fetch('/YouTubeComments?url='+url+'&numComments='+numComments);
   const comments = await response.json();
   return comments;
 }
@@ -126,7 +127,8 @@ function displayWordCloudChart(wordFrequencyMap) {
  * @return {String} Top high comment message.
  */
 function toTooltipString(userComments) {
-  return userComments.map((comment) => userCommentAsString(comment)).join('<br>');
+  return userComments.map((comment) => 
+      userCommentAsString(comment)).join('<br>');
 }
 
 /**
