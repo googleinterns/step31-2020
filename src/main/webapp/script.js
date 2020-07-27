@@ -21,6 +21,10 @@ google.setOnLoadCallback(getChart);
 
 window.onload = initCommentSlider;
 
+/**
+ * Finds slider for inputting the number of comments,
+ * Then gives it functionality to display its value.
+ */
 function initCommentSlider() {
   const numCommentsSlider = document.getElementById(SLIDER_NAME);
   const numCommentsIndicator = document.getElementById('slider-output');
@@ -38,13 +42,15 @@ async function getYouTubeComments() {
   const urlInput = document.getElementById('link-input');
   const url = extractYouTubeUrl(urlInput.value);
   const numComments = document.getElementById(SLIDER_NAME).value;
-  const response = 
+  const response =
       await fetch('/YouTubeComments?url='+url+'&numComments='+numComments);
   const comments = await response.json();
   return comments;
 }
 
-// Fetches data and adds to html
+/**
+ * Fetches data and adds to html
+ */
 async function getChart() {
   $('form').submit(async function() {
     document.getElementById('loading-img').style.display = 'block';
@@ -105,7 +111,7 @@ function displaySentimentBucketChart(sentimentBucketList) {
 /**
  * Create a word cloud based on the number of appearance for each word
  * @param {Map<String:Integer>} wordFrequencyMap Map that contains
- *                                top popular words and its appearance
+ * top popular words and its appearance
  */
 function displayWordCloudChart(wordFrequencyMap) {
   const data = [];
@@ -127,8 +133,8 @@ function displayWordCloudChart(wordFrequencyMap) {
  * @return {String} Top high comment message.
  */
 function toTooltipString(userComments) {
-  return userComments.map((comment) => 
-      userCommentAsString(comment)).join('<br>');
+  return userComments.map((comment) =>
+    userCommentAsString(comment)).join('<br>');
 }
 
 /**
@@ -141,6 +147,11 @@ function userCommentAsString(comment) {
   return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
 }
 
+/**
+ * Convert range to string
+ * @param {Range} range a range object.
+ * @return {String} a string made from the range.
+ */
 function convertRangeToString(range) {
   return range.inclusiveStart + ' to ' + range.exclusiveEnd;
 }
