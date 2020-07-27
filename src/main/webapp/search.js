@@ -19,7 +19,6 @@ const YOUTUBE_API_KEY = 'AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs';
  * Retrieve the video result from youtube url.
  */
 function getVideoResults() {
-  // Clear the video results after a new search is made.
   const tabResult = document.getElementById('tab_list');
   const contentResult = document.getElementById('info_list');
 
@@ -86,7 +85,7 @@ function addVideoInfo(video) {
   const button = document.createElement('INPUT');
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
-  button.setAttribute('onclick', 'getChart("'+youtubeUrl+'")');
+  button.setAttribute('onclick', 'getChart("'+youtubeUrl+'"); updateUIWithVideoContext("'+youtubeUrl+'");');
   button.value = 'Select!';
   button.className = 'button';
   button.id ='videoSelect';
@@ -106,4 +105,17 @@ function getRequestUrl() {
   userSearchInput = document.getElementById('search-input').value;
   url = URL_STRUCTURE + userSearchInput + '&key=' + YOUTUBE_API_KEY;
   return url;
+}
+
+function clearResults() {
+  // Clear the video results after a new search is made.
+  const tabResult = document.getElementById('tab_list');
+  while (tabResult.lastElementChild) {
+    tabResult.removeChild(tabResult.lastElementChild);
+  }
+
+  const contentResult = document.getElementById('info_list');
+  while (contentResult.lastElementChild) {
+    contentResult.removeChild(contentResult.lastElementChild);
+  }
 }

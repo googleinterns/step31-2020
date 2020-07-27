@@ -19,9 +19,8 @@ google.setOnLoadCallback(updateUIWithVideoContext);
  * Retrieve the context of a Youtube video
  * @return {Json} Json object of video context information
  */
-async function getVideoContext() {
-  const urlInput = document.getElementById('link-input');
-  const url = cleanseUrl(urlInput.value);
+async function getVideoContext(urlInput) {
+  const url = cleanseUrl(urlInput);
   const response = await fetch('/VideoContext?url=' + url);
   const context = await response.json();
   return context;
@@ -30,9 +29,12 @@ async function getVideoContext() {
 /**
  * Fetches data and adds to html
  */
-async function updateUIWithVideoContext() {
-  $('form').submit(async function() {
-    videoContext = await getVideoContext();
+async function updateUIWithVideoContext(url) {
+  $('.button').click(async function() {
+    if (url == undefined) {
+      url = document.getElementById('link-input').value;
+    }  
+    videoContext = await getVideoContext(url);
     document.getElementById('video-context').innerHTML =
       videoInfoAsHTML(videoContext);
   });

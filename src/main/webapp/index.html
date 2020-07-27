@@ -68,7 +68,7 @@
               <input id="link-input" name="link-input" required pattern="https?://www.youtube.com/watch\?v=.+"/>
               <small id="url-help" class="form-text text-muted">Format: https://youtube.com/watch?v=...</small>
               </br>
-              <input type="submit" class="btn btn-primary" id="submit-btn" value="Search!"onClick="getChart()"/>
+              <input type="submit" class="btn btn-primary button" id="submit-btn" value="Search!"onClick="getChart(); updateUIWithVideoContext();"/>
               <br>
               <p>Maximum number of comments: </p>
               <input type="range" id="num-comments-input" name="num-comments-input" min="100" max="1000" value = "100" step="10"/>

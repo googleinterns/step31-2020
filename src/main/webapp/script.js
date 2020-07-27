@@ -47,12 +47,14 @@ async function getYouTubeComments(url) {
  * @param {String} url youtube url to retrieve comments
  */
 async function getChart(url) {
-  // $('.button').click(async function() {
+  $('.button').click(async function() {
     document.getElementById('chart-container').innerHTML ='';
     document.getElementById('word-cloud-container').innerHTML ='';
     document.getElementById('loading-img').style.display = 'block';
     if (url == undefined) {
       url = document.getElementById('link-input').value;
+    } else {
+      clearResults();  
     }
     commentStats = await getYouTubeComments(url);
     sentimentBucketList = commentStats.sentimentBucketList;
@@ -63,7 +65,7 @@ async function getChart(url) {
     averageMagnitude = commentStats.averageMagnitude;
     const averageContainer = document.getElementById('average-score-container');
     averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
-  // });
+  });
 }
 
 /**
