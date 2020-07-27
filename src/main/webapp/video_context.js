@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-google.charts.load('current', {'packages': ['corechart']});
-google.setOnLoadCallback(updateUIWithVideoContext);
-
 /**
  * Retrieve the context of a Youtube video
  * @return {Json} Json object of video context information
@@ -30,14 +27,15 @@ async function getVideoContext(urlInput) {
  * Fetches data and adds to html
  */
 async function updateUIWithVideoContext(url) {
-  $('.button').click(async function() {
+  console.log("update get called");
+  // $('.button').click(async function() {
     if (url == undefined) {
       url = document.getElementById('link-input').value;
     }  
     videoContext = await getVideoContext(url);
     document.getElementById('video-context').innerHTML =
       videoInfoAsHTML(videoContext);
-  });
+  // });
 }
 
 /**
@@ -52,10 +50,10 @@ function videoInfoAsHTML(videoContext) {
     '<li class="list-group-item">' + 'Channel: ' +
     videoContext.videoAuthor + '</li>' +
     '<li class="list-group-item">' + 'Date Published: ' +
-    videoContext.videoDate + '</li>' +
+    videoContext.publishDateString + '</li>' +
     '<li class="list-group-item">' + 'Likes: ' +
-    videoContext.videoLikes + '</li>' +
+    videoContext.numLikes + '</li>' +
     '<li class="list-group-item">' + 'DisLikes: ' +
-    videoContext.videoDislikes + '</li>' +
+    videoContext.numDislikes + '</li>' +
     '</ul>';
 }

@@ -74,7 +74,6 @@ function addVideoInfo(video) {
 
   // Include the video description and image for the card body.
   const cardBodyDiv = document.createElement('div');
-  console.log(video.snippet);
   cardBodyDiv.className = 'card-body';
   cardBodyDiv.innerHTML = '<p class="card-text">' +
     video.snippet.description + '</p';
@@ -85,7 +84,10 @@ function addVideoInfo(video) {
   const button = document.createElement('INPUT');
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
-  button.setAttribute('onclick', 'getChart("'+youtubeUrl+'"); updateUIWithVideoContext("'+youtubeUrl+'");');
+  button.addEventListener('click', () => {
+    updateUIWithVideoContext(youtubeUrl);
+    getChart(youtubeUrl);
+  });
   button.value = 'Select!';
   button.className = 'button';
   button.id ='videoSelect';
