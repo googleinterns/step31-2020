@@ -15,9 +15,6 @@
 const URL_STRUCTURE = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=';
 const YOUTUBE_API_KEY = 'AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs';
 
-google.charts.load('current', {'packages': ['corechart']});
-google.setOnLoadCallback(getChart);
-
 /**
  * Retrieve the video result from youtube url.
  */
@@ -89,8 +86,8 @@ function addVideoInfo(video) {
   const button = document.createElement('INPUT');
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
+  button.setAttribute('onclick', 'getChart(youtubeUrl)');
   button.value = 'Select!';
-  button.onclick = getChart(youtubeUrl);
   button.className = 'button';
 
   // Append the card into general overall list group explanation.
