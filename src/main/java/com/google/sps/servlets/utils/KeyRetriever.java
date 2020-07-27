@@ -20,12 +20,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class KeyRetriever {
-  private static String keyPath = "apiKey";
+  private static String keyPath = System.getProperty("user.dir") + "/apiKey";
 
   public static String getApiKey() {
     try {
       return Files.readAllLines(Paths.get(keyPath), StandardCharsets.US_ASCII).get(0);
     } catch (IOException e) {
+      System.out.println("ERROR: FILE COULD NOT BE FOUND");
+      e.printStackTrace();
       return null;
     }
   }
