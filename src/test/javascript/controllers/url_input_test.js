@@ -15,7 +15,6 @@
 // Import script
 const script = document.createElement('script');
 script.src = 'src/main/webapp/common_util.js';
-var x = 0;
 
 // Test Urls sampled from https://gist.github.com/rodrigoborgesdeoliveira/987683cfbfcc8d800192da1e73adc486
 // These encompass the URL's that the parser is able to handle.
@@ -37,12 +36,14 @@ const testUrls = ['youtube.com/watch?v=dQw4w9WgXcQ', 'http://youtu.be/-wtIMTCHWu
   'Definitely_Not_a_URL'];
 
 describe('The application controller', function() {
+  var i = 0;
   for (i = 0; i < testUrls.length; i++) {
+    verify_correct_extraction(testUrls[i], outputUrls[i], i);
+  }
+
+  function verify_correct_extraction(input, output, i) {
     it('ensures test url ' + i + ' returns expected url ' + i +'.', function() {
-      // Iterator i could not be passed into the array in the loop,
-      // So a secondary iterator had to be used.
-      expect(extractYouTubeUrl(testUrls[x])).toBe(outputUrls[x]);
-      x++;
+      expect(extractYouTubeUrl(input)).toBe(output);
     });
   }
 });
