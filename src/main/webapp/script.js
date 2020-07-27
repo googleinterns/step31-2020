@@ -54,7 +54,6 @@ async function getChart(url) {
     if (url == undefined) {
       url = document.getElementById('link-input').value;
     }
-    console.log(url);
     commentStats = await getYouTubeComments(url);
     sentimentBucketList = commentStats.sentimentBucketList;
     wordFrequencyMap = commentStats.wordFrequencyMap;
@@ -140,8 +139,7 @@ function toTooltipString(userComments) {
  * @return {String} HTML format to display its message and magnitude
  */
 function userCommentAsString(comment) {
-  console.log(comment);
-  commentMagnitude = comment.magnitude;
+  commentMagnitude = comment.magnitudeScore;
   return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
 }
 
