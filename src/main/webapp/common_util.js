@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
- * @param url: url of the video to be analyzed
- * @returns: just the video id of that video
+/**
+ * @param {String} url of the video to be analyzed
+ * @return {String} just the video id of that video
  * Credit for RegEx method derived from top answer on:
  * https://stackoverflow.com/questions/28735459/how-to-validate-youtube-url-in-client-side-in-text-box
  * TODO: If YouTube URL is not found, display error to user.

@@ -36,11 +36,16 @@ const testUrls = ['youtube.com/watch?v=dQw4w9WgXcQ', 'http://youtu.be/-wtIMTCHWu
   'Definitely_Not_a_URL'];
 
 describe('The application controller', function() {
-  var i = 0;
   for (i = 0; i < testUrls.length; i++) {
     verify_correct_extraction(testUrls[i], outputUrls[i], i);
   }
 
+  /**
+   * Jasmine is weird and won't let regular iteration be done.
+   * @param {String} input is the input to execute extractYouTubeComments on
+   * @param {String} output is the expected output
+   * @param {int} i is the iterator.
+   */
   function verify_correct_extraction(input, output, i) {
     it('ensures test url ' + i + ' returns expected url ' + i +'.', function() {
       expect(extractYouTubeUrl(input)).toBe(output);
