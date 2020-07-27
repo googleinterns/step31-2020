@@ -72,7 +72,7 @@ async function getChart() {
         'width': CHART_WIDTH,
         'height': CHART_HEIGHT,
         'bar': {groupWidth: '100'},
-        'tooltip': {isHtml: true}
+        'tooltip': {isHtml: true},
       };
 
     // Hide loading image once chart is drawn
