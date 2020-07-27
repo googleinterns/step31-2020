@@ -86,9 +86,10 @@ function addVideoInfo(video) {
   const button = document.createElement('INPUT');
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
-  button.setAttribute('onclick', 'getChart(youtubeUrl)');
+  button.setAttribute('onclick', getChart(youtubeUrl));
   button.value = 'Select!';
   button.className = 'button';
+  button.id ='videoSelect';
 
   // Append the card into general overall list group explanation.
   cardBodyDiv.appendChild(button);

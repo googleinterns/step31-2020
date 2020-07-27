@@ -21,44 +21,50 @@ google.setOnLoadCallback(getChart);
 
 window.onload = initCommentSlider;
 
-function initCommentSlider(){
+function initCommentSlider() {
   const numCommentsSlider = document.getElementById(SLIDER_NAME);
   const numCommentsIndicator = document.getElementById('slider-output');
   numCommentsIndicator.innerText = numCommentsSlider.value;
 
   numCommentsSlider.oninput = function() {
     numCommentsIndicator.innerText = this.value;
-  }
+  };
 }
 
 /**
  * Retreive the youtube comments from the url.
  */
-async function getYouTubeComments() {
-  const urlInput = document.getElementById('link-input');
-  const url = cleanseUrl(urlInput.value);
+async function getYouTubeComments(url) {
+  url = cleanseUrl(url);
   const numComments = document.getElementById(SLIDER_NAME).value;
-  const response = await fetch("/YouTubeComments?url="+url+"&numComments="+numComments);
+  const response = await fetch("/YouTubeComments?url="+url +"&numComments="+numComments);
   const comments = await response.json();
   return comments;
 }
 
 /**
- *  Fetches data and adds to html.
+ * Fetches data and adds to html
+ * @param {String} url youtube url to retrieve comments
  */
-async function getChart() {
-  $('form').submit(async function() {
+async function getChart(url) {
+  // $('.button').click(async function() {
+    document.getElementById('chart-container').innerHTML ='';
+    document.getElementById('word-cloud-container').innerHTML ='';
     document.getElementById('loading-img').style.display = 'block';
-    commentStats = await getYouTubeComments();
+    if (url == undefined) {
+      url = document.getElementById('link-input').value;
+    }
+    console.log(url);
+    commentStats = await getYouTubeComments(url);
     sentimentBucketList = commentStats.sentimentBucketList;
     wordFrequencyMap = commentStats.wordFrequencyMap;
-
     displaySentimentBucketChart(sentimentBucketList);
     displayWordCloudChart(wordFrequencyMap);
     averageScore = commentStats.averageScore;
+    averageMagnitude = commentStats.averageMagnitude;
     const averageContainer = document.getElementById('average-score-container');
     averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
-  });
+  // });
 }
 
 /**
@@ -68,9 +74,10 @@ async function getChart() {
  */
 function displaySentimentBucketChart(sentimentBucketList) {
   const CommentSentimentTable = new google.visualization.DataTable();
-  CommentSentimentTable.addColumn('number', 'InclusiveStart');
-  CommentSentimentTable.addColumn('string', 'SentimentRange');
-  CommentSentimentTable.addColumn('number', 'CommentCount');
+  CommentSentimentTable.addColumn('string', 'Sentiment Range');
+  CommentSentimentTable.addColumn('number', 'Comment Count');
+  CommentSentimentTable.addColumn(
+      {'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
 
   for (i = 0; i < sentimentBucketList.length; i++) {
     currentSentimentBucket = sentimentBucketList[i];
@@ -90,7 +97,6 @@ function displaySentimentBucketChart(sentimentBucketList) {
     'bar': {groupWidth: '100'},
     'tooltip': {isHtml: true},
   };
-
   // Hide loading image once chart is drawn
   document.getElementById('loading-img').style.display = 'none';
 
@@ -98,9 +104,6 @@ function displaySentimentBucketChart(sentimentBucketList) {
   const chart = new google.visualization.ColumnChart(
       document.getElementById('chart-container'));
   chart.draw(view, options);
-
-  const averageContainer = document.getElementById('average-score-container');
-  averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
 }
 
 /**
@@ -137,6 +140,7 @@ function toTooltipString(userComments) {
  * @return {String} HTML format to display its message and magnitude
  */
 function userCommentAsString(comment) {
+  console.log(comment);
   commentMagnitude = comment.magnitude;
   return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
 }
