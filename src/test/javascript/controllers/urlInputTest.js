@@ -15,7 +15,7 @@
 // Import script
 const script = document.createElement('script');
 script.src = 'src/main/webapp/common_util.js';
-let x = 0;
+var x = 0;
 
 // Test Urls sampled from https://gist.github.com/rodrigoborgesdeoliveira/987683cfbfcc8d800192da1e73adc486
 // These encompass the URL's that the parser is able to handle.
