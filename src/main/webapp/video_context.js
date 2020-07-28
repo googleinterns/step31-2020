@@ -27,15 +27,13 @@ async function getVideoContext(urlInput) {
  * Fetches data and adds to html
  */
 async function updateUIWithVideoContext(url) {
-  console.log("update get called");
-  // $('.button').click(async function() {
-    if (url == undefined) {
-      url = document.getElementById('link-input').value;
-    }  
-    videoContext = await getVideoContext(url);
-    document.getElementById('video-context').innerHTML =
+  clearElement('video-context');  
+  if (url == undefined) {
+    url = document.getElementById('link-input').value;
+  }  
+  videoContext = await getVideoContext(url);
+  document.getElementById('video-context').innerHTML =
       videoInfoAsHTML(videoContext);
-  // });
 }
 
 /**

@@ -55,26 +55,25 @@ function vidoelink() {
  * @param {String} url youtube url to retrieve comments
  */
 async function getChart(url) {
-  // $('.submitBtn').click(async function() {
-    console.log("get charts get called");
-    document.getElementById('chart-container').innerHTML ='';
-    document.getElementById('word-cloud-container').innerHTML ='';
-    if (url == undefined) {
-      url = document.getElementById('link-input').value;
-    } else {
-      clearResults();
-    }
+  const averageContainer = document.getElementById('average-score-container');
+  averageContainer.innerHTML = '';  
+  clearElement('chart-container');
+  clearElement('word-cloud-container'); 
+  if (url == undefined) {
+    url = document.getElementById('link-input').value;
+  } else {
+    clearElement('tab-list');
+    clearElement('info-list');
+  }
 
-    commentStats = await getYouTubeComments(url);
-    sentimentBucketList = commentStats.sentimentBucketList;
-    wordFrequencyMap = commentStats.wordFrequencyMap;
-    displaySentimentBucketChart(sentimentBucketList);
-    displayWordCloudChart(wordFrequencyMap);
-    averageScore = commentStats.averageScore;
-    averageMagnitude = commentStats.averageMagnitude;
-    const averageContainer = document.getElementById('average-score-container');
-    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
-  // });  
+  commentStats = await getYouTubeComments(url);
+  sentimentBucketList = commentStats.sentimentBucketList;
+  wordFrequencyMap = commentStats.wordFrequencyMap;
+  displaySentimentBucketChart(sentimentBucketList);
+  displayWordCloudChart(wordFrequencyMap);
+
+  averageScore = commentStats.averageScore;
+  averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
 }
 
 /**

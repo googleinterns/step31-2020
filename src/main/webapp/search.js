@@ -108,16 +108,3 @@ function getRequestUrl() {
   url = URL_STRUCTURE + userSearchInput + '&key=' + YOUTUBE_API_KEY;
   return url;
 }
-
-function clearResults() {
-  // Clear the video results after a new search is made.
-  const tabResult = document.getElementById('tab_list');
-  while (tabResult.lastElementChild) {
-    tabResult.removeChild(tabResult.lastElementChild);
-  }
-
-  const contentResult = document.getElementById('info_list');
-  while (contentResult.lastElementChild) {
-    contentResult.removeChild(contentResult.lastElementChild);
-  }
-}

@@ -26,3 +26,14 @@ function cleanseUrl(url) {
   
   return videoId;
 }
+
+/*
+ * Clear all children of an element
+ * PARAM: Element id corresponding to the element that should be cleared
+ */
+function clearElement(elementId) {
+  const elem = document.getElementById(elementId);
+  while (elem != null && elem.lastElementChild) {
+    element.removeChild(elem.lastElementChild);
+  }  
+}
