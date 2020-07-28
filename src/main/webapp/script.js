@@ -57,17 +57,17 @@ function onButtonPress() {
  * @param {String} url youtube url to retrieve comments
  */
 async function getChart(url) {
-  // Clear all analysis containers  
+  // Clear all analysis containers
   const averageContainer = document.getElementById('average-score-container');
-  averageContainer.innerHTML = '';  
+  averageContainer.innerHTML = '';
   clearElement('chart-container');
   clearElement('word-cloud-container');
-  
+
   if (url == undefined) {
-    // Link input   
+    // Link input
     url = document.getElementById('link-input').value;
   } else {
-    // Keyword search  
+    // Keyword search
     clearElement('video-results');
   }
 
@@ -100,8 +100,8 @@ function displaySentimentBucketChart(sentimentBucketList) {
     highestMagnitudeComments = currentSentimentBucket.topNComments;
 
     CommentSentimentTable.addRow([rangeAsString,
-        currentSentimentBucket.frequency,
-        toTooltipString(highestMagnitudeComments)]);
+      currentSentimentBucket.frequency,
+      toTooltipString(highestMagnitudeComments)]);
   }
 
   const options = {
@@ -160,7 +160,7 @@ function userCommentAsString(comment) {
 }
 
 function convertRangeToString(range) {
-  return range.inclusiveStart + ' to ' + range.exclusiveEnd; 
+  return range.inclusiveStart + ' to ' + range.exclusiveEnd;
 }
 
 /**
