@@ -18,7 +18,6 @@ import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.api.services.youtube.model.CommentThread;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
-import io.grpc.StatusRuntimeException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -35,8 +34,8 @@ public class CommentAnalysis {
   // Number of comments to display with top high magnitude
   private static final int DEFAULT_TOP_N = 1;
   private static final String[] languageList = {
-      "ar", "zh", "zh-Hant", "nl", "en", "fr", "de", "id", "it", "ja", "ko", "pl", "pt", "es", "th",
-      "tr", "vi"
+    "ar", "zh", "zh-Hant", "nl", "en", "fr", "de", "id", "it", "ja", "ko", "pl", "pt", "es", "th",
+    "tr", "vi"
   };
   private static final Set<String> supportedLanguages = new HashSet<>(Arrays.asList(languageList));
   /**
