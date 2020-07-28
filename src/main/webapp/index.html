@@ -41,9 +41,6 @@
             <p>Enter a YouTube video keyword:</p>
             <input type="text" id="search-input">
             <input name="Search" type="submit" value="Search!" id="submit-button" onclick="getVideoResults()"/>
-            <p>Maximum number of comments: </p>
-            <input type="range" id="num-comments-input" name="num-comments-input" min="100" max="1000" value = "100" step="10"/>
-            <small id="slider-output" name = "slider-output">100</small>
             </br>
             <div id="video-results" style="margin-top:20px">
               <div class="row">
@@ -65,12 +62,12 @@
             </br>
             <button type="submit" class="btn btn-primary submitBtn" id="submit-btn" onClick="updateUIWithVideoContext();">Enter</button>
             <br>
-            <p>Maximum number of comments: </p>
-            <input type="range" id="num-comments-input" name="num-comments-input" min="100" max="1000" value = "100" step="10"/>
-            <small id="slider-output" name = "slider-output">100</small>
             </br>
           </div>
         </div>
+        <p>Maximum number of comments: </p>
+            <input type="range" id="num-comments-input" name="num-comments-input" min="100" max="1000" value = "100" step="10"/>
+            <small id="slider-output" name = "slider-output">100</small>
       </div>
       <div id="video-context"></div>
       <div class="d-flex justify-content-center" id="loading-container">
