@@ -21,6 +21,10 @@ google.setOnLoadCallback(onButtonPress);
 
 window.onload = initCommentSlider;
 
+/**
+ * Initialize comment slider, used for choosing
+ * the number of comments to be analyzed
+ */
 function initCommentSlider() {
   const numCommentsSlider = document.getElementById(SLIDER_NAME);
   const numCommentsIndicator = document.getElementById('slider-output');
@@ -32,12 +36,14 @@ function initCommentSlider() {
 }
 
 /**
- * Retreive the youtube comments from the url.
+ * Retrieve the youtube comments given the URL
+ * @return {JSON} comments json object of comment objects
  */
 async function getYouTubeComments(url) {
   url = cleanseUrl(url);
   const numComments = document.getElementById(SLIDER_NAME).value;
-  const response = await fetch("/YouTubeComments?url="+url +"&numComments="+numComments);
+  const response = await fetch('/YouTubeComments?url=' + url +
+    '&numComments=' + numComments);
   const comments = await response.json();
   return comments;
 }
@@ -123,7 +129,7 @@ function displaySentimentBucketChart(sentimentBucketList) {
 /**
  * Create a word cloud based on the number of appearance for each word
  * @param {Map<String:Integer>} wordFrequencyMap Map that contains
- *                                top popular words and its appearance
+ * top popular words and its appearance
  */
 function displayWordCloudChart(wordFrequencyMap) {
   const data = [];
@@ -146,7 +152,7 @@ function displayWordCloudChart(wordFrequencyMap) {
  * @return {String} Top high comment message.
  */
 function toTooltipString(userComments) {
-  return userComments.map(comment => userCommentAsString(comment)).join("<br>");
+  return userComments.map((comment => userCommentAsString(comment))).join('<br>');
 }
 
 /**

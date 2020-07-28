@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
+/**
  * Extracts video id from full url
- */ 
+ */
 function cleanseUrl(url) {
   // Split web address from parameters, extract first parameter
   // TODO: Add checks to make this work if video is not first parameter.
-  var videoId = url.split("?");
-  videoId = (videoId.length > 1) ? videoId[1].split("&")[0] : videoId[0];
+  var videoId = url.split('?');
+  videoId = (videoId.length > 1) ? videoId[1].split('&')[0] : videoId[0];
 
   // If param name present, remove it to isolate video Id.
-  videoId = videoId.replace("v=", "");
-  
+  videoId = videoId.replace('v=', '');
+
   return videoId;
 }
 
-/*
+/**
  * Clear all children of an element
  * @param {String} elementId element name to be cleared
  */

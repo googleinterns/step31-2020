@@ -30,7 +30,7 @@ async function updateUIWithVideoContext(url) {
   clearElement('video-context');  
   if (url == undefined) {
     url = document.getElementById('link-input').value;
-  }  
+  }
   videoContext = await getVideoContext(url);
   document.getElementById('video-context').innerHTML =
       videoInfoAsHTML(videoContext);
