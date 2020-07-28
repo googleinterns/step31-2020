@@ -128,8 +128,7 @@ function displaySentimentBucketChart(sentimentBucketList) {
 
 /**
  * Create a word cloud based on the number of appearance for each word
- * @param {Map<String:Integer>} wordFrequencyMap Map that contains
- * top popular words and its appearance
+ * @param {Map<String:Integer>} wordFrequencyMap that contains top words
  */
 function displayWordCloudChart(wordFrequencyMap) {
   const data = [];
@@ -152,7 +151,8 @@ function displayWordCloudChart(wordFrequencyMap) {
  * @return {String} Top high comment message.
  */
 function toTooltipString(userComments) {
-  return userComments.map((comment => userCommentAsString(comment))).join('<br>');
+  return userComments.map((comment) => userCommentAsString(comment))
+    .join('<br>');
 }
 
 /**
@@ -165,6 +165,11 @@ function userCommentAsString(comment) {
   return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
 }
 
+/**
+ * Convert a Range object to a string
+ * @param {*} range a range object
+ * @return {String} the given object in string form
+ */
 function convertRangeToString(range) {
   return range.inclusiveStart + ' to ' + range.exclusiveEnd;
 }
@@ -187,5 +192,5 @@ async function showLoadingGif() {
   gifSpan.className = 'sr-only';
 
   gif.appendChild(gifSpan);
-  document.getElementById('loading-container').appendChild(gif);  
+  document.getElementById('loading-container').appendChild(gif);
 }

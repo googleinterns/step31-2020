@@ -14,6 +14,7 @@
 
 /**
  * Retrieve the context of a Youtube video
+ * @param {String} urlInput inputted url of video
  * @return {Json} Json object of video context information
  */
 async function getVideoContext(urlInput) {
@@ -25,9 +26,10 @@ async function getVideoContext(urlInput) {
 
 /**
  * Fetches data and adds to html
+ * @param {string} url of the video being analyzed
  */
 async function updateUIWithVideoContext(url) {
-  clearElement('video-context');  
+  clearElement('video-context');
   if (url == undefined) {
     url = document.getElementById('link-input').value;
   }
