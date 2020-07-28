@@ -22,8 +22,7 @@ import java.util.List;
 
 /** Class that provides commonly used words that should be ignored within the word map */
 public class CommonWordsRetriever {
-  private static final String FILE_PATH =
-      "/src/main/java/com/google/sps/servlets/utils/resources/common_words.txt";
+  private static final String FILE_PATH = "/common_words.txt";
   private static final List<String> commonWordsList = populateWordList();
 
   /** Populate a list of strings from a text file containing the words to ignore in the word map */
