@@ -14,11 +14,16 @@
 
 package com.google.sps.servlets.utils;
 
+import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.api.services.youtube.model.CommentThread;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
+import io.grpc.StatusRuntimeException;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -29,7 +34,11 @@ public class CommentAnalysis {
   private LanguageServiceClient languageService;
   // Number of comments to display with top high magnitude
   private static final int DEFAULT_TOP_N = 1;
-
+  private static final String[] languageList = {
+      "ar", "zh", "zh-Hant", "nl", "en", "fr", "de", "id", "it", "ja", "ko", "pl", "pt", "es", "th",
+      "tr", "vi"
+  };
+  private static final Set<String> supportedLanguages = new HashSet<>(Arrays.asList(languageList));
   /**
    * Constructor to create and initialize language service for sentiment analysis
    *
@@ -60,7 +69,11 @@ public class CommentAnalysis {
         youtubeResponse.parallelStream()
             .map(UserComment::new)
             .map(this::updateSentimentForComment)
+            .filter(
+                userComment ->
+                    (userComment.getScore() != null) || (userComment.getMagnitude() != null))
             .collect(Collectors.toList());
+    System.out.println(usercommentList);
     return new Statistics(usercommentList, DEFAULT_TOP_N);
   }
 
@@ -89,14 +102,18 @@ public class CommentAnalysis {
    * @return a userComment with updated sentiment scores & magnitude
    */
   private UserComment updateSentimentForComment(UserComment comment) {
-    comment.setSentiment(
-        languageService
-            .analyzeSentiment(
-                Document.newBuilder()
-                    .setContent(comment.getCommentMsg())
-                    .setType(Document.Type.PLAIN_TEXT)
-                    .build())
-            .getDocumentSentiment());
+    try {
+      comment.setSentiment(
+          languageService
+              .analyzeSentiment(
+                  Document.newBuilder()
+                      .setContent(comment.getCommentMsg())
+                      .setType(Document.Type.PLAIN_TEXT)
+                      .build())
+              .getDocumentSentiment());
+    } catch (InvalidArgumentException e) {
+      System.out.println(e.getMessage());
+    }
     return comment;
   }
 
