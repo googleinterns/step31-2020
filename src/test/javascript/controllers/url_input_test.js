@@ -16,7 +16,6 @@
 const script = document.createElement('script');
 script.src = 'src/main/webapp/common_util.js';
 
-// Test Urls sampled from https://gist.github.com/rodrigoborgesdeoliveira/987683cfbfcc8d800192da1e73adc486
 // These encompass the URL's that the parser is able to handle.
 const outputUrls = ['dQw4w9WgXcQ', '-wtIMTCHWuI', 'yZv2daTWRZU', 'QdK8U-VIH_o',
   '0zM3nApSvMg', '0zM3nApSvMg', '1p3vcRhsYGo', 'dQw4w9WgXcQ', 'dQw4w9WgXcQ',
@@ -37,16 +36,16 @@ const testUrls = ['youtube.com/watch?v=dQw4w9WgXcQ', 'http://youtu.be/-wtIMTCHWu
 
 describe('The application controller', function() {
   for (i = 0; i < testUrls.length; i++) {
-    verify_correct_extraction(testUrls[i], outputUrls[i], i);
+    verifyCorrectExtraction(testUrls[i], outputUrls[i], i);
   }
 
   /**
-   * Jasmine is weird and won't let regular iteration be done.
+   * Seperate this function so that the loop can pass the index correctly.
    * @param {String} input is the input to execute extractYouTubeComments on
    * @param {String} output is the expected output
    * @param {int} i is the iterator.
    */
-  function verify_correct_extraction(input, output, i) {
+  function verifyCorrectExtraction(input, output, i) {
     it('ensures test url ' + i + ' returns expected url ' + i +'.', function() {
       expect(extractYouTubeUrl(input)).toBe(output);
     });
