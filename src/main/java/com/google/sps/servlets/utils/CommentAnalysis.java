@@ -33,11 +33,7 @@ public class CommentAnalysis {
   private LanguageServiceClient languageService;
   // Number of comments to display with top high magnitude
   private static final int DEFAULT_TOP_N = 1;
-  private static final String[] languageList = {
-    "ar", "zh", "zh-Hant", "nl", "en", "fr", "de", "id", "it", "ja", "ko", "pl", "pt", "es", "th",
-    "tr", "vi"
-  };
-  private static final Set<String> supportedLanguages = new HashSet<>(Arrays.asList(languageList));
+
   /**
    * Constructor to create and initialize language service for sentiment analysis
    *
