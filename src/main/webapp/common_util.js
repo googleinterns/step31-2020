@@ -12,17 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
- * Extracts video id from full url
- */ 
-function cleanseUrl(url) {
-  // Split web address from parameters, extract first parameter
-  // TODO: Add checks to make this work if video is not first parameter.
-  var videoId = url.split("?");
-  videoId = (videoId.length > 1) ? videoId[1].split("&")[0] : videoId[0];
-
-  // If param name present, remove it to isolate video Id.
-  videoId = videoId.replace("v=", "");
-  
-  return videoId;
+/**
+ * @param {String} url of the video to be analyzed
+ * @return {String} just the video id of that video
+ * Credit for RegEx method derived from top answer on:
+ * https://stackoverflow.com/questions/28735459/how-to-validate-youtube-url-in-client-side-in-text-box
+ * TODO: If YouTube URL is not found, display error to user.
+ */
+function extractYouTubeUrl(url) {
+  if (url != undefined || url != '') {
+    // This regular expression represents
+    // The different patterns that may occur in a YouTube URL
+    const regExp =
+        /^.*(youtu.be\/|v\/|u\/\w\/|e\/|embed\/|watch\?v=|\&v=|\?v=|\?vi=|v\&)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    if (match == null || match.length < 3) {
+      return null;
+    }
+    // Return segment that contains videoId
+    return match[2];
+  }
 }
