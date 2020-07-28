@@ -14,6 +14,8 @@
 
 /**
  * Extracts video id from full url
+ * @param {String} url inputted by user
+ * @return {String} cleansed url in proper format
  */
 function cleanseUrl(url) {
   // Split web address from parameters, extract first parameter

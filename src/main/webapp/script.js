@@ -37,6 +37,7 @@ function initCommentSlider() {
 
 /**
  * Retrieve the youtube comments given the URL
+ * @param {String} url to pass into backend
  * @return {JSON} comments json object of comment objects
  */
 async function getYouTubeComments(url) {
@@ -152,7 +153,7 @@ function displayWordCloudChart(wordFrequencyMap) {
  */
 function toTooltipString(userComments) {
   return userComments.map((comment) => userCommentAsString(comment))
-    .join('<br>');
+      .join('<br>');
 }
 
 /**
