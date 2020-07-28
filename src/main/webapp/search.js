@@ -89,7 +89,7 @@ function addVideoInfo(video) {
     getChart(youtubeUrl);
   });
   button.value = 'Select!';
-  button.className = 'button';
+  button.className = 'submitBtn';
   button.id ='videoSelect';
 
   // Append the card into general overall list group explanation.

@@ -47,15 +47,18 @@ async function getYouTubeComments(url) {
  * @param {String} url youtube url to retrieve comments
  */
 async function getChart(url) {
+  $('.submitBtn').click(async function() {  
     console.log("get charts get called");
     document.getElementById('chart-container').innerHTML ='';
     document.getElementById('word-cloud-container').innerHTML ='';
-    document.getElementById('loading-img').style.display = 'block';
+    showLoadingGif();
+
     if (url == undefined) {
       url = document.getElementById('link-input').value;
     } else {
       clearResults();
     }
+
     commentStats = await getYouTubeComments(url);
     sentimentBucketList = commentStats.sentimentBucketList;
     wordFrequencyMap = commentStats.wordFrequencyMap;
@@ -65,6 +68,7 @@ async function getChart(url) {
     averageMagnitude = commentStats.averageMagnitude;
     const averageContainer = document.getElementById('average-score-container');
     averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+  });  
 }
 
 /**
@@ -146,4 +150,22 @@ function userCommentAsString(comment) {
 
 function convertRangeToString(range) {
   return range.inclusiveStart + ' to ' + range.exclusiveEnd; 
+}
+
+async function showLoadingGif() {
+  const loadContainer = document.getElementById('loading-container');
+  while (loadContainer.lastElementChild) {
+    loadContainer.removeChild(loadContainer.lastElementChild);
+  }
+
+  const gif = document.createElement('div');
+  gif.className = 'spinner-border text-dark';
+  gif.id = 'loading-img';
+  gif.setAttribute('role', 'status');
+
+  const gifSpan = document.createElement('div');
+  gifSpan.className = 'sr-only';
+
+  gif.appendChild(gifSpan);
+  document.getElementById('loading-container').appendChild(gif);  
 }
