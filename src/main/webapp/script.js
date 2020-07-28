@@ -17,7 +17,7 @@ const CHART_HEIGHT = 400;
 const SLIDER_NAME = 'num-comments-input';
 
 google.charts.load('current', {'packages':['corechart']});
-google.setOnLoadCallback(getChart);
+google.setOnLoadCallback(vidoelink);
 
 window.onload = initCommentSlider;
 
@@ -42,17 +42,23 @@ async function getYouTubeComments(url) {
   return comments;
 }
 
+
+function vidoelink() {
+  $('.submitBtn').click(function() {
+    showLoadingGif();
+    getChart();
+  });
+}
+
 /**
  * Fetches data and adds to html
  * @param {String} url youtube url to retrieve comments
  */
 async function getChart(url) {
-  $('.submitBtn').click(async function() {  
+  // $('.submitBtn').click(async function() {
     console.log("get charts get called");
     document.getElementById('chart-container').innerHTML ='';
     document.getElementById('word-cloud-container').innerHTML ='';
-    showLoadingGif();
-
     if (url == undefined) {
       url = document.getElementById('link-input').value;
     } else {
@@ -68,7 +74,7 @@ async function getChart(url) {
     averageMagnitude = commentStats.averageMagnitude;
     const averageContainer = document.getElementById('average-score-container');
     averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
-  });  
+  // });  
 }
 
 /**

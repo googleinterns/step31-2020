@@ -86,10 +86,10 @@ function addVideoInfo(video) {
   button.setAttribute('type', 'button');
   button.addEventListener('click', () => {
     updateUIWithVideoContext(youtubeUrl);
+    showLoadingGif();
     getChart(youtubeUrl);
   });
   button.value = 'Select!';
-  button.className = 'submitBtn';
   button.id ='videoSelect';
 
   // Append the card into general overall list group explanation.
