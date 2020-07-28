@@ -129,7 +129,7 @@ function displaySentimentBucketChart(sentimentBucketList) {
 
 /**
  * Create a word cloud based on the number of appearance for each word
- * @param {Map<String:Integer>} wordFrequencyMap that contains top words
+ * @param {Map} wordFrequencyMap that contains top words
  */
 function displayWordCloudChart(wordFrequencyMap) {
   const data = [];
