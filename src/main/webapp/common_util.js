@@ -29,11 +29,11 @@ function cleanseUrl(url) {
 
 /*
  * Clear all children of an element
- * PARAM: Element id corresponding to the element that should be cleared
+ * @param {String} elementId element name to be cleared
  */
 function clearElement(elementId) {
   const elem = document.getElementById(elementId);
   while (elem != null && elem.lastElementChild) {
-    element.removeChild(elem.lastElementChild);
-  }  
+    elem.removeChild(elem.lastElementChild);
+  }
 }

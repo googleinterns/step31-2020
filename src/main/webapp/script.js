@@ -16,8 +16,8 @@ const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
 const SLIDER_NAME = 'num-comments-input';
 
-google.charts.load('current', {'packages':['corechart']});
-google.setOnLoadCallback(vidoelink);
+google.charts.load('current', {'packages': ['corechart']});
+google.setOnLoadCallback(onButtonPress);
 
 window.onload = initCommentSlider;
 
@@ -42,8 +42,10 @@ async function getYouTubeComments(url) {
   return comments;
 }
 
-
-function vidoelink() {
+/**
+ * Wrapper function for preparing onClick function
+ */
+function onButtonPress() {
   $('.submitBtn').click(function() {
     showLoadingGif();
     getChart();
@@ -55,15 +57,18 @@ function vidoelink() {
  * @param {String} url youtube url to retrieve comments
  */
 async function getChart(url) {
+  // Clear all analysis containers  
   const averageContainer = document.getElementById('average-score-container');
   averageContainer.innerHTML = '';  
   clearElement('chart-container');
-  clearElement('word-cloud-container'); 
+  clearElement('word-cloud-container');
+  
   if (url == undefined) {
+    // Link input   
     url = document.getElementById('link-input').value;
   } else {
-    clearElement('tab-list');
-    clearElement('info-list');
+    // Keyword search  
+    clearElement('video-results');
   }
 
   commentStats = await getYouTubeComments(url);
@@ -95,8 +100,8 @@ function displaySentimentBucketChart(sentimentBucketList) {
     highestMagnitudeComments = currentSentimentBucket.topNComments;
 
     CommentSentimentTable.addRow([rangeAsString,
-      currentSentimentBucket.frequency,
-      toTooltipString(highestMagnitudeComments)]);
+        currentSentimentBucket.frequency,
+        toTooltipString(highestMagnitudeComments)]);
   }
 
   const options = {
@@ -133,6 +138,7 @@ function displayWordCloudChart(wordFrequencyMap) {
   chart.container('word-cloud-container');
   chart.draw();
 };
+
 /**
  * Get the comment content with top high magnitude.
  * @param {List<UserComment>} userComments a sentiment buckets list
@@ -157,6 +163,9 @@ function convertRangeToString(range) {
   return range.inclusiveStart + ' to ' + range.exclusiveEnd; 
 }
 
+/**
+ * Convert a userComment object to html format
+ */
 async function showLoadingGif() {
   const loadContainer = document.getElementById('loading-container');
   while (loadContainer.lastElementChild) {
