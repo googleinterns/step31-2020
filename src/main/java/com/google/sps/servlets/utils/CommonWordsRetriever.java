@@ -29,7 +29,7 @@ public class CommonWordsRetriever {
   /** Populate a list of strings from a text file containing the words to ignore in the word map */
   private static List<String> populateWordList() {
     List<String> commonWords = new ArrayList<String>();
-    if (isJUnitTest()) filePath = "/src/main/webapp/" +filePath;
+    if (isJUnitTest()) filePath = "/src/main/webapp/" + filePath;
     try {
       String fileName = System.getProperty("user.dir") + filePath;
       return Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
