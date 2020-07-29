@@ -42,6 +42,10 @@ public class CommonWordsRetriever {
     return new ArrayList<String>(commonWordsList);
   }
 
+  /**
+   * Check if the current environment is JUnit Test or not
+   * @return True if in Junit test; otherwise false
+   */
   public static boolean isJUnitTest() {
     StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
     List<StackTraceElement> list = Arrays.asList(stackTrace);
