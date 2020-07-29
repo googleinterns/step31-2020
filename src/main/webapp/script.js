@@ -41,13 +41,17 @@ function initCommentSlider() {
  * Retreive the youtube comments from the url.
  */
 async function getYouTubeComments() {
-  const urlInput = document.getElementById('link-input');
-  const url = extractYouTubeUrl(urlInput.value);
-  const numComments = document.getElementById(SLIDER_NAME).value;
-  const response =
-      await fetch('/YouTubeComments?url='+url+'&numComments='+numComments);
-  const comments = await response.json();
-  return comments;
+  try {
+    const urlInput = document.getElementById('link-input');
+    const url = extractYouTubeUrl(urlInput.value);
+    const numComments = document.getElementById(SLIDER_NAME).value;
+    const response =
+        await fetch('/YouTubeComments?url='+url+'&numComments='+numComments);
+    const comments = await response.json();
+    return comments;
+  } catch(err) {
+    throw new Error('Error retrieving comments');
+  }
 }
 
 /**
@@ -69,6 +73,7 @@ async function getChart() {
       averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
     } catch(err) {
       document.getElementById(ERROR_OUTPUT_ID).style.display = 'block';
+      document.getElementById('error-details').innerText = err.message;
     }
   });
 }
@@ -79,29 +84,30 @@ async function getChart() {
  * @param {Array<sentimentBucket>} sentimentBucketList
  */
 function displaySentimentBucketChart(sentimentBucketList) {
-  const CommentSentimentTable = new google.visualization.DataTable();
-  CommentSentimentTable.addColumn('number', 'InclusiveStart');
-  CommentSentimentTable.addColumn('string', 'SentimentRange');
-  CommentSentimentTable.addColumn('number', 'CommentCount');
+  try {
+    const CommentSentimentTable = new google.visualization.DataTable();
+    CommentSentimentTable.addColumn('number', 'InclusiveStart');
+    CommentSentimentTable.addColumn('string', 'SentimentRange');
+    CommentSentimentTable.addColumn('number', 'CommentCount');
 
-  for (i = 0; i < sentimentBucketList.length; i++) {
-    currentSentimentBucket = sentimentBucketList[i];
-    rangeAsString = convertRangeToString(
-        currentSentimentBucket.intervalRange);
-    highestMagnitudeComments = currentSentimentBucket.topNComments;
+    for (i = 0; i < sentimentBucketList.length; i++) {
+      currentSentimentBucket = sentimentBucketList[i];
+      rangeAsString = convertRangeToString(
+          currentSentimentBucket.intervalRange);
+      highestMagnitudeComments = currentSentimentBucket.topNComments;
 
-    CommentSentimentTable.addRow([rangeAsString,
-      currentSentimentBucket.frequency,
-      toTooltipString(highestMagnitudeComments)]);
-  }
+      CommentSentimentTable.addRow([rangeAsString,
+        currentSentimentBucket.frequency,
+        toTooltipString(highestMagnitudeComments)]);
+    }
 
-  const options = {
-    'title': 'Comment Sentiment Range',
-    'width': CHART_WIDTH,
-    'height': CHART_HEIGHT,
-    'bar': {groupWidth: '100'},
-    'tooltip': {isHtml: true},
-  };
+    const options = {
+      'title': 'Comment Sentiment Range',
+      'width': CHART_WIDTH,
+      'height': CHART_HEIGHT,
+      'bar': {groupWidth: '100'},
+      'tooltip': {isHtml: true},
+    };
 
   // Hide loading image once chart is drawn
   document.getElementById('loading-img').style.display = 'none';
@@ -113,6 +119,9 @@ function displaySentimentBucketChart(sentimentBucketList) {
 
   const averageContainer = document.getElementById('average-score-container');
   averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+  } catch(err) {
+    throw new Error('Error in Displaying Chart');
+  }
 }
 
 /**
@@ -121,17 +130,21 @@ function displaySentimentBucketChart(sentimentBucketList) {
  * top popular words and its appearance
  */
 function displayWordCloudChart(wordFrequencyMap) {
-  const data = [];
-  Object.keys(wordFrequencyMap).forEach((wordKey) =>
-    data.push({'x': wordKey, 'value': wordFrequencyMap[wordKey]}));
-  // Create a tag cloud chart
-  const chart = anychart.tagCloud(data);
+  try {
+    const data = [];
+    Object.keys(wordFrequencyMap).forEach((wordKey) =>
+        data.push({'x': wordKey, 'value': wordFrequencyMap[wordKey]}));
+    // Create a tag cloud chart
+    const chart = anychart.tagCloud(data);
 
-  chart.title('Most Common Words in Comments');
-  // Set array of angles to 0, make all the words display horizontally
-  chart.angles([0]);
-  chart.container('word-cloud-container');
-  chart.draw();
+    chart.title('Most Common Words in Comments');
+    // Set array of angles to 0, make all the words display horizontally
+    chart.angles([0]);
+    chart.container('word-cloud-container');
+    chart.draw();
+  } catch(err) {
+    throw new Error('Error in displaying Word Cloud');
+  }
 };
 /**
  * Get the comment content with top high magnitude.
