@@ -32,7 +32,7 @@ async function updateUIWithVideoContext(url) {
   clearElement('video-context');
   videoContext = await getVideoContext(url);
   document.getElementById('video-context').innerHTML =
-      videoInfoAsHTML(videoContext);
+  videoContextAsHTML(videoContext);
 }
 
 /**
@@ -40,7 +40,7 @@ async function updateUIWithVideoContext(url) {
  * @param {Json} videoContext Json object of video context information
  * @return {String} html format of video context
  */
-function videoInfoAsHTML(videoContext) {
+function videoContextAsHTML(videoContext) {
   return '<ul class="list-group">' +
     '<li class="list-group-item">' + 'Video Name: ' +
     videoContext.videoName + '</li>' +

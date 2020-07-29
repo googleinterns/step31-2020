@@ -54,9 +54,9 @@ async function getYouTubeComments(url) {
  */
 function onButtonPress() {
   $('#submit-link-btn').click(function() {
-    const urlInput = document.getElementById('link-input').value;  
-    updateUIWithVideoContext(urlInput); 
-    displayCharts(urlInput);
+    const urlInput = document.getElementById('link-input').value;
+    updateUIWithVideoContext(urlInput);
+    displayOverallResults(urlInput);
   });
 }
 
@@ -64,7 +64,7 @@ function onButtonPress() {
  * Fetches data and adds to html
  * @param {String} url youtube url to retrieve comments
  */
-async function displayCharts(url) {
+async function displayOverallResults(url) {
   showLoadingGif();
 
   // Clear all analysis containers

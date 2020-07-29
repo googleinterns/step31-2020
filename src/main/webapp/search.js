@@ -25,10 +25,15 @@ function getVideoResults() {
   url = getRequestUrl();
   fetch(url).then((response) => response.json()).then((data) => {
     videos = data.items;
+    const tabFragment = document.createDocumentFragment();
+    const contentFragment = document.createDocumentFragment();
+
     videos.forEach(function(video) {
-      tabResult.appendChild(addVideoTitle(video));
-      contentResult.appendChild(addVideoInfo(video));
+      tabFragment.appendChild(addVideoTitle(video));
+      contentFragment.appendChild(addVideoInfo(video));
     });
+    tabResult.appendChild(tabFragment);
+    contentResult.appendChild(contentFragment);
   });
 }
 
@@ -82,9 +87,9 @@ function addVideoInfo(video) {
   button.setAttribute('type', 'button');
   button.addEventListener('click', () => {
     clearElement('tab_list');
-    clearElement('info_list');  
+    clearElement('info_list');
     updateUIWithVideoContext(youtubeUrl);
-    displayCharts(youtubeUrl);
+    displayOverallResults(youtubeUrl);
   });
   button.value = 'Select!';
 
