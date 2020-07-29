@@ -44,6 +44,7 @@ public class CommonWordsRetriever {
 
   /**
    * Check if the current environment is JUnit Test or not
+   *
    * @return True if in Junit test; otherwise false
    */
   public static boolean isJUnitTest() {
