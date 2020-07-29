@@ -54,6 +54,7 @@ async function getYouTubeComments(url) {
  */
 function onButtonPress() {
   $('#submit-link-btn').click(function() {
+    showLoadingGif();  
     const urlInput = document.getElementById('link-input').value;
     updateUIWithVideoContext(urlInput);
     displayOverallResults(urlInput);
@@ -65,8 +66,6 @@ function onButtonPress() {
  * @param {String} url youtube url to retrieve comments
  */
 async function displayOverallResults(url) {
-  showLoadingGif();
-
   // Clear all analysis containers
   const averageContainer = document.getElementById('average-score-container');
   averageContainer.innerHTML = '';
