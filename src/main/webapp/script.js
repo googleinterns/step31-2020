@@ -16,6 +16,8 @@ const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
 const SLIDER_NAME = 'num-comments-input';
 
+const ERROR_OUTPUT = 'error-surfacer';
+
 google.charts.load('current', {'packages': ['corechart']});
 google.setOnLoadCallback(getChart);
 
@@ -53,16 +55,22 @@ async function getYouTubeComments() {
  */
 async function getChart() {
   $('form').submit(async function() {
-    document.getElementById('loading-img').style.display = 'block';
-    commentStats = await getYouTubeComments();
-    sentimentBucketList = commentStats.sentimentBucketList;
-    wordFrequencyMap = commentStats.wordFrequencyMap;
+    try {
+      document.getElementById(ERROR_OUTPUT).style.display = 'hidden';
+      document.getElementById('loading-img').style.display = 'block';
+      commentStats = await getYouTubeComments();
+      sentimentBucketList = commentStats.sentimentBucketList;
+      wordFrequencyMap = commentStats.wordFrequencyMap;
 
-    displaySentimentBucketChart(sentimentBucketList);
-    displayWordCloudChart(wordFrequencyMap);
-    averageScore = commentStats.averageScore;
-    const averageContainer = document.getElementById('average-score-container');
-    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+      displaySentimentBucketChart(sentimentBucketList);
+      displayWordCloudChart(wordFrequencyMap);
+      averageScore = commentStats.averageScore;
+      const averageContainer = document.getElementById('average-score-container');
+      averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+    } catch(err) {
+      document.getElementById(ERROR_OUTPUT).style.display = 'block';
+      document.getElementById('error-details').innerText = err.message;
+    }
   });
 }
 
