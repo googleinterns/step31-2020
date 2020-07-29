@@ -18,18 +18,20 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /** Class that provides commonly used words that should be ignored within the word map */
 public class CommonWordsRetriever {
-  private static final String FILE_PATH = "/common_words.txt";
+  private static String filePath = "/common_words.txt";
   private static final List<String> commonWordsList = populateWordList();
 
   /** Populate a list of strings from a text file containing the words to ignore in the word map */
   private static List<String> populateWordList() {
     List<String> commonWords = new ArrayList<String>();
+    if (isJUnitTest()) filePath = "/src/main/webapp/" +filePath;
     try {
-      String fileName = System.getProperty("user.dir") + FILE_PATH;
+      String fileName = System.getProperty("user.dir") + filePath;
       return Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
     } catch (Exception e) {
       throw new RuntimeException("Unable to read file.", e);
@@ -38,5 +40,16 @@ public class CommonWordsRetriever {
 
   public static List<String> getCommonWords() {
     return new ArrayList<String>(commonWordsList);
+  }
+
+  public static boolean isJUnitTest() {
+    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    List<StackTraceElement> list = Arrays.asList(stackTrace);
+    for (StackTraceElement element : list) {
+      if (element.getClassName().startsWith("org.junit.")) {
+        return true;
+      }
+    }
+    return false;
   }
 }
