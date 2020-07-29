@@ -18,7 +18,7 @@
  * @return {Json} Json object of video context information
  */
 async function getVideoContext(urlInput) {
-  const url = cleanseUrl(urlInput);
+  const url = extractYouTubeUrl(urlInput);
   const response = await fetch('/VideoContext?url=' + url);
   const context = await response.json();
   return context;
@@ -30,9 +30,6 @@ async function getVideoContext(urlInput) {
  */
 async function updateUIWithVideoContext(url) {
   clearElement('video-context');
-  if (url == undefined) {
-    url = document.getElementById('link-input').value;
-  }
   videoContext = await getVideoContext(url);
   document.getElementById('video-context').innerHTML =
       videoInfoAsHTML(videoContext);

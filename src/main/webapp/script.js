@@ -41,7 +41,7 @@ function initCommentSlider() {
  * @return {JSON} comments json object of comment objects
  */
 async function getYouTubeComments(url) {
-  url = cleanseUrl(url);
+  url = extractYouTubeUrl(url);
   const numComments = document.getElementById(SLIDER_NAME).value;
   const response = await fetch('/YouTubeComments?url=' + url +
     '&numComments=' + numComments);
@@ -53,9 +53,10 @@ async function getYouTubeComments(url) {
  * Wrapper function for preparing onClick function
  */
 function onButtonPress() {
-  $('.submitBtn').click(function() {
-    showLoadingGif();
-    getChart();
+  $('#submit-link-btn').click(function() {
+    const urlInput = document.getElementById('link-input').value;  
+    updateUIWithVideoContext(urlInput); 
+    displayCharts(urlInput);
   });
 }
 
@@ -63,26 +64,22 @@ function onButtonPress() {
  * Fetches data and adds to html
  * @param {String} url youtube url to retrieve comments
  */
-async function getChart(url) {
+async function displayCharts(url) {
+  showLoadingGif();
+
   // Clear all analysis containers
   const averageContainer = document.getElementById('average-score-container');
   averageContainer.innerHTML = '';
   clearElement('chart-container');
   clearElement('word-cloud-container');
 
-  if (url == undefined) {
-    // Link input
-    url = document.getElementById('link-input').value;
-  } else {
-    // Keyword search
-    clearElement('video-results');
-  }
-
   commentStats = await getYouTubeComments(url);
   sentimentBucketList = commentStats.sentimentBucketList;
   wordFrequencyMap = commentStats.wordFrequencyMap;
   displaySentimentBucketChart(sentimentBucketList);
   displayWordCloudChart(wordFrequencyMap);
+
+  hideLoadingGif();
 
   averageScore = commentStats.averageScore;
   averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
@@ -118,8 +115,6 @@ function displaySentimentBucketChart(sentimentBucketList) {
     'bar': {groupWidth: '100'},
     'tooltip': {isHtml: true},
   };
-  // Hide loading image once chart is drawn
-  document.getElementById('loading-img').style.display = 'none';
 
   const view = new google.visualization.DataView(CommentSentimentTable);
   const chart = new google.visualization.ColumnChart(
@@ -168,7 +163,7 @@ function userCommentAsString(comment) {
 
 /**
  * Convert a Range object to a string
- * @param {*} range a range object
+ * @param {JSON} range json object of java Range object
  * @return {String} the given object in string form
  */
 function convertRangeToString(range) {
@@ -176,22 +171,17 @@ function convertRangeToString(range) {
 }
 
 /**
- * Convert a userComment object to html format
+ * Display loading image
  */
-async function showLoadingGif() {
-  const loadContainer = document.getElementById('loading-container');
-  while (loadContainer.lastElementChild) {
-    loadContainer.removeChild(loadContainer.lastElementChild);
-  }
+function showLoadingGif() {
+  const loadImage = document.getElementById('loading-img');
+  loadImage.style.display = 'block';
+}
 
-  const gif = document.createElement('div');
-  gif.className = 'spinner-border text-dark';
-  gif.id = 'loading-img';
-  gif.setAttribute('role', 'status');
-
-  const gifSpan = document.createElement('div');
-  gifSpan.className = 'sr-only';
-
-  gif.appendChild(gifSpan);
-  document.getElementById('loading-container').appendChild(gif);
+/**
+ * Hide loading image
+ */
+function hideLoadingGif() {
+  const loadImage = document.getElementById('loading-img');
+  loadImage.style.display = 'none';
 }

@@ -16,15 +16,11 @@ const URL_STRUCTURE = 'https://www.googleapis.com/youtube/v3/search?part=snippet
 const YOUTUBE_API_KEY = 'AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs';
 
 /**
- * Retrieve the video result from youtube url.
+ * Retrieve the most relevant video results from youtube url
  */
 function getVideoResults() {
   const tabResult = document.getElementById('tab_list');
   const contentResult = document.getElementById('info_list');
-
-  // Add html for tab bar and content bar
-  tabResult.innerHTML = '';
-  contentResult.innerHTML = '';
 
   url = getRequestUrl();
   fetch(url).then((response) => response.json()).then((data) => {
@@ -85,12 +81,12 @@ function addVideoInfo(video) {
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
   button.addEventListener('click', () => {
+    clearElement('tab_list');
+    clearElement('info_list');  
     updateUIWithVideoContext(youtubeUrl);
-    showLoadingGif();
-    getChart(youtubeUrl);
+    displayCharts(youtubeUrl);
   });
   button.value = 'Select!';
-  button.id ='videoSelect';
 
   // Append the card into general overall list group explanation.
   cardBodyDiv.appendChild(button);

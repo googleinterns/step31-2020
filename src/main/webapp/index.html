@@ -40,7 +40,7 @@
             <br>
             <p>Enter a YouTube video keyword:</p>
             <input type="text" id="search-input">
-            <input name="Search" type="submit" value="Search!" id="submit-button" onclick="getVideoResults()"/>
+            <input name="Search" type="submit" value="Search!" id="search-button" onclick="getVideoResults()"/>
             </br>
             <div id="video-results" style="margin-top:20px">
               <div class="row">
@@ -60,17 +60,19 @@
             <input id="link-input" name="link-input" required pattern="https?://www.youtube.com/watch\?v=.+"/>
             <small id="url-help" class="form-text text-muted">Format: https://youtube.com/watch?v=...</small>
             </br>
-            <button type="submit" class="btn btn-primary submitBtn" id="submit-btn" onClick="updateUIWithVideoContext();">Enter</button>
+            <button type="submit" class="btn btn-primary" id="submit-link-btn">Enter</button>
             <br>
             </br>
           </div>
         </div>
-        <p>Maximum number of comments: </p>
+        <div id="comment-slider">
+          <p>Maximum number of comments: </p>
             <input type="range" id="num-comments-input" name="num-comments-input" min="100" max="1000" value = "100" step="10"/>
             <small id="slider-output" name = "slider-output">100</small>
+        </div>   
       </div>
       <div id="video-context"></div>
-      <div class="d-flex justify-content-center" id="loading-container">
+      <div class="d-flex justify-content-center" id="video-results-loading-container">
         <div id="loading-img" class="spinner-border text-dark" role="status" style="display:none">
           <span class="sr-only">Loading...</span>
         </div>
