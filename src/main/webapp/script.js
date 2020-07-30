@@ -48,7 +48,7 @@ async function getYouTubeComments() {
         await fetch('/YouTubeComments?url='+url+'&numComments='+numComments);
     const comments = await response.json();
     return comments;
-  } catch(err) {
+  } catch (err) {
     throw new Error('Error retrieving comments');
   }
 }
@@ -72,15 +72,16 @@ async function getChart() {
       averageScore = commentStats.averageScore;
       const averageContainer = document.getElementById('average-score-container');
       averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
-    } catch(err) {
+    } catch (err) {
       toggleErrorOutput('block');
       document.getElementById('error-details').innerText = err.message;
     }
   });
 }
 
+// Toggles visibility of error message
 function toggleErrorOutput(mode) {
-  document.getElementById(ERROR_OUTPUT_ID).style.display = mode;  
+  document.getElementById(ERROR_OUTPUT_ID).style.display = mode;
 }
 
 /**
@@ -114,17 +115,17 @@ function displaySentimentBucketChart(sentimentBucketList) {
       'tooltip': {isHtml: true},
     };
 
-  // Hide loading image once chart is drawn
-  document.getElementById('loading-img').style.display = 'none';
+    // Hide loading image once chart is drawn
+    document.getElementById('loading-img').style.display = 'none';
 
-  const view = new google.visualization.DataView(CommentSentimentTable);
-  const chart = new google.visualization.ColumnChart(
-      document.getElementById('chart-container'));
-  chart.draw(view, options);
+    const view = new google.visualization.DataView(CommentSentimentTable);
+    const chart = new google.visualization.ColumnChart(
+        document.getElementById('chart-container'));
+    chart.draw(view, options);
 
-  const averageContainer = document.getElementById('average-score-container');
-  averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
-  } catch(err) {
+    const averageContainer = document.getElementById('average-score-container');
+    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+  } catch (err) {
     throw new Error('Error in Displaying Chart');
   }
 }
@@ -138,7 +139,7 @@ function displayWordCloudChart(wordFrequencyMap) {
   try {
     const data = [];
     Object.keys(wordFrequencyMap).forEach((wordKey) =>
-        data.push({'x': wordKey, 'value': wordFrequencyMap[wordKey]}));
+      data.push({'x': wordKey, 'value': wordFrequencyMap[wordKey]}));
     // Create a tag cloud chart
     const chart = anychart.tagCloud(data);
 
@@ -147,7 +148,7 @@ function displayWordCloudChart(wordFrequencyMap) {
     chart.angles([0]);
     chart.container('word-cloud-container');
     chart.draw();
-  } catch(err) {
+  } catch (err) {
     throw new Error('Error in displaying Word Cloud');
   }
 };
