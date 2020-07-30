@@ -56,17 +56,9 @@ public class CommentAnalysis {
    * @return a Statistics object that contains required values to display
    */
   public Statistics computeOverallStats(List<CommentThread> youtubeResponse) {
-    // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
-    List<UserComment> usercommentList =
-        youtubeResponse.parallelStream()
-            .map(UserComment::new)
-            .map(this::updateSentimentForComment)
-            .filter(
-                userComment ->
-                    (userComment.getScore() != null) || (userComment.getMagnitude() != null))
-            .collect(Collectors.toList());
-    System.out.println(usercommentList);
-    return new Statistics(usercommentList, DEFAULT_TOP_N);
+    // Retrieve comment content from youtubeResponse with default number of comments
+    // and calculate sentiment for each comment
+    return computeOverallStats(youtubeResponse, DEFAULT_TOP_N);
   }
 
   /**
@@ -104,7 +96,8 @@ public class CommentAnalysis {
                       .build())
               .getDocumentSentiment());
     } catch (InvalidArgumentException e) {
-      System.out.println(e.getMessage());
+      System.out.println("Message with Unsupported Lnaguage: " + comment.getCommentMsg());
+      e.printStackTrace();
     }
     return comment;
   }
