@@ -30,7 +30,9 @@ public class WordRetrievalTest {
     List<String> wordList = CommonWordsRetriever.getCommonWords();
     List<String> expectedList =
         Arrays.asList(
-            "a", "an", "the", "am", "is", "are", "was", "were", "will", "be", "and", "or", "at", "on", "in", "by", "can", "for", "i", "he", "she", "we", "they", "it", "its", "my", "your", "his", "her", "their", "this", "that", "here", "there", "of", "to", "for");
+            "a", "an", "the", "am", "is", "are", "was", "were", "will", "be", "and", "or", "at",
+            "on", "in", "by", "can", "for", "i", "he", "she", "we", "they", "it", "its", "my",
+            "your", "his", "her", "their", "this", "that", "here", "there", "of", "to", "for");
     Assert.assertEquals(expectedList, wordList);
   }
 }
