@@ -60,6 +60,7 @@ async function getYouTubeComments(url) {
 function onButtonPress() {
   $('#submit-link-btn').click(function() {
     try {
+      toggleErrorOutput('none');
       showLoadingGif();
       const urlInput = document.getElementById('link-input').value;
       updateUIWithVideoContext(urlInput);
@@ -76,6 +77,7 @@ function toggleErrorOutput(mode) {
 }
 
 function displayError(message) {
+  hideLoadingGif();
   toggleErrorOutput('block');
   document.getElementById('error-details').innerText = message;
 }
