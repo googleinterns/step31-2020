@@ -12,16 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-google.charts.load('current', {'packages': ['corechart']});
-google.setOnLoadCallback(updateUIWithVideoContext);
-
 /**
  * Retrieve the context of a Youtube video
+ * @param {String} urlInput inputted url of video
  * @return {Json} Json object of video context information
  */
-async function getVideoContext() {
-  const urlInput = document.getElementById('link-input');
-  const url = extractYouTubeUrl(urlInput.value);
+async function getVideoContext(urlInput) {
+  const url = extractYouTubeUrl(urlInput);
   const response = await fetch('/VideoContext?url=' + url);
   const context = await response.json();
   return context;
@@ -29,13 +26,13 @@ async function getVideoContext() {
 
 /**
  * Fetches data and adds to html
+ * @param {string} url of the video being analyzed
  */
-async function updateUIWithVideoContext() {
-  $('form').submit(async function() {
-    videoContext = await getVideoContext();
-    document.getElementById('video-context').innerHTML =
-      videoInfoAsHTML(videoContext);
-  });
+async function updateUIWithVideoContext(url) {
+  clearElement('video-context');
+  videoContext = await getVideoContext(url);
+  document.getElementById('video-context').innerHTML =
+  videoContextAsHTML(videoContext);
 }
 
 /**
@@ -43,17 +40,17 @@ async function updateUIWithVideoContext() {
  * @param {Json} videoContext Json object of video context information
  * @return {String} html format of video context
  */
-function videoInfoAsHTML(videoContext) {
+function videoContextAsHTML(videoContext) {
   return '<ul class="list-group">' +
     '<li class="list-group-item">' + 'Video Name: ' +
     videoContext.videoName + '</li>' +
     '<li class="list-group-item">' + 'Channel: ' +
     videoContext.videoAuthor + '</li>' +
     '<li class="list-group-item">' + 'Date Published: ' +
-    videoContext.videoDate + '</li>' +
+    videoContext.publishDateString + '</li>' +
     '<li class="list-group-item">' + 'Likes: ' +
-    videoContext.videoLikes + '</li>' +
+    videoContext.numLikes + '</li>' +
     '<li class="list-group-item">' + 'DisLikes: ' +
-    videoContext.videoDislikes + '</li>' +
+    videoContext.numDislikes + '</li>' +
     '</ul>';
 }
