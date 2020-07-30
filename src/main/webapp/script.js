@@ -99,9 +99,7 @@ async function displayOverallResults(url) {
     wordFrequencyMap = commentStats.wordFrequencyMap;
     displaySentimentBucketChart(sentimentBucketList);
     displayWordCloudChart(wordFrequencyMap);
-
     hideLoadingGif();
-
     averageScore = commentStats.averageScore;
     averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
   } catch (err) {
