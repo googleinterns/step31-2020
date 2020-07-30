@@ -18,13 +18,13 @@ const SLIDER_NAME = 'num-comments-input';
 const ERROR_OUTPUT_ID = 'error-surfacer';
 
 google.charts.load('current', {'packages': ['corechart']});
-google.setOnLoadCallback(getChart);
+google.setOnLoadCallback(onButtonPress);
 
 window.onload = initCommentSlider;
 
 /**
- * Finds slider for inputting the number of comments,
- * Then gives it functionality to display its value.
+ * Initialize comment slider, used for choosing
+ * the number of comments to be analyzed
  */
 function initCommentSlider() {
   const numCommentsSlider = document.getElementById(SLIDER_NAME);
@@ -37,44 +37,35 @@ function initCommentSlider() {
 }
 
 /**
- * Retreive the youtube comments from the url.
+ * Retrieve the youtube comments given the URL
+ * @param {String} url to pass into backend
+ * @return {JSON} comments json object of comment objects
  */
-async function getYouTubeComments() {
+async function getYouTubeComments(url) {
   try {
-    const urlInput = document.getElementById('link-input');
-    const url = extractYouTubeUrl(urlInput.value);
+    url = extractYouTubeUrl(url);
     const numComments = document.getElementById(SLIDER_NAME).value;
-    const response =
-        await fetch('/YouTubeComments?url='+url+'&numComments='+numComments);
+    const response = await fetch('/YouTubeComments?url=' + url +
+      '&numComments=' + numComments);
     const comments = await response.json();
     return comments;
   } catch (err) {
-    throw new Error('Error retrieving comments');
+    throw new Error('Error retrieving comments.');
   }
 }
 
 /**
- * Fetches data and adds to html
- * Upon error, displays the appropriate error message
- * To give users and more importantly developers an idea of what went wrong
+ * Wrapper function for preparing onClick function
  */
-async function getChart() {
-  $('form').submit(async function() {
+function onButtonPress() {
+  $('#submit-link-btn').click(function() {
     try {
-      toggleErrorOutput('hidden');
-      document.getElementById('loading-img').style.display = 'block';
-      commentStats = await getYouTubeComments();
-      sentimentBucketList = commentStats.sentimentBucketList;
-      wordFrequencyMap = commentStats.wordFrequencyMap;
-
-      displaySentimentBucketChart(sentimentBucketList);
-      displayWordCloudChart(wordFrequencyMap);
-      averageScore = commentStats.averageScore;
-      const averageContainer = document.getElementById('average-score-container');
-      averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+      showLoadingGif();
+      const urlInput = document.getElementById('link-input').value;
+      updateUIWithVideoContext(urlInput);
+      displayOverallResults(urlInput);
     } catch (err) {
-      toggleErrorOutput('block');
-      document.getElementById('error-details').innerText = err.message;
+      displayError(err.message);
     }
   });
 }
@@ -82,6 +73,38 @@ async function getChart() {
 // Toggles visibility of error message
 function toggleErrorOutput(mode) {
   document.getElementById(ERROR_OUTPUT_ID).style.display = mode;
+}
+
+function displayError(message) {
+  toggleErrorOutput('block');
+  document.getElementById('error-details').innerText = message;
+}
+
+/**
+ * Fetches data and adds to html
+ * @param {String} url youtube url to retrieve comments
+ */
+async function displayOverallResults(url) {
+  try {
+  // Clear all analysis containers
+    const averageContainer = document.getElementById('average-score-container');
+    averageContainer.innerHTML = '';
+    clearElement('chart-container');
+    clearElement('word-cloud-container');
+
+    commentStats = await getYouTubeComments(url);
+    sentimentBucketList = commentStats.sentimentBucketList;
+    wordFrequencyMap = commentStats.wordFrequencyMap;
+    displaySentimentBucketChart(sentimentBucketList);
+    displayWordCloudChart(wordFrequencyMap);
+
+    hideLoadingGif();
+
+    averageScore = commentStats.averageScore;
+    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+  } catch (err) {
+      displayError('Error in overall display: ' + err.message);
+  }
 }
 
 /**
@@ -92,9 +115,10 @@ function toggleErrorOutput(mode) {
 function displaySentimentBucketChart(sentimentBucketList) {
   try {
     const CommentSentimentTable = new google.visualization.DataTable();
-    CommentSentimentTable.addColumn('number', 'InclusiveStart');
-    CommentSentimentTable.addColumn('string', 'SentimentRange');
-    CommentSentimentTable.addColumn('number', 'CommentCount');
+    CommentSentimentTable.addColumn('string', 'Sentiment Range');
+    CommentSentimentTable.addColumn('number', 'Comment Count');
+    CommentSentimentTable.addColumn(
+        {'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
 
     for (i = 0; i < sentimentBucketList.length; i++) {
       currentSentimentBucket = sentimentBucketList[i];
@@ -115,16 +139,10 @@ function displaySentimentBucketChart(sentimentBucketList) {
       'tooltip': {isHtml: true},
     };
 
-    // Hide loading image once chart is drawn
-    document.getElementById('loading-img').style.display = 'none';
-
     const view = new google.visualization.DataView(CommentSentimentTable);
     const chart = new google.visualization.ColumnChart(
         document.getElementById('chart-container'));
     chart.draw(view, options);
-
-    const averageContainer = document.getElementById('average-score-container');
-    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
   } catch (err) {
     throw new Error('Error in Displaying Chart');
   }
@@ -132,8 +150,7 @@ function displaySentimentBucketChart(sentimentBucketList) {
 
 /**
  * Create a word cloud based on the number of appearance for each word
- * @param {Map<String:Integer>} wordFrequencyMap Map that contains
- * top popular words and its appearance
+ * @param {Map} wordFrequencyMap that contains top words
  */
 function displayWordCloudChart(wordFrequencyMap) {
   try {
@@ -152,6 +169,7 @@ function displayWordCloudChart(wordFrequencyMap) {
     throw new Error('Error in displaying Word Cloud');
   }
 };
+
 /**
  * Get the comment content with top high magnitude.
  * @param {List<UserComment>} userComments a sentiment buckets list
@@ -159,8 +177,8 @@ function displayWordCloudChart(wordFrequencyMap) {
  * @return {String} Top high comment message.
  */
 function toTooltipString(userComments) {
-  return userComments.map((comment) =>
-    userCommentAsString(comment)).join('<br>');
+  return userComments.map((comment) => userCommentAsString(comment))
+      .join('<br>');
 }
 
 /**
@@ -169,15 +187,31 @@ function toTooltipString(userComments) {
  * @return {String} HTML format to display its message and magnitude
  */
 function userCommentAsString(comment) {
-  commentMagnitude = comment.magnitude;
+  commentMagnitude = comment.magnitudeScore;
   return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
 }
 
 /**
- * Convert range to string
- * @param {Range} range a range object.
- * @return {String} a string made from the range.
+ * Convert a Range object to a string
+ * @param {JSON} range json object of java Range object
+ * @return {String} the given object in string form
  */
 function convertRangeToString(range) {
   return range.inclusiveStart + ' to ' + range.exclusiveEnd;
+}
+
+/**
+ * Display loading image
+ */
+function showLoadingGif() {
+  const loadImage = document.getElementById('loading-img');
+  loadImage.style.display = 'block';
+}
+
+/**
+ * Hide loading image
+ */
+function hideLoadingGif() {
+  const loadImage = document.getElementById('loading-img');
+  loadImage.style.display = 'none';
 }

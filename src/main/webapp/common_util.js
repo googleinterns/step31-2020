@@ -33,3 +33,14 @@ function extractYouTubeUrl(url) {
     return match[2];
   }
 }
+
+/**
+ * Clear all children of an element
+ * @param {String} elementId element name to be cleared
+ */
+function clearElement(elementId) {
+  const elem = document.getElementById(elementId);
+  while (elem != null && elem.lastChild) {
+    elem.removeChild(elem.lastChild);
+  }
+}
