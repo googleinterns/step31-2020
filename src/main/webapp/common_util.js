@@ -44,3 +44,11 @@ function clearElement(elementId) {
     elem.removeChild(elem.lastChild);
   }
 }
+
+/**
+ * @returns API Key for YouTube Data API
+ */
+function getApiKey() {
+  const reader = new FileReader();
+  return reader.readAsText('apiKey');
+}
