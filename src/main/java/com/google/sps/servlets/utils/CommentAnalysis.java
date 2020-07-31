@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets.utils;
 
+import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.api.services.youtube.model.CommentThread;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
@@ -55,13 +56,9 @@ public class CommentAnalysis {
    * @return a Statistics object that contains required values to display
    */
   public Statistics computeOverallStats(List<CommentThread> youtubeResponse) {
-    // Retrieve comment content from youtubeResponse and calculate sentiment for each comment
-    List<UserComment> usercommentList =
-        youtubeResponse.parallelStream()
-            .map(UserComment::new)
-            .map(this::updateSentimentForComment)
-            .collect(Collectors.toList());
-    return new Statistics(usercommentList, DEFAULT_TOP_N);
+    // Retrieve comment content from youtubeResponse with default number of comments
+    // and calculate sentiment for each comment
+    return computeOverallStats(youtubeResponse, DEFAULT_TOP_N);
   }
 
   /**
@@ -89,14 +86,19 @@ public class CommentAnalysis {
    * @return a userComment with updated sentiment scores & magnitude
    */
   private UserComment updateSentimentForComment(UserComment comment) {
-    comment.setSentiment(
-        languageService
-            .analyzeSentiment(
-                Document.newBuilder()
-                    .setContent(comment.getCommentMsg())
-                    .setType(Document.Type.PLAIN_TEXT)
-                    .build())
-            .getDocumentSentiment());
+    try {
+      comment.setSentiment(
+          languageService
+              .analyzeSentiment(
+                  Document.newBuilder()
+                      .setContent(comment.getCommentMsg())
+                      .setType(Document.Type.PLAIN_TEXT)
+                      .build())
+              .getDocumentSentiment());
+    } catch (InvalidArgumentException e) {
+      System.out.println("Message with Unsupported Lnaguage: " + comment.getCommentMsg());
+      e.printStackTrace();
+    }
     return comment;
   }
 
