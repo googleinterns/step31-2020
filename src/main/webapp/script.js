@@ -71,11 +71,18 @@ function onButtonPress() {
   });
 }
 
-// Toggles visibility of error message
+/**
+ * Toggles visibility of error message
+ * @param {String} mode: the display mode the erroroutput should be set to.
+ */
 function toggleErrorOutput(mode) {
   document.getElementById(ERROR_OUTPUT_ID).style.display = mode;
 }
 
+/**
+ * Sets error message to visible and gives details on specific error.
+ * @param {String} message: the text to display.
+ */
 function displayError(message) {
   hideLoadingGif();
   toggleErrorOutput('block');
@@ -87,13 +94,12 @@ function displayError(message) {
  * @param {String} url youtube url to retrieve comments
  */
 async function displayOverallResults(url) {
-  try {
   // Clear all analysis containers
-    const averageContainer = document.getElementById('average-score-container');
-    averageContainer.innerHTML = '';
-    clearElement('chart-container');
-    clearElement('word-cloud-container');
-
+  const averageContainer = document.getElementById('average-score-container');
+  averageContainer.innerHTML = '';
+  clearElement('chart-container');
+  clearElement('word-cloud-container');
+  try {
     commentStats = await getYouTubeComments(url);
     sentimentBucketList = commentStats.sentimentBucketList;
     wordFrequencyMap = commentStats.wordFrequencyMap;
@@ -103,7 +109,7 @@ async function displayOverallResults(url) {
     averageScore = commentStats.averageScore;
     averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
   } catch (err) {
-      displayError('Error in overall display: ' + err.message);
+    displayError('Error in overall display: ' + err.message);
   }
 }
 
@@ -113,39 +119,35 @@ async function displayOverallResults(url) {
  * @param {Array<sentimentBucket>} sentimentBucketList
  */
 function displaySentimentBucketChart(sentimentBucketList) {
-  try {
-    const CommentSentimentTable = new google.visualization.DataTable();
-    CommentSentimentTable.addColumn('string', 'Sentiment Range');
-    CommentSentimentTable.addColumn('number', 'Comment Count');
-    CommentSentimentTable.addColumn(
-        {'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
+  const CommentSentimentTable = new google.visualization.DataTable();
+  CommentSentimentTable.addColumn('string', 'Sentiment Range');
+  CommentSentimentTable.addColumn('number', 'Comment Count');
+  CommentSentimentTable.addColumn(
+      {'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
 
-    for (i = 0; i < sentimentBucketList.length; i++) {
-      currentSentimentBucket = sentimentBucketList[i];
-      rangeAsString = convertRangeToString(
-          currentSentimentBucket.intervalRange);
-      highestMagnitudeComments = currentSentimentBucket.topNComments;
+  for (i = 0; i < sentimentBucketList.length; i++) {
+    currentSentimentBucket = sentimentBucketList[i];
+    rangeAsString = convertRangeToString(
+        currentSentimentBucket.intervalRange);
+    highestMagnitudeComments = currentSentimentBucket.topNComments;
 
-      CommentSentimentTable.addRow([rangeAsString,
-        currentSentimentBucket.frequency,
-        toTooltipString(highestMagnitudeComments)]);
-    }
-
-    const options = {
-      'title': 'Comment Sentiment Range',
-      'width': CHART_WIDTH,
-      'height': CHART_HEIGHT,
-      'bar': {groupWidth: '100'},
-      'tooltip': {isHtml: true},
-    };
-
-    const view = new google.visualization.DataView(CommentSentimentTable);
-    const chart = new google.visualization.ColumnChart(
-        document.getElementById('chart-container'));
-    chart.draw(view, options);
-  } catch (err) {
-    throw new Error('Error in Displaying Chart');
+    CommentSentimentTable.addRow([rangeAsString,
+      currentSentimentBucket.frequency,
+      toTooltipString(highestMagnitudeComments)]);
   }
+
+  const options = {
+    'title': 'Comment Sentiment Range',
+    'width': CHART_WIDTH,
+    'height': CHART_HEIGHT,
+    'bar': {groupWidth: '100'},
+    'tooltip': {isHtml: true},
+  };
+
+  const view = new google.visualization.DataView(CommentSentimentTable);
+  const chart = new google.visualization.ColumnChart(
+      document.getElementById('chart-container'));
+  chart.draw(view, options);
 }
 
 /**
@@ -153,21 +155,17 @@ function displaySentimentBucketChart(sentimentBucketList) {
  * @param {Map} wordFrequencyMap that contains top words
  */
 function displayWordCloudChart(wordFrequencyMap) {
-  try {
-    const data = [];
-    Object.keys(wordFrequencyMap).forEach((wordKey) =>
-      data.push({'x': wordKey, 'value': wordFrequencyMap[wordKey]}));
-    // Create a tag cloud chart
-    const chart = anychart.tagCloud(data);
+  const data = [];
+  Object.keys(wordFrequencyMap).forEach((wordKey) =>
+    data.push({'x': wordKey, 'value': wordFrequencyMap[wordKey]}));
+  // Create a tag cloud chart
+  const chart = anychart.tagCloud(data);
 
-    chart.title('Most Common Words in Comments');
-    // Set array of angles to 0, make all the words display horizontally
-    chart.angles([0]);
-    chart.container('word-cloud-container');
-    chart.draw();
-  } catch (err) {
-    throw new Error('Error in displaying Word Cloud');
-  }
+  chart.title('Most Common Words in Comments');
+  // Set array of angles to 0, make all the words display horizontally
+  chart.angles([0]);
+  chart.container('word-cloud-container');
+  chart.draw();
 };
 
 /**
