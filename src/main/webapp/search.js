@@ -79,14 +79,14 @@ function addVideoInfo(video) {
   cardBodyDiv.className = 'card-body';
   cardBodyDiv.innerHTML = '<p class="card-text">' +
     video.snippet.description + '</p';
-  cardDiv.innerHTML = '<IMG class="card-img-top" src=' +
-    video.snippet.thumbnails.high.url + ' alt="Card image cap">';
+  cardDiv.innerHTML = '<iframe width="480" height="315"src=' + 'https://www.youtube.com/embed/'+video.id.videoId+ '?controls=0;' +
+    '></iframe>';
 
   // Create button to select the video
   const button = document.createElement('INPUT');
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
-  button.addEventListener('click', () => {  
+  button.addEventListener('click', () => {
     clearElement('tab_list');
     clearElement('info_list');
     showLoadingGif();
