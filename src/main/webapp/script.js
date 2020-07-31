@@ -95,6 +95,7 @@ function displaySentimentBucketChart(sentimentBucketList) {
   CommentSentimentTable.addColumn('number', 'Comment Count');
   CommentSentimentTable.addColumn(
       {'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
+  CommentSentimentTable.addColumn({type: 'string', role: 'style'});
 
   for (i = 0; i < sentimentBucketList.length; i++) {
     currentSentimentBucket = sentimentBucketList[i];
@@ -104,7 +105,8 @@ function displaySentimentBucketChart(sentimentBucketList) {
 
     CommentSentimentTable.addRow([rangeAsString,
       currentSentimentBucket.frequency,
-      toTooltipString(highestMagnitudeComments)]);
+      toTooltipString(highestMagnitudeComments),
+      toColorStyle(i)]);
   }
 
   const options = {
@@ -157,7 +159,7 @@ function toTooltipString(userComments) {
  */
 function userCommentAsString(comment) {
   commentMagnitude = comment.magnitudeScore;
-  return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
+  return comment.commentMsg + '<br> Emotional Strength: ' + commentMagnitude;
 }
 
 /**
@@ -185,4 +187,13 @@ function hideLoadingGif() {
   $('#submit-link-btn').html('Done!');
   const loadImage = document.getElementById('video-results-loading-container');
   loadImage.style.visibility = 'hidden';
+}
+
+/**
+ * Change the opacity of each column bar
+ * @param {Integer} columnNum index of the column from lowest to highest
+ * @return {String} the style property of each column
+ */
+function toColorStyle(columnNum) {
+  return 'fill-color:blue; fill-opacity:' + (1 - columnNum * (0.1));
 }
