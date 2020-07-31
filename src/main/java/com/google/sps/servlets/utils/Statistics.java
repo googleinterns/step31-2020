@@ -70,8 +70,8 @@ public class Statistics {
    */
   public Statistics(List<UserComment> userCommentList, int topNComments) {
     sentimentBucketList = categorizeToBucketList(userCommentList, topNComments);
-    averageScore = Math.round(getAverageValue(userCommentList, "score") * 100) / 100;
-    averageMagnitude = Math.round(getAverageValue(userCommentList, "Magnitude")) / 100;
+    averageScore = Math.round(getAverageValue(userCommentList, "score") * 100) / 100.0;
+    averageMagnitude = Math.round(getAverageValue(userCommentList, "Magnitude") * 100) / 100.0;
     wordFrequencyMap = countWordFrequencyMap(userCommentList);
   }
 
