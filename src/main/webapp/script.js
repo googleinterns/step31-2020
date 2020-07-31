@@ -173,7 +173,10 @@ function convertRangeToString(range) {
  * Display loading image
  */
 function showLoadingGif() {
-  $('#submit-link-btn').html('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...').addClass('disabled');
+  $('#submit-link-btn')
+      .html('<span class="spinner-border spinner-border-sm mr-2 "' +
+            'role="status" aria-hidden="true"></span>Loading...')
+      .addClass('disabled');
   const loadImage = document.getElementById('video-results-loading-container');
   loadImage.style.visibility = 'visible';
 }
