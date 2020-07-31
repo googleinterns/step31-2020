@@ -19,14 +19,19 @@
     <script type="text/javascript" src="search.js"></script>
   </head>
   <body>
-    <ul class="nav justify-content-center">
-      <li class="nav-item">
-        <a class="nav-link" href="index.html">Home</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="intro.html">About</a>
-      </li>
-    </ul>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">SAY</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="intro.html">About</a>
+          </li>
+        </ul>
+    </div>
+    </nav>
     <div id="youtube-data">
       <div class="form-group">
         <nav>
@@ -42,16 +47,6 @@
             <input type="text" id="search-input">
             <input name="Search" type="submit" value="Search!" id="search-button" onclick="getVideoResults()"/>
             </br>
-            <div id="video-results" style="margin-top:20px">
-              <div class="row">
-                <div class="col-4">
-                  <div id= "tab_list" class="list-group" role="tablist" ></div>
-                </div>
-                <div class="col-8">
-                  <div id= "info_list" class="tab-content" id="nav-tabContent"></div>
-                </div>
-              </div>
-            </div>
             </br>
           </div>
           <div class="tab-pane fade" id="nav-videolink" role="tabpanel" aria-labelledby="nav-videolink-tab">
@@ -62,24 +57,47 @@
             </br>
             <button type="submit" class="btn btn-primary" id="submit-link-btn">Enter</button>
             <br>
-            </br>
           </div>
         </div>
         <div id="comment-slider">
           <p>Maximum number of comments: </p>
-            <input type="range" id="num-comments-input" name="num-comments-input" min="100" max="1000" value = "100" step="10"/>
-            <small id="slider-output" name = "slider-output">100</small>
-        </div>   
+            <input type="range" id="num-comments-input" name="num-comments-input" min="100" max="500" value = "100" step="10"/>
+            <small id="slider-output" name="slider-output">100</small>
+        </div>
       </div>
-      <div id="video-context"></div>
-      <div class="d-flex flex-column align-items-center" id="video-results-loading-container" style="visibility:hidden">
+      <div id="video-results" style="margin-top:20px">
+        <div class="row">
+          <div class="col-8">
+            <div id= "tab_list" class="list-group" role="tablist" ></div>
+          </div>
+          <div class="col-4">
+            <div id= "info_list" class="tab-content" id="nav-tabContent"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div id="video-context">
+          </div>
+        </div>
+        <div class="col-7">
+          <div id="video-embed">
+          </div>
+        </div>
+      </div>
+      <br>
+    <div class="d-flex flex-column align-items-center" id="video-results-loading-container" style="visibility:hidden">
         <div id="loading-img" class="spinner-border text-dark" role="status">
         </div>
         <p class="font-weight-light">Almost here!<br/> Loading Sentiment Analysis & Word Cloud...</p>
+    </div>
+      <div id="analysis-container">
+        <div id="sentiment-info">
+          <div id="chart-container"></div>
+          <div id="average-score-container"></div>
+        </div>
+        <div id="word-cloud-container"></div>
       </div>
-      <div id="chart-container"></div>
-      <div id="average-score-container"></div>
-      <div id="word-cloud-container"></div>
     </div>
   </body>
 </html>
