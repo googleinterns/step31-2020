@@ -22,7 +22,7 @@ import java.util.List;
 
 /** Class that provides commonly used words that should be ignored within the word map */
 public class CommonWordsRetriever {
-  private static String filePath = "/common_words.txt";
+  private static final String filePath = "/common_words.txt";
   private static final List<String> commonWordsList = populateWordList();
 
   /** Populate a list of strings from a text file containing the words to ignore in the word map */
@@ -30,7 +30,6 @@ public class CommonWordsRetriever {
     List<String> commonWords = new ArrayList<String>();
     String fileName =
         System.getProperty("user.dir") + System.getProperty("resources-folder") + filePath;
-    System.out.println(fileName);
     try {
       return Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
     } catch (Exception e) {
@@ -41,20 +40,4 @@ public class CommonWordsRetriever {
   public static List<String> getCommonWords() {
     return new ArrayList<String>(commonWordsList);
   }
-
-  //  /**
-  //   * Check if the current environment is JUnit Test or not
-  //   *
-  //   * @return True if in Junit test; otherwise false
-  //   */
-  //  public static boolean isJUnitTest() {
-  //    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-  //    List<StackTraceElement> list = Arrays.asList(stackTrace);
-  //    for (StackTraceElement element : list) {
-  //      if (element.getClassName().startsWith("org.junit.")) {
-  //        return true;
-  //      }
-  //    }
-  //    return false;
-  //  }
 }
