@@ -29,9 +29,9 @@ public class CommonWordsRetriever {
   /** Populate a list of strings from a text file containing the words to ignore in the word map */
   private static List<String> populateWordList() {
     List<String> commonWords = new ArrayList<String>();
-    if (isJUnitTest()) filePath = "/src/main/webapp/" + filePath;
+    String fileName = System.getProperty("user.dir") + System.getProperty("resources-folder") + filePath;
+    System.out.println(fileName);
     try {
-      String fileName = System.getProperty("user.dir") + filePath;
       return Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
     } catch (Exception e) {
       throw new RuntimeException("Unable to read file.", e);
@@ -42,19 +42,19 @@ public class CommonWordsRetriever {
     return new ArrayList<String>(commonWordsList);
   }
 
-  /**
-   * Check if the current environment is JUnit Test or not
-   *
-   * @return True if in Junit test; otherwise false
-   */
-  public static boolean isJUnitTest() {
-    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-    List<StackTraceElement> list = Arrays.asList(stackTrace);
-    for (StackTraceElement element : list) {
-      if (element.getClassName().startsWith("org.junit.")) {
-        return true;
-      }
-    }
-    return false;
-  }
+//  /**
+//   * Check if the current environment is JUnit Test or not
+//   *
+//   * @return True if in Junit test; otherwise false
+//   */
+//  public static boolean isJUnitTest() {
+//    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+//    List<StackTraceElement> list = Arrays.asList(stackTrace);
+//    for (StackTraceElement element : list) {
+//      if (element.getClassName().startsWith("org.junit.")) {
+//        return true;
+//      }
+//    }
+//    return false;
+//  }
 }
