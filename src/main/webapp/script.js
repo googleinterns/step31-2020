@@ -105,7 +105,7 @@ function displaySentimentBucketChart(sentimentBucketList) {
 
     CommentSentimentTable.addRow([rangeAsString,
       currentSentimentBucket.frequency,
-      toTooltipString(highestMagnitudeComments)，
+      toTooltipString(highestMagnitudeComments),
       toColorStyle(i)]);
   }
 
@@ -187,7 +187,11 @@ function hideLoadingGif() {
   loadImage.style.display = 'none';
 }
 
+/**
+ * Change the opacity of each column bar
+ * @param {Integer} columnNum index of the column from lowest to highest
+ * @return {String} the style property of each column
+ */
 function toColorStyle(columnNum) {
-  console.log(adjust(columnNum*10));
-  return 'fill-color:blue; fill-opacity:' + (1-columnNum*(0.1));
+  return 'fill-color:blue; fill-opacity:' + (1 - columnNum * (0.1));
 }
