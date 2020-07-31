@@ -85,7 +85,7 @@ function addVideoInfo(video) {
   const button = document.createElement('INPUT');
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
-  button.addEventListener('click', () => {  
+  button.addEventListener('click', () => {
     clearElement('tab_list');
     clearElement('info_list');
     showLoadingGif();
