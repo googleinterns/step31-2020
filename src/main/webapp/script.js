@@ -42,16 +42,12 @@ function initCommentSlider() {
  * @return {JSON} comments json object of comment objects
  */
 async function getYouTubeComments(url) {
-  try {
-    url = extractYouTubeUrl(url);
-    const numComments = document.getElementById(SLIDER_NAME).value;
-    const response = await fetch('/YouTubeComments?url=' + url +
+  url = extractYouTubeUrl(url);
+  const numComments = document.getElementById(SLIDER_NAME).value;
+  const response = await fetch('/YouTubeComments?url=' + url +
       '&numComments=' + numComments);
-    const comments = await response.json();
-    return comments;
-  } catch (err) {
-    throw new Error('Error retrieving comments.');
-  }
+  const comments = await response.json();
+  return comments;
 }
 
 /**
@@ -81,7 +77,7 @@ function toggleErrorOutput(mode) {
 
 /**
  * Sets error message to visible and gives details on specific error.
- * @param {String} message: the text to display.
+ * @param {String} error: the error to display and log.
  */
 function displayError(err) {
   hideLoadingGif();
