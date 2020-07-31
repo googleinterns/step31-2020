@@ -33,6 +33,8 @@ async function updateUIWithVideoContext(url) {
   videoContext = await getVideoContext(url);
   document.getElementById('video-context').innerHTML =
   videoContextAsHTML(videoContext);
+  document.getElementById('video-embed').innerHTML = '<iframe width="500" height="415"src=' + 'https://www.youtube.com/embed/'+ extractYouTubeUrl(url)+ '?controls=0;' +
+  '></iframe>';
 }
 
 /**
