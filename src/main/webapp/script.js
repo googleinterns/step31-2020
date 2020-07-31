@@ -15,97 +15,179 @@
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
 const SLIDER_NAME = 'num-comments-input';
-const START_COLOR = ' #76A7FA';
 
-google.charts.load('current', {'packages':['corechart']});
-google.setOnLoadCallback(getChart);
+google.charts.load('current', {'packages': ['corechart']});
+google.setOnLoadCallback(onButtonPress);
 
 window.onload = initCommentSlider;
 
-function initCommentSlider(){
+/**
+ * Initialize comment slider, used for choosing
+ * the number of comments to be analyzed
+ */
+function initCommentSlider() {
   const numCommentsSlider = document.getElementById(SLIDER_NAME);
   const numCommentsIndicator = document.getElementById('slider-output');
   numCommentsIndicator.innerText = numCommentsSlider.value;
 
   numCommentsSlider.oninput = function() {
     numCommentsIndicator.innerText = this.value;
-  }
+  };
 }
 
-async function getYouTubeComments() {
-  const urlInput = document.getElementById('link-input');
-  const url = cleanseUrl(urlInput.value);
+/**
+ * Retrieve the youtube comments given the URL
+ * @param {String} url to pass into backend
+ * @return {JSON} comments json object of comment objects
+ */
+async function getYouTubeComments(url) {
+  url = extractYouTubeUrl(url);
   const numComments = document.getElementById(SLIDER_NAME).value;
-  const response = await fetch("/YouTubeComments?url="+url+"&numComments="+numComments);
+  const response = await fetch('/YouTubeComments?url=' + url +
+    '&numComments=' + numComments);
   const comments = await response.json();
   return comments;
 }
 
 /**
- * Fetches data and adds to html
+ * Wrapper function for preparing onClick function
  */
-async function getChart() {
-  $('form').submit(async function() {
-      document.getElementById('loading-img').style.display = 'block';
-  
-      // commentStats = await getYouTubeComments();
-      averageScore = 0.1;
-      averageMagnitude = 0.2;
-      // sentimentBucketList = commentStats.sentimentBucketList;
-  
-      const CommentSentimentTable = new google.visualization.DataTable();
-      CommentSentimentTable.addColumn('string', 'Sentiment Range');
-      CommentSentimentTable.addColumn('number', 'Comment Count');
-      CommentSentimentTable.addColumn(
-          {'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
-      CommentSentimentTable.addColumn({type: 'string', role: 'style'});
-
-  
-      for (i = 0; i < 10; i++) {
-        CommentSentimentTable.addRow(["rangeAsString",
-          10,
-          "toTooltipString(highestMagnitudeComments)", toColorStyle(i)]);
-      }
-
-      const options = {
-        'title': 'Comment Sentiment Range',
-        'width': CHART_WIDTH,
-        'height': CHART_HEIGHT,
-        'bar': {groupWidth: '100'},
-        'tooltip': {isHtml: true},
-      };
-
-    // Hide loading image once chart is drawn
-    document.getElementById('loading-img').style.display = 'none';
-
-    const view = new google.visualization.DataView(CommentSentimentTable);
-    const chart = new google.visualization.ColumnChart(
-        document.getElementById('chart-container'));
-    chart.draw(view, options);
-
-    const averageContainer = document.getElementById('average-score-container');
-    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+function onButtonPress() {
+  $('#submit-link-btn').click(function() {
+    showLoadingGif();
+    const urlInput = document.getElementById('link-input').value;
+    updateUIWithVideoContext(urlInput);
+    displayOverallResults(urlInput);
   });
 }
 
-function toTooltipString(userComments) {
-  return userComments.map(comment => userCommentAsString(comment)).join("<br>");
+/**
+ * Fetches data and adds to html
+ * @param {String} url youtube url to retrieve comments
+ */
+async function displayOverallResults(url) {
+  // Clear all analysis containers
+  const averageContainer = document.getElementById('average-score-container');
+  averageContainer.innerHTML = '';
+  clearElement('chart-container');
+  clearElement('word-cloud-container');
+
+  commentStats = await getYouTubeComments(url);
+  sentimentBucketList = commentStats.sentimentBucketList;
+  wordFrequencyMap = commentStats.wordFrequencyMap;
+  displaySentimentBucketChart(sentimentBucketList);
+  displayWordCloudChart(wordFrequencyMap);
+
+  hideLoadingGif();
+
+  averageScore = commentStats.averageScore;
+  averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
 }
 
+/**
+ * Create a bar chart of sentiment score interval, frequency
+ * and high magnitude comments
+ * @param {Array<sentimentBucket>} sentimentBucketList
+ */
+function displaySentimentBucketChart(sentimentBucketList) {
+  const CommentSentimentTable = new google.visualization.DataTable();
+  CommentSentimentTable.addColumn('string', 'Sentiment Range');
+  CommentSentimentTable.addColumn('number', 'Comment Count');
+  CommentSentimentTable.addColumn(
+      {'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
+  CommentSentimentTable.addColumn({type: 'string', role: 'style'});
+
+  for (i = 0; i < sentimentBucketList.length; i++) {
+    currentSentimentBucket = sentimentBucketList[i];
+    rangeAsString = convertRangeToString(
+        currentSentimentBucket.intervalRange);
+    highestMagnitudeComments = currentSentimentBucket.topNComments;
+
+    CommentSentimentTable.addRow([rangeAsString,
+      currentSentimentBucket.frequency,
+      toTooltipString(highestMagnitudeComments)，
+      toColorStyle(i)]);
+  }
+
+  const options = {
+    'title': 'Comment Sentiment Range',
+    'width': CHART_WIDTH,
+    'height': CHART_HEIGHT,
+    'bar': {groupWidth: '100'},
+    'tooltip': {isHtml: true},
+  };
+
+  const view = new google.visualization.DataView(CommentSentimentTable);
+  const chart = new google.visualization.ColumnChart(
+      document.getElementById('chart-container'));
+  chart.draw(view, options);
+}
+
+/**
+ * Create a word cloud based on the number of appearance for each word
+ * @param {Map} wordFrequencyMap that contains top words
+ */
+function displayWordCloudChart(wordFrequencyMap) {
+  const data = [];
+  Object.keys(wordFrequencyMap).forEach((wordKey) =>
+    data.push({'x': wordKey, 'value': wordFrequencyMap[wordKey]}));
+  // Create a tag cloud chart
+  const chart = anychart.tagCloud(data);
+
+  chart.title('Most Common Words in Comments');
+  // Set array of angles to 0, make all the words display horizontally
+  chart.angles([0]);
+  chart.container('word-cloud-container');
+  chart.draw();
+};
+
+/**
+ * Get the comment content with top high magnitude.
+ * @param {List<UserComment>} userComments a sentiment buckets list
+ *                           with userComment, score, and maginitude
+ * @return {String} Top high comment message.
+ */
+function toTooltipString(userComments) {
+  return userComments.map((comment) => userCommentAsString(comment))
+      .join('<br>');
+}
+
+/**
+ * Convert a userComment object to html format
+ * @param {*} comment a user comment with high magnitude score
+ * @return {String} HTML format to display its message and magnitude
+ */
 function userCommentAsString(comment) {
-  commentMagnitude = comment.magnitude;
+  commentMagnitude = comment.magnitudeScore;
   return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
 }
 
+/**
+ * Convert a Range object to a string
+ * @param {JSON} range json object of java Range object
+ * @return {String} the given object in string form
+ */
 function convertRangeToString(range) {
   return range.inclusiveStart + ' to ' + range.exclusiveEnd;
 }
 
-function adjust(amount) {
-  return '#' + START_COLOR.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(START_COLOR, 16) + amount)).toString(16)).substr(-2));
+/**
+ * Display loading image
+ */
+function showLoadingGif() {
+  const loadImage = document.getElementById('loading-img');
+  loadImage.style.display = 'block';
 }
+
+/**
+ * Hide loading image
+ */
+function hideLoadingGif() {
+  const loadImage = document.getElementById('loading-img');
+  loadImage.style.display = 'none';
+}
+
 function toColorStyle(columnNum) {
   console.log(adjust(columnNum*10));
   return 'fill-color:blue; fill-opacity:' + (1-columnNum*(0.1));
 }
-
