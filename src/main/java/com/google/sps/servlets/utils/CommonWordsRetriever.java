@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /** Class that provides commonly used words that should be ignored within the word map */
@@ -29,7 +28,8 @@ public class CommonWordsRetriever {
   /** Populate a list of strings from a text file containing the words to ignore in the word map */
   private static List<String> populateWordList() {
     List<String> commonWords = new ArrayList<String>();
-    String fileName = System.getProperty("user.dir") + System.getProperty("resources-folder") + filePath;
+    String fileName =
+        System.getProperty("user.dir") + System.getProperty("resources-folder") + filePath;
     System.out.println(fileName);
     try {
       return Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
@@ -42,19 +42,19 @@ public class CommonWordsRetriever {
     return new ArrayList<String>(commonWordsList);
   }
 
-//  /**
-//   * Check if the current environment is JUnit Test or not
-//   *
-//   * @return True if in Junit test; otherwise false
-//   */
-//  public static boolean isJUnitTest() {
-//    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-//    List<StackTraceElement> list = Arrays.asList(stackTrace);
-//    for (StackTraceElement element : list) {
-//      if (element.getClassName().startsWith("org.junit.")) {
-//        return true;
-//      }
-//    }
-//    return false;
-//  }
+  //  /**
+  //   * Check if the current environment is JUnit Test or not
+  //   *
+  //   * @return True if in Junit test; otherwise false
+  //   */
+  //  public static boolean isJUnitTest() {
+  //    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+  //    List<StackTraceElement> list = Arrays.asList(stackTrace);
+  //    for (StackTraceElement element : list) {
+  //      if (element.getClassName().startsWith("org.junit.")) {
+  //        return true;
+  //      }
+  //    }
+  //    return false;
+  //  }
 }

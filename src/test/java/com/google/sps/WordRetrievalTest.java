@@ -15,9 +15,7 @@
 package com.google.sps;
 
 import com.google.sps.servlets.utils.CommonWordsRetriever;
-import java.io.File;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,11 +27,13 @@ import org.junit.runners.JUnit4;
 public class WordRetrievalTest {
   @Test
   public void testCommonWordContent() {
-    System.setProperty("resources-folder","/src/main/webapp");
+    System.setProperty("resources-folder", "/src/main/webapp");
     List<String> wordList = CommonWordsRetriever.getCommonWords();
     List<String> expectedList =
         Arrays.asList(
-           "a", "am", "an", "and", "are", "at", "be", "by", "can", "for", "for", "he", "her", "here", "his", "i", "in", "is", "it", "its", "my", "of", "on", "or", "she", "that", "the", "their", "there", "they", "this", "to", "was", "we", "were", "will", "your");
+            "a", "am", "an", "and", "are", "at", "be", "by", "can", "for", "for", "he", "her",
+            "here", "his", "i", "in", "is", "it", "its", "my", "of", "on", "or", "she", "that",
+            "the", "their", "there", "they", "this", "to", "was", "we", "were", "will", "your");
     Assert.assertEquals(expectedList, wordList);
   }
 }
