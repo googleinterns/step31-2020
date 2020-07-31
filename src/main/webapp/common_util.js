@@ -49,6 +49,14 @@ function clearElement(elementId) {
  * @returns API Key for YouTube Data API
  */
 function getApiKey() {
-  const reader = new FileReader();
-  return reader.readAsText('apiKey');
+  var reader = new FileReader();
+  var fileToRead = document.querySelector('common_util.js').files[0];
+
+  // Create event to be fired upon file being read
+  reader.addEventListener("loadend", function(){
+    console.log(reader.result);
+    return reader.result;
+  });
+
+  reader.readAsText(fileToRead);
 }
