@@ -23,8 +23,8 @@ public class UserComment {
   private String commentId;
   private String commentMsg;
   private DateTime publishDate;
-  private double magnitudeScore;
-  private double sentimentScore;
+  private Double magnitudeScore;
+  private Double sentimentScore;
 
   /**
    * Encapsulate a comment Thread into an User Comment object.
@@ -52,11 +52,11 @@ public class UserComment {
     this.sentimentScore = sentimentScore;
   }
 
-  public double getMagnitude() {
+  public Double getMagnitude() {
     return magnitudeScore;
   }
 
-  public double getScore() {
+  public Double getScore() {
     return sentimentScore;
   }
 
