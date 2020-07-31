@@ -19,6 +19,7 @@ const YOUTUBE_API_KEY = 'AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs';
  * Retrieve the most relevant video results from youtube url
  */
 function getVideoResults() {
+  document.getElementById('search-button').disabled = true;
   const tabResult = document.getElementById('tab_list');
   const contentResult = document.getElementById('info_list');
 

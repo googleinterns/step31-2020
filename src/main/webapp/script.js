@@ -54,7 +54,7 @@ async function getYouTubeComments(url) {
  */
 function onButtonPress() {
   $('#submit-link-btn').click(function() {
-    showLoadingGif();  
+    showLoadingGif();
     const urlInput = document.getElementById('link-input').value;
     updateUIWithVideoContext(urlInput);
     displayOverallResults(urlInput);
@@ -173,14 +173,15 @@ function convertRangeToString(range) {
  * Display loading image
  */
 function showLoadingGif() {
-  const loadImage = document.getElementById('loading-img');
-  loadImage.style.display = 'block';
+  $('#submit-link-btn').html('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...').addClass('disabled');
+  const loadImage = document.getElementById('video-results-loading-container');
+  loadImage.style.visibility = 'visible';
 }
 
 /**
  * Hide loading image
  */
 function hideLoadingGif() {
-  const loadImage = document.getElementById('loading-img');
-  loadImage.style.display = 'none';
+  const loadImage = document.getElementById('video-results-loading-container');
+  loadImage.style.visibility = 'hidden';
 }
