@@ -66,7 +66,7 @@ function onButtonPress() {
       updateUIWithVideoContext(urlInput);
       displayOverallResults(urlInput);
     } catch (err) {
-      displayError(err.message);
+      displayError(err);
     }
   });
 }
@@ -83,10 +83,11 @@ function toggleErrorOutput(mode) {
  * Sets error message to visible and gives details on specific error.
  * @param {String} message: the text to display.
  */
-function displayError(message) {
+function displayError(err) {
   hideLoadingGif();
   toggleErrorOutput('block');
-  document.getElementById('error-details').innerText = message;
+  document.getElementById('error-details').innerText = err.message;
+  console.log(err);
 }
 
 /**
@@ -109,7 +110,8 @@ async function displayOverallResults(url) {
     averageScore = commentStats.averageScore;
     averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
   } catch (err) {
-    displayError('Error in overall display: ' + err.message);
+    err.message = 'Error in overall display: ' + err.message;
+    displayError(err);
   }
 }
 
