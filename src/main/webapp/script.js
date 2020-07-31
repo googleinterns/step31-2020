@@ -159,7 +159,7 @@ function toTooltipString(userComments) {
  */
 function userCommentAsString(comment) {
   commentMagnitude = comment.magnitudeScore;
-  return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
+  return comment.commentMsg + '<br> Emotional Strength: ' + commentMagnitude;
 }
 
 /**
