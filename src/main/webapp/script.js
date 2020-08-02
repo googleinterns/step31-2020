@@ -54,7 +54,7 @@ async function getYouTubeComments(url) {
  */
 function onButtonPress() {
   $('#submit-link-btn').click(function() {
-    showLoadingGif();  
+    showLoadingGif();
     const urlInput = document.getElementById('link-input').value;
     updateUIWithVideoContext(urlInput);
     displayOverallResults(urlInput);
@@ -67,20 +67,21 @@ function onButtonPress() {
  */
 async function displayOverallResults(url) {
   // Clear all analysis containers
-  const averageContainer = document.getElementById('average-score-container');
-  averageContainer.innerHTML = '';
   clearElement('chart-container');
   clearElement('word-cloud-container');
+  // clearElement('average-score-container');
 
-  commentStats = await getYouTubeComments(url);
-  sentimentBucketList = commentStats.sentimentBucketList;
-  wordFrequencyMap = commentStats.wordFrequencyMap;
-  displaySentimentBucketChart(sentimentBucketList);
-  displayWordCloudChart(wordFrequencyMap);
+  // commentStats = await getYouTubeComments(url);
+  // sentimentBucketList = commentStats.sentimentBucketList;
+  // wordFrequencyMap = commentStats.wordFrequencyMap;
+  // displaySentimentBucketChart(sentimentBucketList);
+  // displayWordCloudChart(wordFrequencyMap);
 
-  hideLoadingGif();
+  // hideLoadingGif();
 
-  averageScore = commentStats.averageScore;
+  // averageScore = commentStats.averageScore;
+  // displayAvgScore(averageScore);
+  displayAvgScore(0.3);
   averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
 }
 
@@ -183,4 +184,28 @@ function showLoadingGif() {
 function hideLoadingGif() {
   const loadImage = document.getElementById('loading-img');
   loadImage.style.display = 'none';
+}
+/**
+ * @param {double} avgScore
+ */
+function displayAvgScore(avgScore) {
+  document.getElementById('average-score-container').style.visibility = 'visible';
+  document.getElementById('progress-bar').style.width = avgScore;
+  const progressBar = document.getElementById('progress-bar');
+  if (avgScore < -0.5) {
+    $('#progress-bar').class = 'progress-bar progress-bar-striped bg-danger';
+    $('#angry').style.display = 'block';
+  } else if (avgScore < -0.2) {
+    $('#progress-bar').class = "progress-bar progress-bar-striped bg-warning";
+    $('#frown').style.display = 'block';
+  } else if (avgScore < 0) {
+    $('#progress-bar').class = "progress-bar progress-bar-striped";
+    $('#neutral').style.display = 'block';
+  } else if (avgScore < 0.2) {
+    $('#progress-bar').class = "progress-bar progress-bar-striped bg-info";
+    $('#smile').style.display = 'block';
+  } else {
+    $('#progress-bar').class = "progress-bar progress-bar-striped bg-sucess";
+    $('#laugh').style.display = 'block';
+  }
 }

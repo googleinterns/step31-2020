@@ -14,3 +14,9 @@
   height: 300px;
   width: 300px;
 }
+
+#emoji-container {
+  height: 4rem;
+    align-items: center;
+    margin-left: 3rem;
+}
