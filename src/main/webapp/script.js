@@ -56,7 +56,7 @@ function onButtonPress() {
   $('#submit-link-btn').click(function() {
     try {
       $('#link-analysis > #error-surfacer').hide();
-      showLoadingGif('link-analysis');  
+      showLoadingGif('link-analysis');
       const urlInput = document.getElementById('link-input').value;
       updateUIWithVideoContext(urlInput, 'link-analysis');
       displayOverallResults(urlInput, 'link-analysis');
@@ -85,7 +85,8 @@ function displayError(err, divId) {
  */
 async function displayOverallResults(url, divId) {
   // Clear all analysis containers
-  const averageContainer = $('#' + divId + '> #average-score-container').html('');
+  const averageContainer = $('#' + divId + 
+    '> #average-score-container').html('');
   const chartContainer = $('#' + divId + '> #chart-container');
   const wordCloudContainer = $('#' + divId + '> #word-cloud-container');
   clearElement(chartContainer.attr('id'), divId);
@@ -96,7 +97,7 @@ async function displayOverallResults(url, divId) {
     wordFrequencyMap = commentStats.wordFrequencyMap;
     displaySentimentBucketChart(sentimentBucketList, divId);
     displayWordCloudChart(wordFrequencyMap, divId);
-    
+
     hideLoadingGif(divId);
 
     averageScore = commentStats.averageScore;
@@ -140,7 +141,8 @@ function displaySentimentBucketChart(sentimentBucketList, divId) {
   };
 
   const view = new google.visualization.DataView(CommentSentimentTable);
-  const chart = new google.visualization.ColumnChart($('#' + divId + '> #chart-container')[0]);
+  const chart = new google.visualization.ColumnChart($('#' + divId + 
+    '> #chart-container')[0]);
   chart.draw(view, options);
 }
 

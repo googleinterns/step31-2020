@@ -87,7 +87,7 @@ function addVideoInfo(video) {
   button.setAttribute('type', 'button');
   button.addEventListener('click', () => {
     try {
-      $('#search-analysis > #error-surfacer').hide();  
+      $('#search-analysis > #error-surfacer').hide();
       clearElement('tab_list');
       clearElement('info_list');
       showLoadingGif('search-analysis');
@@ -95,7 +95,7 @@ function addVideoInfo(video) {
       displayOverallResults(youtubeUrl, 'search-analysis');
     } catch (err) {
       displayError(err, 'search-analysis');
-    }  
+    }
   });
   button.value = 'Select!';
 
