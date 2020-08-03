@@ -86,11 +86,16 @@ function addVideoInfo(video) {
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
   button.addEventListener('click', () => {
-    clearElement('tab_list');
-    clearElement('info_list');
-    showLoadingGif('search-analysis');
-    updateUIWithVideoContext(youtubeUrl, 'search-analysis');
-    displayOverallResults(youtubeUrl, 'search-analysis');
+    try {
+      $('#search-analysis > #error-surfacer').hide();  
+      clearElement('tab_list');
+      clearElement('info_list');
+      showLoadingGif('search-analysis');
+      updateUIWithVideoContext(youtubeUrl, 'search-analysis');
+      displayOverallResults(youtubeUrl, 'search-analysis');
+    } catch (err) {
+      displayError(err, 'search-analysis');
+    }  
   });
   button.value = 'Select!';
 
