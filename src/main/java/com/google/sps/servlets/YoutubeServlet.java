@@ -46,6 +46,7 @@ public class YoutubeServlet extends HttpServlet {
       String url = request.getParameter(URL_PARAMETER);
       String numCommentsInput = request.getParameter(NUM_COMMENTS_PARAMETER);
       // If nothing is inputted, length of list is default, otherwise it's what was inputted.
+      // If input exceeds MAX_COMMENTS, change it to MAX_COMMENTS
       long numComments =
           (numCommentsInput != null) ? Math.min(Long.valueOf(numCommentsInput), MAX_COMMENTS) : DEFAULT_COMMENTS;
 
