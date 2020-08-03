@@ -30,7 +30,7 @@ async function getVideoContext(urlInput) {
  * @param {string} divId id of div to be altered
  */
 async function updateUIWithVideoContext(url, divId) {
-  var contextDiv = $('#' + divId + '> #video-context');
+  contextDiv = $('#' + divId + '> #video-context');
   clearElement(contextDiv.attr('id'), divId);
   videoContext = await getVideoContext(url);
   contextDiv.html(videoContextAsHTML(videoContext));

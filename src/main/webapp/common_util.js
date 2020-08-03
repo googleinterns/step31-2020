@@ -41,9 +41,9 @@ function extractYouTubeUrl(url) {
  */
 function clearElement(elementId, divId) {
   if (divId == undefined) {
-    var elem = document.getElementById(elementId);  
+    elem = document.getElementById(elementId);
   } else {
-    var elem = $('#' + divId + '> #' + elementId);
+    elem = $('#' + divId + '> #' + elementId);
   }
   while (elem != null && elem.lastChild) {
     elem.removeChild(elem.lastChild);
