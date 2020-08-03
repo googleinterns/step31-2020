@@ -26,7 +26,7 @@ public class KeyRetriever {
     try {
       return Files.readAllLines(Paths.get(keyPath), StandardCharsets.US_ASCII).get(0);
     } catch (IOException e) {
-      System.out.println("Error: API Key File could not be found or read.");
+      System.err.println("Error: API Key File could not be found or read.");
       e.printStackTrace();
       return null;
     }
