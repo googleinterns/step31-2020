@@ -78,7 +78,7 @@ function addVideoInfo(video) {
   cardBodyDiv.className = 'card-body';
   cardBodyDiv.innerHTML = '<p class="card-text">' +
     video.snippet.description + '</p';
-  cardDiv.innerHTML = '<iframe width="480" height="315"src=' + 'https://www.youtube.com/embed/'+video.id.videoId+ '?controls=0;' +
+  cardDiv.innerHTML = '<iframe id="search-video-frame" width="480" height="315"src=' + 'https://www.youtube.com/embed/'+video.id.videoId+ '?controls=1&disablekb=1;' +
     '></iframe>';
 
   // Create button to select the video
@@ -87,7 +87,7 @@ function addVideoInfo(video) {
   button.setAttribute('type', 'button');
   button.addEventListener('click', () => {
     clearElement('tab_list');
-    clearElement('info_list');
+    clearElement('info-list');
     showLoadingGif();
     updateUIWithVideoContext(youtubeUrl);
     displayOverallResults(youtubeUrl);
@@ -110,3 +110,4 @@ function getRequestUrl() {
   url = URL_STRUCTURE + userSearchInput + '&key=' + YOUTUBE_API_KEY;
   return url;
 }
+
