@@ -29,8 +29,8 @@ async function getVideoContext(urlInput) {
  * @param {string} url of the video being analyzed
  */
 async function updateUIWithVideoContext(url) {
+  clearElement('video-context');
   try {
-    clearElement('video-context');
     videoContext = await getVideoContext(url);
     document.getElementById('video-context').innerHTML =
     videoContextAsHTML(videoContext);
