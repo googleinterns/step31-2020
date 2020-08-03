@@ -37,9 +37,14 @@ function extractYouTubeUrl(url) {
 /**
  * Clear all children of an element
  * @param {String} elementId element name to be cleared
+ * @param {String} divId id of div that holds the element
  */
-function clearElement(elementId) {
-  const elem = document.getElementById(elementId);
+function clearElement(elementId, divId) {
+  if (divId == undefined) {
+    var elem = document.getElementById(elementId);  
+  } else {
+    var elem = $('#' + divId + '> #' + elementId);
+  }
   while (elem != null && elem.lastChild) {
     elem.removeChild(elem.lastChild);
   }

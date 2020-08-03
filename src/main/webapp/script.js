@@ -54,42 +54,45 @@ async function getYouTubeComments(url) {
  */
 function onButtonPress() {
   $('#submit-link-btn').click(function() {
-    showLoadingGif();  
+    showLoadingGif('link-analysis');  
     const urlInput = document.getElementById('link-input').value;
-    updateUIWithVideoContext(urlInput);
-    displayOverallResults(urlInput);
+    updateUIWithVideoContext(urlInput, 'link-analysis');
+    displayOverallResults(urlInput, 'link-analysis');
   });
 }
 
 /**
  * Fetches data and adds to html
  * @param {String} url youtube url to retrieve comments
+ * @param {string} divId id of div to be altered
  */
-async function displayOverallResults(url) {
+async function displayOverallResults(url, divId) {
   // Clear all analysis containers
-  const averageContainer = document.getElementById('average-score-container');
-  averageContainer.innerHTML = '';
-  clearElement('chart-container');
-  clearElement('word-cloud-container');
+  const averageContainer = $('#' + divId + '> #average-score-container').html('');
+  const chartContainer = $('#' + divId + '> #chart-container');
+  const wordCloudContainer = $('#' + divId + '> #word-cloud-container');
+  clearElement(chartContainer.attr('id'), divId);
+  clearElement(wordCloudContainer.attr('id'), divId);
 
   commentStats = await getYouTubeComments(url);
   sentimentBucketList = commentStats.sentimentBucketList;
   wordFrequencyMap = commentStats.wordFrequencyMap;
-  displaySentimentBucketChart(sentimentBucketList);
-  displayWordCloudChart(wordFrequencyMap);
+  displaySentimentBucketChart(sentimentBucketList, divId);
+  displayWordCloudChart(wordFrequencyMap, divId);
 
-  hideLoadingGif();
+  hideLoadingGif(divId);
 
   averageScore = commentStats.averageScore;
-  averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+  averageContainer.html('Average Sentiment Score: ' + averageScore);
 }
 
 /**
  * Create a bar chart of sentiment score interval, frequency
  * and high magnitude comments
  * @param {Array<sentimentBucket>} sentimentBucketList
+ * @param {string} divId id of div to be altered
  */
-function displaySentimentBucketChart(sentimentBucketList) {
+function displaySentimentBucketChart(sentimentBucketList, divId) {
   const CommentSentimentTable = new google.visualization.DataTable();
   CommentSentimentTable.addColumn('string', 'Sentiment Range');
   CommentSentimentTable.addColumn('number', 'Comment Count');
@@ -116,16 +119,16 @@ function displaySentimentBucketChart(sentimentBucketList) {
   };
 
   const view = new google.visualization.DataView(CommentSentimentTable);
-  const chart = new google.visualization.ColumnChart(
-      document.getElementById('chart-container'));
+  const chart = new google.visualization.ColumnChart($('#' + divId + '> #chart-container')[0]);
   chart.draw(view, options);
 }
 
 /**
  * Create a word cloud based on the number of appearance for each word
  * @param {Map} wordFrequencyMap that contains top words
+ * @param {string} divId id of div to be altered
  */
-function displayWordCloudChart(wordFrequencyMap) {
+function displayWordCloudChart(wordFrequencyMap, divId) {
   const data = [];
   Object.keys(wordFrequencyMap).forEach((wordKey) =>
     data.push({'x': wordKey, 'value': wordFrequencyMap[wordKey]}));
@@ -135,7 +138,7 @@ function displayWordCloudChart(wordFrequencyMap) {
   chart.title('Most Common Words in Comments');
   // Set array of angles to 0, make all the words display horizontally
   chart.angles([0]);
-  chart.container('word-cloud-container');
+  chart.container($('#' + divId + '> #word-cloud-container')[0]);
   chart.draw();
 };
 
@@ -171,16 +174,32 @@ function convertRangeToString(range) {
 
 /**
  * Display loading image
+ * @param {string} divId id of div to be altered
  */
-function showLoadingGif() {
-  const loadImage = document.getElementById('loading-img');
-  loadImage.style.display = 'block';
+function showLoadingGif(divId) {
+  $('#' + divId + '> #video-results-loading-container > #loading-img').show();
 }
 
 /**
  * Hide loading image
+ * @param {string} divId id of div to be altered
  */
-function hideLoadingGif() {
-  const loadImage = document.getElementById('loading-img');
-  loadImage.style.display = 'none';
+function hideLoadingGif(divId) {
+  $('#' + divId + '> #video-results-loading-container > #loading-img').hide();
+}
+
+/**
+ * Hide analysis from search tab
+ */
+function hideSearchInfo() {
+  $('#search-analysis').hide();
+  $('#link-analysis').show();
+}
+
+/**
+ * Hide analysis from link tab
+ */
+function hideLinkInfo() {
+  $('#link-analysis').hide();
+  $('#search-analysis').show();
 }

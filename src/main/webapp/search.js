@@ -88,9 +88,9 @@ function addVideoInfo(video) {
   button.addEventListener('click', () => {  
     clearElement('tab_list');
     clearElement('info_list');
-    showLoadingGif();
-    updateUIWithVideoContext(youtubeUrl);
-    displayOverallResults(youtubeUrl);
+    showLoadingGif('search-analysis');
+    updateUIWithVideoContext(youtubeUrl, "search-analysis");
+    displayOverallResults(youtubeUrl, "search-analysis");
   });
   button.value = 'Select!';
 
