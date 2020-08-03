@@ -48,7 +48,9 @@ public class YoutubeServlet extends HttpServlet {
       // If nothing is inputted, length of list is default, otherwise it's what was inputted.
       // If input exceeds MAX_COMMENTS, change it to MAX_COMMENTS
       long numComments =
-          (numCommentsInput != null) ? Math.min(Long.valueOf(numCommentsInput), MAX_COMMENTS) : DEFAULT_COMMENTS;
+          (numCommentsInput != null)
+              ? Math.min(Long.valueOf(numCommentsInput), MAX_COMMENTS)
+              : DEFAULT_COMMENTS;
 
       List<CommentThread> commentThreads =
           new YouTubeCommentRetriever().retrieveComments(url, numComments);
