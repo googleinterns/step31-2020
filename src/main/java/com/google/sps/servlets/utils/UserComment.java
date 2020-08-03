@@ -63,6 +63,9 @@ public class UserComment {
   public void setSentiment(Sentiment sentiment) {
     setMagnitude(sentiment.getMagnitude());
     setScore(sentiment.getScore());
+    System.out.println(commentMsg);
+    System.out.println(magnitudeScore);
+    System.out.println(sentimentScore);
   }
 
   public String getCommentMsg() {
