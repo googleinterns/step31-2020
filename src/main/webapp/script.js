@@ -15,6 +15,7 @@
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
 const SLIDER_NAME = 'num-comments-input';
+const ERROR_OUTPUT_ID = 'error-surfacer';
 
 google.charts.load('current', {'packages': ['corechart']});
 google.setOnLoadCallback(onButtonPress);
@@ -44,7 +45,7 @@ async function getYouTubeComments(url) {
   url = extractYouTubeUrl(url);
   const numComments = document.getElementById(SLIDER_NAME).value;
   const response = await fetch('/YouTubeComments?url=' + url +
-    '&numComments=' + numComments);
+      '&numComments=' + numComments);
   const comments = await response.json();
   return comments;
 }
@@ -54,11 +55,35 @@ async function getYouTubeComments(url) {
  */
 function onButtonPress() {
   $('#submit-link-btn').click(function() {
-    showLoadingGif('link-analysis');  
-    const urlInput = document.getElementById('link-input').value;
-    updateUIWithVideoContext(urlInput, 'link-analysis');
-    displayOverallResults(urlInput, 'link-analysis');
+    try {
+      toggleErrorOutput('none');
+      showLoadingGif('link-analysis');  
+      const urlInput = document.getElementById('link-input').value;
+      updateUIWithVideoContext(urlInput, 'link-analysis');
+      displayOverallResults(urlInput, 'link-analysis');
+    } catch (err) {
+      displayError(err);
+    }
   });
+}
+
+/**
+ * Toggles visibility of error message
+ * @param {String} mode: the display mode the erroroutput should be set to.
+ */
+function toggleErrorOutput(mode) {
+  document.getElementById(ERROR_OUTPUT_ID).style.display = mode;
+}
+
+/**
+ * Sets error message to visible and gives details on specific error.
+ * @param {String} error: the error to display and log.
+ */
+function displayError(err) {
+  hideLoadingGif();
+  toggleErrorOutput('block');
+  document.getElementById('error-details').innerText = err.message;
+  console.log(err);
 }
 
 /**
@@ -73,17 +98,21 @@ async function displayOverallResults(url, divId) {
   const wordCloudContainer = $('#' + divId + '> #word-cloud-container');
   clearElement(chartContainer.attr('id'), divId);
   clearElement(wordCloudContainer.attr('id'), divId);
+  try {
+    commentStats = await getYouTubeComments(url);
+    sentimentBucketList = commentStats.sentimentBucketList;
+    wordFrequencyMap = commentStats.wordFrequencyMap;
+    displaySentimentBucketChart(sentimentBucketList, divId);
+    displayWordCloudChart(wordFrequencyMap, divId);
+    
+    hideLoadingGif(divId);
 
-  commentStats = await getYouTubeComments(url);
-  sentimentBucketList = commentStats.sentimentBucketList;
-  wordFrequencyMap = commentStats.wordFrequencyMap;
-  displaySentimentBucketChart(sentimentBucketList, divId);
-  displayWordCloudChart(wordFrequencyMap, divId);
-
-  hideLoadingGif(divId);
-
-  averageScore = commentStats.averageScore;
-  averageContainer.html('Average Sentiment Score: ' + averageScore);
+    averageScore = commentStats.averageScore;
+    averageContainer.html('Average Sentiment Score: ' + averageScore);
+  } catch (err) {
+    err.message = 'Error in overall display: ' + err.message;
+    displayError(err);
+  }
 }
 
 /**

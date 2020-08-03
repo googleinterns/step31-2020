@@ -32,8 +32,12 @@ async function getVideoContext(urlInput) {
 async function updateUIWithVideoContext(url, divId) {
   contextDiv = $('#' + divId + '> #video-context');
   clearElement(contextDiv.attr('id'), divId);
-  videoContext = await getVideoContext(url);
-  contextDiv.html(videoContextAsHTML(videoContext));
+  try {
+    videoContext = await getVideoContext(url);
+    contextDiv.html(videoContextAsHTML(videoContext));
+  } catch (err) {
+    throw new Error('Error updating video context');
+  }
 }
 
 /**
