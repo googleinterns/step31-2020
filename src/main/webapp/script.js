@@ -104,7 +104,7 @@ async function displayOverallResults(url) {
     displayWordCloudChart(wordFrequencyMap);
     hideLoadingGif();
     averageScore = commentStats.averageScore;
-    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore.toFixed(2);
   } catch (err) {
     err.message = 'Error in overall display: ' + err.message;
     displayError(err);
