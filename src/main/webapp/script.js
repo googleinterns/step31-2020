@@ -15,6 +15,7 @@
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
 const SLIDER_NAME = 'num-comments-input';
+const ERROR_OUTPUT_ID = 'error-surfacer';
 
 google.charts.load('current', {'packages': ['corechart']});
 google.setOnLoadCallback(onButtonPress);
@@ -51,7 +52,7 @@ async function getYouTubeComments(url) {
   url = extractYouTubeUrl(url);
   const numComments = document.getElementById(SLIDER_NAME).value;
   const response = await fetch('/YouTubeComments?url=' + url +
-    '&numComments=' + numComments);
+      '&numComments=' + numComments);
   const comments = await response.json();
   return comments;
 }
@@ -61,11 +62,35 @@ async function getYouTubeComments(url) {
  */
 function onButtonPress() {
   $('#submit-link-btn').click(function() {
-    showLoadingGif();  
-    const urlInput = document.getElementById('link-input').value;
-    updateUIWithVideoContext(urlInput);
-    displayOverallResults(urlInput);
+    try {
+      toggleErrorOutput('none');
+      showLoadingGif();
+      const urlInput = document.getElementById('link-input').value;
+      updateUIWithVideoContext(urlInput);
+      displayOverallResults(urlInput);
+    } catch (err) {
+      displayError(err);
+    }
   });
+}
+
+/**
+ * Toggles visibility of error message
+ * @param {String} mode: the display mode the erroroutput should be set to.
+ */
+function toggleErrorOutput(mode) {
+  document.getElementById(ERROR_OUTPUT_ID).style.display = mode;
+}
+
+/**
+ * Sets error message to visible and gives details on specific error.
+ * @param {String} error: the error to display and log.
+ */
+function displayError(err) {
+  hideLoadingGif();
+  toggleErrorOutput('block');
+  document.getElementById('error-details').innerText = err.message;
+  console.log(err);
 }
 
 /**
@@ -78,17 +103,19 @@ async function displayOverallResults(url) {
   averageContainer.innerHTML = '';
   clearElement('chart-container');
   clearElement('word-cloud-container');
-
-  commentStats = await getYouTubeComments(url);
-  sentimentBucketList = commentStats.sentimentBucketList;
-  wordFrequencyMap = commentStats.wordFrequencyMap;
-  displaySentimentBucketChart(sentimentBucketList);
-  displayWordCloudChart(wordFrequencyMap);
-
-  hideLoadingGif();
-
-  averageScore = commentStats.averageScore;
-  averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+  try {
+    commentStats = await getYouTubeComments(url);
+    sentimentBucketList = commentStats.sentimentBucketList;
+    wordFrequencyMap = commentStats.wordFrequencyMap;
+    displaySentimentBucketChart(sentimentBucketList);
+    displayWordCloudChart(wordFrequencyMap);
+    hideLoadingGif();
+    averageScore = commentStats.averageScore;
+    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+  } catch (err) {
+    err.message = 'Error in overall display: ' + err.message;
+    displayError(err);
+  }
 }
 
 /**

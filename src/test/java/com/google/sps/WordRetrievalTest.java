@@ -27,11 +27,13 @@ import org.junit.runners.JUnit4;
 public class WordRetrievalTest {
   @Test
   public void testCommonWordContent() {
+    System.setProperty("resources-folder", "/src/main/webapp");
     List<String> wordList = CommonWordsRetriever.getCommonWords();
     List<String> expectedList =
         Arrays.asList(
-            "a", "am", "and", "are", "at", "by", "can", "for", "i", "is", "it", "its", "my", "of",
-            "or", "the", "this", "to", "was", "we");
+            "a", "am", "an", "and", "are", "at", "be", "by", "can", "for", "for", "he", "her",
+            "here", "his", "i", "in", "is", "it", "its", "my", "of", "on", "or", "she", "that",
+            "the", "their", "there", "they", "this", "to", "was", "we", "were", "will", "your");
     Assert.assertEquals(expectedList, wordList);
   }
 }
