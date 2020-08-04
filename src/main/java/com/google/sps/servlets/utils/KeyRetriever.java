@@ -24,7 +24,8 @@ public class KeyRetriever {
       System.getProperty("user.dir") + System.getProperty("resources-folder") + "/apiKey";
   /**
    * Reads the API Key from a file
-   * @return {String} the api key 
+   *
+   * @return {String} the api key
    */
   public static String getApiKey() {
     try {
