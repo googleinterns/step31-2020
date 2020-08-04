@@ -53,11 +53,13 @@ async function getYouTubeComments(url) {
  * Wrapper function for preparing onClick function
  */
 function onButtonPress() {
-  $('#submit-link-btn').click(function() {
+  $('#submit-link-btn').click(async function() {
+    disableLoadingButton('submit-link-btn');
     showLoadingGif();
     const urlInput = document.getElementById('link-input').value;
     updateUIWithVideoContext(urlInput);
-    displayOverallResults(urlInput);
+    await displayOverallResults(urlInput);
+    enableLoadingButton('submit-link-btn');
   });
 }
 
@@ -82,6 +84,7 @@ async function displayOverallResults(url) {
 
   averageScore = commentStats.averageScore;
   averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+  enableLoadingButton('submit-link-btn');
 }
 
 /**
@@ -173,10 +176,6 @@ function convertRangeToString(range) {
  * Display loading image
  */
 function showLoadingGif() {
-  $('#submit-link-btn')
-      .html('<span class="spinner-border spinner-border-sm mr-2 "' +
-            'role="status" aria-hidden="true"></span>Loading...')
-      .addClass('disabled');
   const loadImage = document.getElementById('video-results-loading-container');
   loadImage.style.visibility = 'visible';
 }

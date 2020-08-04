@@ -44,3 +44,22 @@ function clearElement(elementId) {
     elem.removeChild(elem.lastChild);
   }
 }
+
+/**
+ * Diable the button for further click and search
+ */
+function disableLoadingButton(buttonName) {
+  console.log("wft");
+  document.getElementById(buttonName).innerHTML = '<span class="spinner-border spinner-border-sm mr-2 "' +
+            'role="status" aria-hidden="true"></span>Loading...';
+  document.getElementById(buttonName).disabled = true;
+}
+
+/**
+ * Enable the button for further click and search
+ */
+async function enableLoadingButton(buttonName) {
+  console.log("enable gets called");
+  document.getElementById(buttonName).innerHTML = 'Done!';
+  document.getElementById(buttonName).disabled = false;
+}
