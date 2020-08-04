@@ -131,7 +131,8 @@ function displaySentimentBucketChart(sentimentBucketList, idPrefix) {
 
     CommentSentimentTable.addRow([rangeAsString,
       currentSentimentBucket.frequency,
-      toTooltipString(highestMagnitudeComments)]);
+      toTooltipString(highestMagnitudeComments),
+      toColorStyle(i)]);
   }
 
   const options = {
@@ -140,6 +141,7 @@ function displaySentimentBucketChart(sentimentBucketList, idPrefix) {
     'height': CHART_HEIGHT,
     'bar': {groupWidth: '100'},
     'tooltip': {isHtml: true},
+    'animation': {'startup': true, 'duration': 1000},
   };
 
   const view = new google.visualization.DataView(CommentSentimentTable);
@@ -185,7 +187,7 @@ function toTooltipString(userComments) {
  */
 function userCommentAsString(comment) {
   commentMagnitude = comment.magnitudeScore;
-  return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
+  return comment.commentMsg + '<br> Emotional Strength: ' + commentMagnitude;
 }
 
 /**
@@ -227,4 +229,13 @@ function hideSearchInfo() {
 function hideLinkInfo() {
   $('#link-analysis').hide();
   $('#search-analysis').show();
+}
+
+/**
+ * Change the opacity of each column bar
+ * @param {Integer} columnNum index of the column from lowest to highest
+ * @return {String} the style property of each column
+ */
+function toColorStyle(columnNum) {
+  return 'fill-color:blue; fill-opacity:' + (1 - columnNum * (0.1));
 }
