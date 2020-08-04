@@ -19,7 +19,14 @@ const SLIDER_NAME = 'num-comments-input';
 google.charts.load('current', {'packages': ['corechart']});
 google.setOnLoadCallback(onButtonPress);
 
-window.onload = initCommentSlider;
+window.onload = initializeApplication;
+/**
+ * Set up everything that needs to be oriented before application running
+ */
+function initializeApplication() {
+  initCommentSlider();
+  retrieveApiKey();
+}
 
 /**
  * Initialize comment slider, used for choosing

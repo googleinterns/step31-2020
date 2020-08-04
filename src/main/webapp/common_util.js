@@ -45,15 +45,3 @@ function clearElement(elementId) {
   }
 }
 
-/**
- * @return API Key for YouTube Data API
- */
-function getApiKey() {
-  $(function() {
-    $.get('apiKey', function(data) {
-      return data;
-    });
-  });
-}
-
-

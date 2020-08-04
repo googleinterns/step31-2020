@@ -13,7 +13,7 @@
 // limitations under the License.
 
 const URL_STRUCTURE = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=';
-const YOUTUBE_API_KEY = getApiKey();
+var YOUTUBE_API_KEY;
 /**
  * Retrieve the most relevant video results from youtube url
  */
@@ -108,4 +108,15 @@ function getRequestUrl() {
   userSearchInput = document.getElementById('search-input').value;
   url = URL_STRUCTURE + userSearchInput + '&key=' + YOUTUBE_API_KEY;
   return url;
+}
+
+/**
+ * Set apiKey variable to data read from file
+ */
+function retrieveApiKey() {
+  $(function() {
+    $.get('apiKey', function(data) {
+      YOUTUBE_API_KEY = data;
+    });
+  });
 }
