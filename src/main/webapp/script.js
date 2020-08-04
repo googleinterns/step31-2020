@@ -15,6 +15,8 @@
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
 const SLIDER_NAME = 'num-comments-input';
+const LINK_ID_PREFIX = 'link-';
+const SEARCH_ID_PREFIX = 'search-';
 
 google.charts.load('current', {'packages': ['corechart']});
 google.setOnLoadCallback(onButtonPress);
@@ -56,12 +58,12 @@ function onButtonPress() {
   $('#submit-link-btn').click(function() {
     try {
       document.getElementById('link-error-surfacer').display = 'none';
-      showLoadingGif('link-');
-      const urlInput = document.getElementById('link-input').value;
-      updateUIWithVideoContext(urlInput, 'link-');
-      displayOverallResults(urlInput, 'link-');
+      showLoadingGif(LINK_ID_PREFIX);
+      const urlInput = document.getElementById(LINK_ID_PREFIX).value;
+      updateUIWithVideoContext(urlInput, LINK_ID_PREFIX);
+      displayOverallResults(urlInput, LINK_ID_PREFIX);
     } catch (err) {
-      displayError(err, 'link-');
+      displayError(err, LINK_ID_PREFIX);
     }
   });
 }

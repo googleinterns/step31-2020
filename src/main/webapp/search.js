@@ -90,11 +90,11 @@ function addVideoInfo(video) {
       document.getElementById('search-error-surfacer').style.display = 'none';
       clearElement('tab_list');
       clearElement('info_list');
-      showLoadingGif('search-');
-      updateUIWithVideoContext(youtubeUrl, 'search-');
-      displayOverallResults(youtubeUrl, 'search-');
+      showLoadingGif(SEARCH_ID_PREFIX);
+      updateUIWithVideoContext(youtubeUrl, SEARCH_ID_PREFIX);
+      displayOverallResults(youtubeUrl, SEARCH_ID_PREFIX);
     } catch (err) {
-      displayError(err, 'search-');
+      displayError(err, SEARCH_ID_PREFIX);
     }
   });
   button.value = 'Select!';
