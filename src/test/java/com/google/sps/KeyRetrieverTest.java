@@ -16,9 +16,7 @@ package com.google.sps;
 
 import com.google.sps.servlets.utils.KeyRetriever;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -27,9 +25,9 @@ public class KeyRetrieverTest {
 
   @Test
   public void testKeyRetrieval() {
-      String key = KeyRetriever.getApiKey();
-      // No way of checking if Key is actually right key without having it in this file
-      // Rather, ensure it is not null, therefore indicating no error has been thrown.
-      Assert.assertTrue(key!=null);
+    String key = KeyRetriever.getApiKey();
+    // No way of checking if Key is actually right key without having it in this file
+    // Rather, ensure it is not null, therefore indicating no error has been thrown.
+    Assert.assertTrue(key != null);
   }
 }
