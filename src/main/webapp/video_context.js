@@ -32,6 +32,7 @@ async function getVideoContext(urlInput) {
 async function updateUIWithVideoContext(url, idPrefix) {
   contextDiv = document.getElementById(idPrefix + 'video-context');
   clearElement(idPrefix + 'video-context');
+  clearElement('video-embed');
   try {
     videoContext = await getVideoContext(url);
     contextDiv.innerHTML = videoContextAsHTML(videoContext);

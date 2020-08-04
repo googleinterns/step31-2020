@@ -60,6 +60,8 @@ function onButtonPress() {
       showLoadingGif('link-');
       const urlInput = document.getElementById('link-input').value;
       updateUIWithVideoContext(urlInput, 'link-');
+      document.getElementById('video-embed').innerHTML = '<iframe width="500" height="300"src=' + 'https://www.youtube.com/embed/'+ extractYouTubeUrl(urlInput)+ '?controls=0;' +
+  '></iframe>';
       displayOverallResults(urlInput, 'link-');
       enableLoadingButton('submit-link-btn');
     } catch (err) {
@@ -122,6 +124,7 @@ function displaySentimentBucketChart(sentimentBucketList, idPrefix) {
   CommentSentimentTable.addColumn('number', 'Comment Count');
   CommentSentimentTable.addColumn(
       {'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
+  CommentSentimentTable.addColumn({type: 'string', role: 'style'});    
 
   for (i = 0; i < sentimentBucketList.length; i++) {
     currentSentimentBucket = sentimentBucketList[i];

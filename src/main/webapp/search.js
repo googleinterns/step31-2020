@@ -79,8 +79,8 @@ function addVideoInfo(video) {
   cardBodyDiv.className = 'card-body';
   cardBodyDiv.innerHTML = '<p class="card-text">' +
     video.snippet.description + '</p';
-  cardDiv.innerHTML = '<IMG class="card-img-top" src=' +
-    video.snippet.thumbnails.high.url + ' alt="Card image cap">';
+  cardDiv.innerHTML = '<iframe id="search-video-frame" width="480" height="315"src=' + 'https://www.youtube.com/embed/'+video.id.videoId+ '?controls=1&disablekb=1;' +
+    '></iframe>';
 
   // Create button to select the video
   const button = document.createElement('INPUT');
@@ -117,3 +117,4 @@ function getRequestUrl() {
   url = URL_STRUCTURE + userSearchInput + '&key=' + YOUTUBE_API_KEY;
   return url;
 }
+
