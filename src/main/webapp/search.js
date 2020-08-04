@@ -19,6 +19,7 @@ const YOUTUBE_API_KEY = 'AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs';
  * Retrieve the most relevant video results from youtube url
  */
 function getVideoResults() {
+  disableLoadingButton('search-button');
   const tabResult = document.getElementById('tab_list');
   const contentResult = document.getElementById('info_list');
 
@@ -85,14 +86,15 @@ function addVideoInfo(video) {
   const button = document.createElement('INPUT');
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
-  button.addEventListener('click', () => {
+  button.addEventListener('click', async () => {
     try {
       document.getElementById('search-error-surfacer').style.display = 'none';
       clearElement('tab_list');
       clearElement('info_list');
       showLoadingGif('search-');
       updateUIWithVideoContext(youtubeUrl, 'search-');
-      displayOverallResults(youtubeUrl, 'search-');
+      await displayOverallResults(youtubeUrl, 'search-');
+      enableLoadingButton('search-button');
     } catch (err) {
       displayError(err, 'search-');
     }

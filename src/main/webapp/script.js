@@ -55,11 +55,13 @@ async function getYouTubeComments(url) {
 function onButtonPress() {
   $('#submit-link-btn').click(function() {
     try {
+      disableLoadingButton('submit-link-btn');  
       document.getElementById('link-error-surfacer').display = 'none';
       showLoadingGif('link-');
       const urlInput = document.getElementById('link-input').value;
       updateUIWithVideoContext(urlInput, 'link-');
       displayOverallResults(urlInput, 'link-');
+      enableLoadingButton('submit-link-btn');
     } catch (err) {
       displayError(err, 'link-');
     }
@@ -101,6 +103,7 @@ async function displayOverallResults(url, idPrefix) {
 
     averageScore = commentStats.averageScore;
     averageContainer.innerHMTL = 'Average Sentiment Score: ' + averageScore;
+    enableLoadingButton('submit-link-btn');
   } catch (err) {
     err.message = 'Error in overall display: ' + err.message;
     displayError(err, idPrefix);
@@ -199,7 +202,7 @@ function convertRangeToString(range) {
  * @param {string} idPrefix id of div to be altered
  */
 function showLoadingGif(idPrefix) {
-  document.getElementById(idPrefix + 'loading-img').style.display = 'block';
+  document.getElementById(idPrefix + 'video-results-loading-container').style.visibility = 'visible';
 }
 
 /**
@@ -207,7 +210,7 @@ function showLoadingGif(idPrefix) {
  * @param {string} idPrefix id of div to be altered
  */
 function hideLoadingGif(idPrefix) {
-  document.getElementById(idPrefix + 'loading-img').style.display = 'none';
+  document.getElementById(idPrefix + 'video-results-loading-container').style.visibility = 'hidden';
 }
 
 /**
