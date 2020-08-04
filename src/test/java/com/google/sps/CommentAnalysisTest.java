@@ -68,8 +68,10 @@
 //    *
 //    * @param userCommentList a list of userComment corresponding to each interval that have top N
 //    *     magnitude
-//    * @param frequency a list of frequency corresponding to each interval sorted in ascending order
-//    * @return constructed hashmap with keys as ranges based on intervals and values corresponding to
+//    * @param frequency a list of frequency corresponding to each interval sorted in ascending
+// order
+//    * @return constructed hashmap with keys as ranges based on intervals and values corresponding
+// to
 //    *     frequency input
 //    */
 //   private List<SentimentBucket> constructSentimentBucketListFromCommentList(
@@ -146,7 +148,8 @@
 //                 null,
 //                 null,
 //                 null));
-//     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0, 0));
+//     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 2, 0, 0,
+// 0));
 //     // Compute and test the score from mocked language service
 //     Statistics testStat = commentAnalysis.computeOverallStats(testCommentThreadList);
 //     Assert.assertNotNull(testStat);
@@ -181,7 +184,8 @@
 //                 null,
 //                 null,
 //                 null));
-//     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
+//     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0,
+// 0));
 //     Statistics highestStat = new Statistics(inputUserComment, 1);
 //     Assert.assertEquals(
 //         constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
@@ -211,7 +215,8 @@
 //                 null,
 //                 null,
 //                 null));
-//     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0, 0));
+//     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 2, 0, 0, 0,
+// 0));
 //     Statistics twoHighestStat = new Statistics(inputUserComment, 2);
 //     Assert.assertEquals(0.105, twoHighestStat.getAverageScore(), 0.01);
 //     Map<String, Integer> expectedMap =
@@ -248,7 +253,8 @@
 //                 null,
 //                 null,
 //                 new ArrayList<>(Arrays.asList(comment2))));
-//     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 0, 0, 0, 0, 1));
+//     List<Integer> expectedFrequency = new ArrayList<>(Arrays.asList(1, 0, 0, 0, 0, 0, 0, 0, 0,
+// 1));
 //     Statistics distStat = new Statistics(inputUserComment, 2);
 //     Assert.assertEquals(
 //         constructSentimentBucketListFromCommentList(expectedUserComment, expectedFrequency),
@@ -298,7 +304,8 @@
 //         "This is interesting. I am watching this <br> video. "
 //             + "This video is good. Where was this made? <br>";
 
-//     UserComment comment5 = new UserComment("005", sampleMsg, new DateTime(new Date()), -1.0, 0.4);
+//     UserComment comment5 = new UserComment("005", sampleMsg, new DateTime(new Date()), -1.0,
+// 0.4);
 //     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment5));
 //     Statistics commonWordComment = new Statistics(inputUserComment, 2);
 //     Map<String, Integer> expectedMap =
@@ -341,7 +348,8 @@
 //   public void testOneWordMap() {
 //     String singleMsg = "nice";
 
-//     UserComment comment7 = new UserComment("007", singleMsg, new DateTime(new Date()), -1.0, 0.4);
+//     UserComment comment7 = new UserComment("007", singleMsg, new DateTime(new Date()), -1.0,
+// 0.4);
 //     List<UserComment> inputUserComment = new ArrayList<>(Arrays.asList(comment7));
 //     Statistics singleComment = new Statistics(inputUserComment, 2);
 //     Map<String, Integer> expectedMap = new HashMap<String, Integer>();
