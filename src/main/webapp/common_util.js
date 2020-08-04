@@ -46,20 +46,21 @@ function clearElement(elementId) {
 }
 
 /**
- * Diable the button for further click and search
+ * Diable the button for further click and search.
+ * @param {String} buttonName the name of element of button to disable
  */
 function disableLoadingButton(buttonName) {
-  console.log("wft");
-  document.getElementById(buttonName).innerHTML = '<span class="spinner-border spinner-border-sm mr-2 "' +
+  document.getElementById(buttonName).innerHTML =
+  '<span class="spinner-border spinner-border-sm mr-2 "' +
             'role="status" aria-hidden="true"></span>Loading...';
   document.getElementById(buttonName).disabled = true;
 }
 
 /**
  * Enable the button for further click and search
+ * @param {String} buttonName the name of element of button to enable
  */
 async function enableLoadingButton(buttonName) {
-  console.log("enable gets called");
   document.getElementById(buttonName).innerHTML = 'Done!';
   document.getElementById(buttonName).disabled = false;
 }
