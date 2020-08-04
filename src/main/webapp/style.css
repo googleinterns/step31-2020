@@ -1,6 +1,6 @@
 #youtube-data {
   margin: auto;  
-  width: 750px;
+  width: 80vw;
   padding-top: 5vh;
   text-align: center;
 }
@@ -13,6 +13,12 @@
 #video-context {
   height: 300px;
   width: 300px;
+}
+#error-display-text {
+  color:rgb(255, 99, 71);
+}
+#error-details {
+  color:rgb(200, 80, 57);
 }
 #nav-tabContent {
   margin-top:8px;
