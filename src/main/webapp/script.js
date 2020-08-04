@@ -124,7 +124,7 @@ function displaySentimentBucketChart(sentimentBucketList, idPrefix) {
   CommentSentimentTable.addColumn('number', 'Comment Count');
   CommentSentimentTable.addColumn(
       {'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
-  CommentSentimentTable.addColumn({type: 'string', role: 'style'});    
+  CommentSentimentTable.addColumn({type: 'string', role: 'style'});
 
   for (i = 0; i < sentimentBucketList.length; i++) {
     currentSentimentBucket = sentimentBucketList[i];
