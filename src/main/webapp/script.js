@@ -81,11 +81,12 @@ function displayError(err, idPrefix) {
 /**
  * Fetches data and adds to html
  * @param {String} url youtube url to retrieve comments
- * @param {string} divId id of div to be altered
+ * @param {string} idPrefix id of div to be altered
  */
 async function displayOverallResults(url, idPrefix) {
   // Clear all analysis containers
-  const averageContainer = document.getElementById(idPrefix + 'average-score-container');
+  const averageContainer = document.getElementById(idPrefix 
+      + 'average-score-container');
   averageContainer.innerHTML = '';
   clearElement(idPrefix + 'chart-container');
   clearElement(idPrefix + 'word-cloud-container');
@@ -147,7 +148,7 @@ function displaySentimentBucketChart(sentimentBucketList, idPrefix) {
 /**
  * Create a word cloud based on the number of appearance for each word
  * @param {Map} wordFrequencyMap that contains top words
- * @param {string} divId id of div to be altered
+ * @param {string} idPrefix id of div to be altered
  */
 function displayWordCloudChart(wordFrequencyMap, idPrefix) {
   const data = [];
@@ -195,17 +196,17 @@ function convertRangeToString(range) {
 
 /**
  * Display loading image
- * @param {string} divId id of div to be altered
+ * @param {string} idPrefix id of div to be altered
  */
-function showLoadingGif(idPrefix) { 
+function showLoadingGif(idPrefix) {
   document.getElementById(idPrefix + 'loading-img').style.display = 'block';
 }
 
 /**
  * Hide loading image
- * @param {string} divId id of div to be altered
+ * @param {string} idPrefix id of div to be altered
  */
-function hideLoadingGif(idPrefix) {  
+function hideLoadingGif(idPrefix) {
   document.getElementById(idPrefix + 'loading-img').style.display = 'none';
 }
 
