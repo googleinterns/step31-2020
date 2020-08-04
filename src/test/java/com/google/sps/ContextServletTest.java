@@ -101,7 +101,8 @@
 //     // Test the expected and actual result
 //     verify(mockedRequest, atLeast(1)).getParameter(URL_PARAMETER);
 //     Assert.assertTrue(stringWriter.toString().contains("\"videoName\":\"" + TEST_TITLE + "\""));
-//     Assert.assertTrue(stringWriter.toString().contains("\"videoAuthor\":\"" + TEST_CHANNEL + "\""));
+//     Assert.assertTrue(stringWriter.toString().contains("\"videoAuthor\":\"" + TEST_CHANNEL +
+// "\""));
 //     Assert.assertTrue(stringWriter.toString().contains("\"numLikes\":" + NUM_LIKES_VAL));
 //     Assert.assertTrue(stringWriter.toString().contains("\"numDislikes\":" + NUM_DISLIKES_VAL));
 //     Assert.assertTrue(stringWriter.toString().contains("\"publishDateString\":"));
