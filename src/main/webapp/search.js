@@ -78,7 +78,7 @@ function addVideoInfo(video) {
   const cardBodyDiv = document.createElement('div');
   cardBodyDiv.className = 'card-body';
   cardBodyDiv.innerHTML = '<p class="card-text">' +
-    video.snippet.description + '</p';
+    video.snippet.description + '</p>';
   cardDiv.innerHTML = '<iframe id="search-video-frame" width="480" height="315"src=' + 'https://www.youtube.com/embed/'+video.id.videoId+ '?controls=1&disablekb=1;' +
     '></iframe>';
 

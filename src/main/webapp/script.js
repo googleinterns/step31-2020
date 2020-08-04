@@ -60,7 +60,7 @@ function onButtonPress() {
       showLoadingGif('link-');
       const urlInput = document.getElementById('link-input').value;
       updateUIWithVideoContext(urlInput, 'link-');
-      document.getElementById('video-embed').innerHTML = '<iframe width="500" height="300"src=' + 'https://www.youtube.com/embed/'+ extractYouTubeUrl(urlInput)+ '?controls=0;' +
+      document.getElementById('link-video-embed').innerHTML = '<iframe width="500" height="300"src=' + 'https://www.youtube.com/embed/'+ extractYouTubeUrl(urlInput)+ '?controls=0;' +
   '></iframe>';
       displayOverallResults(urlInput, 'link-');
       enableLoadingButton('submit-link-btn');
