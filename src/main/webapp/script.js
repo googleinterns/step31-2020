@@ -184,7 +184,6 @@ function showLoadingGif() {
  * Hide loading image
  */
 function hideLoadingGif() {
-  $('#submit-link-btn').html('Done!');
   const loadImage = document.getElementById('video-results-loading-container');
   loadImage.style.visibility = 'hidden';
 }
