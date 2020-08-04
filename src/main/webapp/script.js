@@ -55,13 +55,13 @@ async function getYouTubeComments(url) {
 function onButtonPress() {
   $('#submit-link-btn').click(function() {
     try {
-      $('#link-analysis > #error-surfacer').hide();
-      showLoadingGif('link-analysis');
+      document.getElementById('link-error-surfacer').display = 'none';
+      showLoadingGif('link-');
       const urlInput = document.getElementById('link-input').value;
-      updateUIWithVideoContext(urlInput, 'link-analysis');
-      displayOverallResults(urlInput, 'link-analysis');
+      updateUIWithVideoContext(urlInput, 'link-');
+      displayOverallResults(urlInput, 'link-');
     } catch (err) {
-      displayError(err, 'link-analysis');
+      displayError(err, 'link-');
     }
   });
 }
@@ -69,12 +69,12 @@ function onButtonPress() {
 /**
  * Sets error message to visible and gives details on specific error.
  * @param {String} err the error to display and log.
- * @param {String} divId the div to display error in
+ * @param {String} idPrefix the div to display error in
  */
-function displayError(err, divId) {
-  hideLoadingGif(divId);
-  $('#' + divId + '> #error-surfacer').show();
-  $('#' + divId + '> #error-details').html(err.message);
+function displayError(err, idPrefix) {
+  hideLoadingGif(idPrefix);
+  document.getElementById(idPrefix + 'error-surfacer').style.display = 'block';
+  document.getElementById(idPrefix + 'error-details').innerHTML = err.message;
   console.log(err);
 }
 
@@ -83,28 +83,26 @@ function displayError(err, divId) {
  * @param {String} url youtube url to retrieve comments
  * @param {string} divId id of div to be altered
  */
-async function displayOverallResults(url, divId) {
+async function displayOverallResults(url, idPrefix) {
   // Clear all analysis containers
-  const averageContainer = $('#' + divId + 
-    '> #average-score-container').html('');
-  const chartContainer = $('#' + divId + '> #chart-container');
-  const wordCloudContainer = $('#' + divId + '> #word-cloud-container');
-  clearElement(chartContainer.attr('id'), divId);
-  clearElement(wordCloudContainer.attr('id'), divId);
+  const averageContainer = document.getElementById(idPrefix + 'average-score-container');
+  averageContainer.innerHTML = '';
+  clearElement(idPrefix + 'chart-container');
+  clearElement(idPrefix + 'word-cloud-container');
   try {
     commentStats = await getYouTubeComments(url);
     sentimentBucketList = commentStats.sentimentBucketList;
     wordFrequencyMap = commentStats.wordFrequencyMap;
-    displaySentimentBucketChart(sentimentBucketList, divId);
-    displayWordCloudChart(wordFrequencyMap, divId);
+    displaySentimentBucketChart(sentimentBucketList, idPrefix);
+    displayWordCloudChart(wordFrequencyMap, idPrefix);
 
-    hideLoadingGif(divId);
+    hideLoadingGif(idPrefix);
 
     averageScore = commentStats.averageScore;
-    averageContainer.html('Average Sentiment Score: ' + averageScore);
+    averageContainer.innerHMTL = 'Average Sentiment Score: ' + averageScore;
   } catch (err) {
     err.message = 'Error in overall display: ' + err.message;
-    displayError(err, divId);
+    displayError(err, idPrefix);
   }
 }
 
@@ -112,9 +110,9 @@ async function displayOverallResults(url, divId) {
  * Create a bar chart of sentiment score interval, frequency
  * and high magnitude comments
  * @param {Array<sentimentBucket>} sentimentBucketList
- * @param {string} divId id of div to be altered
+ * @param {string} idPrefix id of div to be altered
  */
-function displaySentimentBucketChart(sentimentBucketList, divId) {
+function displaySentimentBucketChart(sentimentBucketList, idPrefix) {
   const CommentSentimentTable = new google.visualization.DataTable();
   CommentSentimentTable.addColumn('string', 'Sentiment Range');
   CommentSentimentTable.addColumn('number', 'Comment Count');
@@ -141,8 +139,8 @@ function displaySentimentBucketChart(sentimentBucketList, divId) {
   };
 
   const view = new google.visualization.DataView(CommentSentimentTable);
-  const chart = new google.visualization.ColumnChart($('#' + divId + 
-    '> #chart-container')[0]);
+  const chart = new google.visualization.ColumnChart(
+      document.getElementById(idPrefix + 'chart-container'));
   chart.draw(view, options);
 }
 
@@ -151,7 +149,7 @@ function displaySentimentBucketChart(sentimentBucketList, divId) {
  * @param {Map} wordFrequencyMap that contains top words
  * @param {string} divId id of div to be altered
  */
-function displayWordCloudChart(wordFrequencyMap, divId) {
+function displayWordCloudChart(wordFrequencyMap, idPrefix) {
   const data = [];
   Object.keys(wordFrequencyMap).forEach((wordKey) =>
     data.push({'x': wordKey, 'value': wordFrequencyMap[wordKey]}));
@@ -161,7 +159,7 @@ function displayWordCloudChart(wordFrequencyMap, divId) {
   chart.title('Most Common Words in Comments');
   // Set array of angles to 0, make all the words display horizontally
   chart.angles([0]);
-  chart.container($('#' + divId + '> #word-cloud-container')[0]);
+  chart.container(document.getElementById(idPrefix + 'word-cloud-container'));
   chart.draw();
 };
 
@@ -199,16 +197,16 @@ function convertRangeToString(range) {
  * Display loading image
  * @param {string} divId id of div to be altered
  */
-function showLoadingGif(divId) {
-  $('#' + divId + '> #video-results-loading-container > #loading-img').show();
+function showLoadingGif(idPrefix) { 
+  document.getElementById(idPrefix + 'loading-img').style.display = 'block';
 }
 
 /**
  * Hide loading image
  * @param {string} divId id of div to be altered
  */
-function hideLoadingGif(divId) {
-  $('#' + divId + '> #video-results-loading-container > #loading-img').hide();
+function hideLoadingGif(idPrefix) {  
+  document.getElementById(idPrefix + 'loading-img').style.display = 'none';
 }
 
 /**

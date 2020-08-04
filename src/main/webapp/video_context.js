@@ -29,13 +29,14 @@ async function getVideoContext(urlInput) {
  * @param {string} url of the video being analyzed
  * @param {string} divId id of div to be altered
  */
-async function updateUIWithVideoContext(url, divId) {
-  contextDiv = $('#' + divId + '> #video-context');
-  clearElement(contextDiv.attr('id'), divId);
+async function updateUIWithVideoContext(url, idPrefix) {
+  contextDiv = document.getElementById(idPrefix + 'video-context');  
+  clearElement(idPrefix + 'video-context');
   try {
     videoContext = await getVideoContext(url);
-    contextDiv.html(videoContextAsHTML(videoContext));
+    contextDiv.innerHTML = videoContextAsHTML(videoContext);
   } catch (err) {
+    console.log(err);  
     throw new Error('Error updating video context');
   }
 }

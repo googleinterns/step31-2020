@@ -87,14 +87,14 @@ function addVideoInfo(video) {
   button.setAttribute('type', 'button');
   button.addEventListener('click', () => {
     try {
-      $('#search-analysis > #error-surfacer').hide();
+      document.getElementById('search-error-surfacer').style.display = 'none';
       clearElement('tab_list');
       clearElement('info_list');
-      showLoadingGif('search-analysis');
-      updateUIWithVideoContext(youtubeUrl, 'search-analysis');
-      displayOverallResults(youtubeUrl, 'search-analysis');
+      showLoadingGif('search-');
+      updateUIWithVideoContext(youtubeUrl, 'search-');
+      displayOverallResults(youtubeUrl, 'search-');
     } catch (err) {
-      displayError(err, 'search-analysis');
+      displayError(err, 'search-');
     }
   });
   button.value = 'Select!';
