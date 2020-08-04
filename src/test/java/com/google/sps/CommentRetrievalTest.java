@@ -45,6 +45,8 @@ public class CommentRetrievalTest {
 
   // Simulate a CommentThreadListResponse with exactly as many comments as expected
   public void setUpYouTubeMocks(int numExpectedComments) throws Exception {
+    // For the API Key
+    System.setProperty("resources-folder", "/src/main/webapp");
     YouTube mockedYoutube = mock(YouTube.class, RETURNS_DEEP_STUBS);
     YouTube.CommentThreads.List mockedCommentThreadList =
         mock(YouTube.CommentThreads.List.class, RETURNS_DEEP_STUBS);

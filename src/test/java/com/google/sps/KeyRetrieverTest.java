@@ -25,6 +25,7 @@ public class KeyRetrieverTest {
 
   @Test
   public void testKeyRetrieval() {
+    System.setProperty("resources-folder", "/src/main/webapp");
     String key = KeyRetriever.getApiKey();
     // No way of checking if Key is actually right key without having it in this file
     // Rather, ensure it is not null, therefore indicating no error has been thrown.
