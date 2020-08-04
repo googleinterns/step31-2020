@@ -115,8 +115,7 @@ function displaySentimentBucketChart(sentimentBucketList) {
     'height': CHART_HEIGHT,
     'bar': {groupWidth: '100'},
     'tooltip': {isHtml: true},
-    'animation': {"startup": true,
-                   "duration": 200},
+    'animation': {'startup': true, 'duration': 1000},
   };
 
   const view = new google.visualization.DataView(CommentSentimentTable);
