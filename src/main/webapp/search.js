@@ -90,7 +90,6 @@ function addVideoInfo(video) {
   button.id = 'select-video-btn';
   button.addEventListener('click', async () => {
     try {
-      document.getElementById('select-video-btn').disabled = true;
       document.getElementById('search-error-surfacer').style.display = 'none';
       clearElement('tab_list');
       showLoadingGif('search-');

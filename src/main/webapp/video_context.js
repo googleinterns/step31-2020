@@ -35,6 +35,7 @@ async function updateUIWithVideoContext(url, idPrefix) {
     document.getElementById(idPrefix + 'video-embed').innerHTML = '<iframe width="500" height="415"src=' + 'https://www.youtube.com/embed/'+ extractYouTubeUrl(url)+ '?controls=0;' +
   '></iframe>';
   } else {
+    document.getElementById('select-video-btn').disabled = true;
     contextStr = 'tab_list';
   }
   contextDiv = document.getElementById(contextStr);
