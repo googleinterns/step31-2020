@@ -69,7 +69,7 @@ function onButtonPress() {
       updateUIWithVideoContext(urlInput, LINK_ID_PREFIX);
       document.getElementById('link-video-embed').innerHTML =
       '<iframe width="500" height="300"src=https://www.youtube.com/embed/'+
-      extractYouTubeUrl(urlInput)+ '?controls=0;' + '></iframe>';
+      extractYouTubeUrl(urlInput)+ '?controls=1&disablekb=1;' + '></iframe>';
       displayOverallResults(urlInput, LINK_ID_PREFIX);
     } catch (err) {
       displayError(err, LINK_ID_PREFIX);
