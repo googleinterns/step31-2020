@@ -87,11 +87,12 @@ function addVideoInfo(video) {
   const button = document.createElement('INPUT');
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
+  button.id = 'select-video-btn';
   button.addEventListener('click', async () => {
     try {
+      document.getElementById('select-video-btn').disabled = true;
       document.getElementById('search-error-surfacer').style.display = 'none';
       clearElement('tab_list');
-      // clearElement('info_list');
       showLoadingGif('search-');
       updateUIWithVideoContext(youtubeUrl, 'search-');
       await displayOverallResults(youtubeUrl, 'search-');

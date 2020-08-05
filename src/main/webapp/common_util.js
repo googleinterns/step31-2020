@@ -61,6 +61,6 @@ function disableLoadingButton(buttonName) {
  * @param {String} buttonName the name of element of button to enable
  */
 function enableLoadingButton(buttonName) {
-  document.getElementById(buttonName).innerHTML = 'Done!';
+  document.getElementById(buttonName).innerHTML = 'Search!';
   document.getElementById(buttonName).disabled = false;
 }
