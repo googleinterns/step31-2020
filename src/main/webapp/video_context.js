@@ -40,13 +40,10 @@ async function updateUIWithVideoContext(url, idPrefix) {
   contextDiv = document.getElementById(contextStr);
   clearElement(idPrefix + 'video-context');
   clearElement(idPrefix +'video-embed');
-   console.log(contextDiv);
   try {
     videoContext = await getVideoContext(url);
-    console.log(videoContext);
     contextDiv.innerHTML = videoContextAsHTML(videoContext);
   } catch (err) {
-    console.log(err);
     throw new Error('Error updating video context');
   }
 }
