@@ -15,7 +15,7 @@
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
 const SLIDER_NAME = 'num-comments-input';
-const ERROR_OUTPUT_ID = 'error-surfacer';
+const LINK_ID_PREFIX = 'link-';
 
 google.charts.load('current', {'packages': ['corechart']});
 google.setOnLoadCallback(onButtonPress);
@@ -56,58 +56,54 @@ async function getYouTubeComments(url) {
 function onButtonPress() {
   $('#submit-link-btn').click(function() {
     try {
-      toggleErrorOutput('none');
-      showLoadingGif();
+      document.getElementById('link-error-surfacer').display = 'none';
+      showLoadingGif(LINK_ID_PREFIX);
       const urlInput = document.getElementById('link-input').value;
-      updateUIWithVideoContext(urlInput);
-      displayOverallResults(urlInput);
+      updateUIWithVideoContext(urlInput, LINK_ID_PREFIX);
+      displayOverallResults(urlInput, LINK_ID_PREFIX);
     } catch (err) {
-      displayError(err);
+      displayError(err, LINK_ID_PREFIX);
     }
   });
 }
 
 /**
- * Toggles visibility of error message
- * @param {String} mode: the display mode the erroroutput should be set to.
- */
-function toggleErrorOutput(mode) {
-  document.getElementById(ERROR_OUTPUT_ID).style.display = mode;
-}
-
-/**
  * Sets error message to visible and gives details on specific error.
- * @param {String} error: the error to display and log.
+ * @param {String} err the error to display and log.
+ * @param {String} idPrefix prefix of div id to be altered
  */
-function displayError(err) {
-  hideLoadingGif();
-  toggleErrorOutput('block');
-  document.getElementById('error-details').innerText = err.message;
-  console.log(err);
+function displayError(err, idPrefix) {
+  hideLoadingGif(idPrefix);
+  document.getElementById(idPrefix + 'error-surfacer').style.display = 'block';
+  document.getElementById(idPrefix + 'error-details').innerHTML = err.message;
 }
 
 /**
  * Fetches data and adds to html
  * @param {String} url youtube url to retrieve comments
+ * @param {string} idPrefix prefix of div id to be altered
  */
-async function displayOverallResults(url) {
+async function displayOverallResults(url, idPrefix) {
   // Clear all analysis containers
-  const averageContainer = document.getElementById('average-score-container');
+  const averageContainer = document.getElementById(idPrefix +
+      'average-score-container');
   averageContainer.innerHTML = '';
-  clearElement('chart-container');
-  clearElement('word-cloud-container');
+  clearElement(idPrefix + 'chart-container');
+  clearElement(idPrefix + 'word-cloud-container');
   try {
     commentStats = await getYouTubeComments(url);
     sentimentBucketList = commentStats.sentimentBucketList;
     wordFrequencyMap = commentStats.wordFrequencyMap;
-    displaySentimentBucketChart(sentimentBucketList);
-    displayWordCloudChart(wordFrequencyMap);
-    hideLoadingGif();
+    displaySentimentBucketChart(sentimentBucketList, idPrefix);
+    displayWordCloudChart(wordFrequencyMap, idPrefix);
+
+    hideLoadingGif(idPrefix);
+
     averageScore = commentStats.averageScore;
     averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
   } catch (err) {
     err.message = 'Error in overall display: ' + err.message;
-    displayError(err);
+    displayError(err, idPrefix);
   }
 }
 
@@ -115,8 +111,9 @@ async function displayOverallResults(url) {
  * Create a bar chart of sentiment score interval, frequency
  * and high magnitude comments
  * @param {Array<sentimentBucket>} sentimentBucketList
+ * @param {string} idPrefix prefix of div id to be altered
  */
-function displaySentimentBucketChart(sentimentBucketList) {
+function displaySentimentBucketChart(sentimentBucketList, idPrefix) {
   const CommentSentimentTable = new google.visualization.DataTable();
   CommentSentimentTable.addColumn('string', 'Sentiment Range');
   CommentSentimentTable.addColumn('number', 'Comment Count');
@@ -147,15 +144,16 @@ function displaySentimentBucketChart(sentimentBucketList) {
 
   const view = new google.visualization.DataView(CommentSentimentTable);
   const chart = new google.visualization.ColumnChart(
-      document.getElementById('chart-container'));
+      document.getElementById(idPrefix + 'chart-container'));
   chart.draw(view, options);
 }
 
 /**
  * Create a word cloud based on the number of appearance for each word
  * @param {Map} wordFrequencyMap that contains top words
+ * @param {string} idPrefix prefix of div id to be altered
  */
-function displayWordCloudChart(wordFrequencyMap) {
+function displayWordCloudChart(wordFrequencyMap, idPrefix) {
   const data = [];
   Object.keys(wordFrequencyMap).forEach((wordKey) =>
     data.push({'x': wordKey, 'value': wordFrequencyMap[wordKey]}));
@@ -165,7 +163,7 @@ function displayWordCloudChart(wordFrequencyMap) {
   chart.title('Most Common Words in Comments');
   // Set array of angles to 0, make all the words display horizontally
   chart.angles([0]);
-  chart.container('word-cloud-container');
+  chart.container(document.getElementById(idPrefix + 'word-cloud-container'));
   chart.draw();
 };
 
@@ -201,18 +199,34 @@ function convertRangeToString(range) {
 
 /**
  * Display loading image
+ * @param {string} idPrefix prefix of div id to be altered
  */
-function showLoadingGif() {
-  const loadImage = document.getElementById('loading-img');
-  loadImage.style.display = 'block';
+function showLoadingGif(idPrefix) {
+  document.getElementById(idPrefix + 'loading-img').style.display = 'block';
 }
 
 /**
  * Hide loading image
+ * @param {string} idPrefix prefix of div id to be altered
  */
-function hideLoadingGif() {
-  const loadImage = document.getElementById('loading-img');
-  loadImage.style.display = 'none';
+function hideLoadingGif(idPrefix) {
+  document.getElementById(idPrefix + 'loading-img').style.display = 'none';
+}
+
+/**
+ * Hide analysis from search tab
+ */
+function hideSearchInfo() {
+  $('#search-analysis').hide();
+  $('#link-analysis').show();
+}
+
+/**
+ * Hide analysis from link tab
+ */
+function hideLinkInfo() {
+  $('#link-analysis').hide();
+  $('#search-analysis').show();
 }
 
 /**
