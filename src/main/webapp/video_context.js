@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const LINK_ID_PREFIX = 'link-';
+
 /**
  * Retrieve the context of a Youtube video
  * @param {String} urlInput inputted url of video
@@ -31,7 +33,7 @@ async function getVideoContext(urlInput) {
  */
 async function updateUIWithVideoContext(url, idPrefix) {
   // For link input cases,  embed the new video frame
-  if (idPrefix == 'link-') {
+  if (idPrefix == LINK_ID_PREFIX) {
     contextStr = idPrefix + 'video-context';
     document.getElementById(idPrefix + 'video-embed').innerHTML =
       '<iframe width="500" height="415"src=' + 'https://www.youtube.com/embed/'+ extractYouTubeUrl(url)+ '?controls=0;' +
