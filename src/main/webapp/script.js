@@ -237,3 +237,12 @@ function hideLinkInfo() {
   $('#link-analysis').hide();
   $('#search-analysis').show();
 }
+
+/**
+ * Change the opacity of each column bar
+ * @param {Integer} columnNum index of the column from lowest to highest
+ * @return {String} the style property of each column
+ */
+function toColorStyle(columnNum) {
+  return 'fill-color:blue; fill-opacity:' + (1 - columnNum * (0.1));
+}
