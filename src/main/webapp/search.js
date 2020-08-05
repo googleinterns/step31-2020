@@ -14,6 +14,7 @@
 
 const URL_STRUCTURE = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=';
 const YOUTUBE_API_KEY = 'AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs';
+const SEARCH_ID_PREFIX = 'search-';
 
 /**
  * Retrieve the most relevant video results from youtube url

@@ -16,7 +16,6 @@ const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
 const SLIDER_NAME = 'num-comments-input';
 const LINK_ID_PREFIX = 'link-';
-const SEARCH_ID_PREFIX = 'search-';
 
 google.charts.load('current', {'packages': ['corechart']});
 google.setOnLoadCallback(onButtonPress);
