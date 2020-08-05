@@ -95,8 +95,8 @@ public class Statistics {
                         .replaceAll("[^a-zA-Z0-9\\s]", "")
                         .toLowerCase()
                         .split("\\s+"))
-                        .flatMap(wordArray -> Arrays.stream(wordArray))
-                        .filter(word -> !(wordsToIgnore.contains(word) || word.equals("")));
+            .flatMap(wordArray -> Arrays.stream(wordArray))
+            .filter(word -> !(wordsToIgnore.contains(word) || word.equals("")));
     // Group and sum the appearances of each word
     Map<String, Integer> wordPairMap =
         allWordStream.collect(
