@@ -58,7 +58,7 @@ function onButtonPress() {
     try {
       document.getElementById('link-error-surfacer').display = 'none';
       showLoadingGif(LINK_ID_PREFIX);
-      const urlInput = document.getElementById(LINK_ID_PREFIX).value;
+      const urlInput = document.getElementById('link-input').value;
       updateUIWithVideoContext(urlInput, LINK_ID_PREFIX);
       displayOverallResults(urlInput, LINK_ID_PREFIX);
     } catch (err) {
@@ -76,7 +76,6 @@ function displayError(err, idPrefix) {
   hideLoadingGif(idPrefix);
   document.getElementById(idPrefix + 'error-surfacer').style.display = 'block';
   document.getElementById(idPrefix + 'error-details').innerHTML = err.message;
-  console.log(err);
 }
 
 /**
