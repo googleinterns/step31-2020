@@ -71,7 +71,7 @@ function onButtonPress() {
 /**
  * Sets error message to visible and gives details on specific error.
  * @param {String} err the error to display and log.
- * @param {String} idPrefix the div to display error in
+ * @param {String} idPrefix prefix of div id to be altered
  */
 function displayError(err, idPrefix) {
   hideLoadingGif(idPrefix);
@@ -83,12 +83,12 @@ function displayError(err, idPrefix) {
 /**
  * Fetches data and adds to html
  * @param {String} url youtube url to retrieve comments
- * @param {string} idPrefix id of div to be altered
+ * @param {string} idPrefix prefix of div id to be altered
  */
 async function displayOverallResults(url, idPrefix) {
   // Clear all analysis containers
-  const averageContainer = document.getElementById(idPrefix 
-      + 'average-score-container');
+  const averageContainer = document.getElementById(idPrefix +
+      'average-score-container');
   averageContainer.innerHTML = '';
   clearElement(idPrefix + 'chart-container');
   clearElement(idPrefix + 'word-cloud-container');
@@ -102,7 +102,7 @@ async function displayOverallResults(url, idPrefix) {
     hideLoadingGif(idPrefix);
 
     averageScore = commentStats.averageScore;
-    averageContainer.innerHMTL = 'Average Sentiment Score: ' + averageScore;
+    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
   } catch (err) {
     err.message = 'Error in overall display: ' + err.message;
     displayError(err, idPrefix);
@@ -113,7 +113,7 @@ async function displayOverallResults(url, idPrefix) {
  * Create a bar chart of sentiment score interval, frequency
  * and high magnitude comments
  * @param {Array<sentimentBucket>} sentimentBucketList
- * @param {string} idPrefix id of div to be altered
+ * @param {string} idPrefix prefix of div id to be altered
  */
 function displaySentimentBucketChart(sentimentBucketList, idPrefix) {
   const CommentSentimentTable = new google.visualization.DataTable();
@@ -150,7 +150,7 @@ function displaySentimentBucketChart(sentimentBucketList, idPrefix) {
 /**
  * Create a word cloud based on the number of appearance for each word
  * @param {Map} wordFrequencyMap that contains top words
- * @param {string} idPrefix id of div to be altered
+ * @param {string} idPrefix prefix of div id to be altered
  */
 function displayWordCloudChart(wordFrequencyMap, idPrefix) {
   const data = [];
@@ -198,7 +198,7 @@ function convertRangeToString(range) {
 
 /**
  * Display loading image
- * @param {string} idPrefix id of div to be altered
+ * @param {string} idPrefix prefix of div id to be altered
  */
 function showLoadingGif(idPrefix) {
   document.getElementById(idPrefix + 'loading-img').style.display = 'block';
@@ -206,7 +206,7 @@ function showLoadingGif(idPrefix) {
 
 /**
  * Hide loading image
- * @param {string} idPrefix id of div to be altered
+ * @param {string} idPrefix prefix of div id to be altered
  */
 function hideLoadingGif(idPrefix) {
   document.getElementById(idPrefix + 'loading-img').style.display = 'none';
