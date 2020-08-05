@@ -90,9 +90,9 @@ function addVideoInfo(video) {
     try {
       document.getElementById('search-error-surfacer').style.display = 'none';
       clearElement('tab_list');
-      showLoadingGif('search-');
+      showLoadingGif(SEARCH_ID_PREFIX);
       updateUIWithVideoContext(youtubeUrl, SEARCH_ID_PREFIX);
-      await displayOverallResults(youtubeUrl, SEARCH_ID_PREFIX);
+      displayOverallResults(youtubeUrl, SEARCH_ID_PREFIX);
     } catch (err) {
       displayError(err, SEARCH_ID_PREFIX);
     }
