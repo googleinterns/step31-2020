@@ -67,6 +67,9 @@ function onButtonPress() {
       showLoadingGif(LINK_ID_PREFIX);
       const urlInput = document.getElementById('link-input').value;
       updateUIWithVideoContext(urlInput, LINK_ID_PREFIX);
+      document.getElementById('link-video-embed').innerHTML =
+      '<iframe width="500" height="300"src=https://www.youtube.com/embed/'+
+      extractYouTubeUrl(urlInput)+ '?controls=0;' + '></iframe>';
       displayOverallResults(urlInput, LINK_ID_PREFIX);
     } catch (err) {
       displayError(err, LINK_ID_PREFIX);

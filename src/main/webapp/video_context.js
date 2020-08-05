@@ -29,6 +29,7 @@ async function getVideoContext(urlInput) {
  * @param {string} url of the video being analyzed
  * @param {string} idPrefix id of div to be altered
  */
+<<<<<<< HEAD
 async function updateUIWithVideoContext(url, idPrefix) {
   // For link input cases,  embed the new video frame
   if (idPrefix == 'link-') {
@@ -50,6 +51,14 @@ async function updateUIWithVideoContext(url, idPrefix) {
   } catch (err) {
     throw new Error('Error updating video context');
   }
+=======
+async function updateUIWithVideoContext(url) {
+  clearElement('video-context');
+  clearElement('video-embed');
+  videoContext = await getVideoContext(url);
+  document.getElementById('video-context').innerHTML =
+  videoContextAsHTML(videoContext);
+>>>>>>> a310fed6d6c78d7388fc39e06d855132bad30513
 }
 
 /**
