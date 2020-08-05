@@ -100,7 +100,7 @@ async function displayOverallResults(url, idPrefix) {
     hideLoadingGif(idPrefix);
 
     averageScore = commentStats.averageScore;
-    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
+    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore.toFixed(2);
   } catch (err) {
     err.message = 'Error in overall display: ' + err.message;
     displayError(err, idPrefix);
@@ -185,7 +185,7 @@ function toTooltipString(userComments) {
  */
 function userCommentAsString(comment) {
   commentMagnitude = comment.magnitudeScore;
-  return comment.commentMsg + '<br> Emotional Strength: ' + commentMagnitude;
+  return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude.toFixed(2);
 }
 
 /**
