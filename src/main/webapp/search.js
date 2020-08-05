@@ -14,6 +14,7 @@
 
 const URL_STRUCTURE = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=';
 var YOUTUBE_API_KEY;
+const SEARCH_ID_PREFIX = 'search-';
 /**
  * Retrieve the most relevant video results from youtube url
  */
@@ -84,12 +85,17 @@ function addVideoInfo(video) {
   const button = document.createElement('INPUT');
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
-  button.addEventListener('click', () => {  
-    clearElement('tab_list');
-    clearElement('info_list');
-    showLoadingGif();
-    updateUIWithVideoContext(youtubeUrl);
-    displayOverallResults(youtubeUrl);
+  button.addEventListener('click', () => {
+    try {
+      document.getElementById('search-error-surfacer').style.display = 'none';
+      clearElement('tab_list');
+      clearElement('info_list');
+      showLoadingGif(SEARCH_ID_PREFIX);
+      updateUIWithVideoContext(youtubeUrl, SEARCH_ID_PREFIX);
+      displayOverallResults(youtubeUrl, SEARCH_ID_PREFIX);
+    } catch (err) {
+      displayError(err, SEARCH_ID_PREFIX);
+    }
   });
   button.value = 'Select!';
 

@@ -39,7 +39,7 @@ function extractYouTubeUrl(url) {
  * @param {String} elementId element name to be cleared
  */
 function clearElement(elementId) {
-  const elem = document.getElementById(elementId);
+  elem = document.getElementById(elementId);
   while (elem != null && elem.lastChild) {
     elem.removeChild(elem.lastChild);
   }
