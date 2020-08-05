@@ -20,7 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class KeyRetriever {
-  private static String keyPath = 
+  private static String keyPath =
       System.getProperty("user.dir") + System.getProperty("resources-folder") + "/apiKey";
   /**
    * Reads the API Key from a file
