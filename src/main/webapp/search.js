@@ -13,8 +13,8 @@
 // limitations under the License.
 
 const URL_STRUCTURE = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=';
-const YOUTUBE_API_KEY = 'AIzaSyDYfjWcy1hEe0V7AyaYzgIQm_rT-9XbiGs';
-
+var YOUTUBE_API_KEY;
+const SEARCH_ID_PREFIX = 'search-';
 /**
  * Retrieve the most relevant video results from youtube url
  */
@@ -86,13 +86,18 @@ function addVideoInfo(video) {
   const button = document.createElement('INPUT');
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
-  button.addEventListener('click', async () => {
-    clearElement('tab_list');
-    clearElement('info_list');
-    showLoadingGif();
-    updateUIWithVideoContext(youtubeUrl);
-    await displayOverallResults(youtubeUrl);
-    enableLoadingButton('search-button');
+  button.addEventListener('click', () => {
+    try {
+      document.getElementById('search-error-surfacer').style.display = 'none';
+      clearElement('tab_list');
+      clearElement('info_list');
+      showLoadingGif(SEARCH_ID_PREFIX);
+      updateUIWithVideoContext(youtubeUrl, SEARCH_ID_PREFIX);
+      displayOverallResults(youtubeUrl, SEARCH_ID_PREFIX);
+      enableLoadingButton('search-button');
+    } catch (err) {
+      displayError(err, SEARCH_ID_PREFIX);
+    }
   });
   button.value = 'Select!';
 
@@ -111,4 +116,15 @@ function getRequestUrl() {
   userSearchInput = document.getElementById('search-input').value;
   url = URL_STRUCTURE + userSearchInput + '&key=' + YOUTUBE_API_KEY;
   return url;
+}
+
+/**
+ * Set apiKey variable to data read from file
+ */
+function retrieveApiKey() {
+  $(function() {
+    $.get('apiKey', function(data) {
+      YOUTUBE_API_KEY = data;
+    });
+  });
 }

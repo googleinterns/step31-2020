@@ -14,26 +14,21 @@
 
 package com.google.sps;
 
-import com.google.sps.servlets.utils.CommonWordsRetriever;
-import java.util.Arrays;
-import java.util.List;
+import com.google.sps.servlets.utils.KeyRetriever;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** JUnit test for Word Retriever class */
 @RunWith(JUnit4.class)
-public class WordRetrievalTest {
+public class KeyRetrieverTest {
+
   @Test
-  public void testCommonWordContent() {
+  public void testKeyRetrieval() {
     System.setProperty("resources-folder", "/src/main/webapp");
-    List<String> wordList = CommonWordsRetriever.getCommonWords();
-    List<String> expectedList =
-        Arrays.asList(
-            "a", "am", "an", "and", "are", "at", "be", "by", "can", "for", "for", "he", "her",
-            "here", "his", "i", "in", "is", "it", "its", "my", "of", "on", "or", "she", "that",
-            "the", "their", "there", "they", "this", "to", "was", "we", "were", "will", "your");
-    Assert.assertEquals(expectedList, wordList);
+    String key = KeyRetriever.getApiKey();
+    // No way of checking if Key is actually right key without having it in this file
+    // Rather, ensure it is not null, therefore indicating no error has been thrown.
+    Assert.assertTrue(key != null);
   }
 }

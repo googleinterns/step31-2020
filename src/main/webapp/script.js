@@ -15,11 +15,19 @@
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
 const SLIDER_NAME = 'num-comments-input';
+const LINK_ID_PREFIX = 'link-';
 
 google.charts.load('current', {'packages': ['corechart']});
 google.setOnLoadCallback(onButtonPress);
 
-window.onload = initCommentSlider;
+window.onload = initializeApplication;
+/**
+ * Set up everything that needs to be oriented before application running
+ */
+function initializeApplication() {
+  initCommentSlider();
+  retrieveApiKey();
+}
 
 /**
  * Initialize comment slider, used for choosing
@@ -44,7 +52,7 @@ async function getYouTubeComments(url) {
   url = extractYouTubeUrl(url);
   const numComments = document.getElementById(SLIDER_NAME).value;
   const response = await fetch('/YouTubeComments?url=' + url +
-    '&numComments=' + numComments);
+      '&numComments=' + numComments);
   const comments = await response.json();
   return comments;
 }
@@ -54,22 +62,40 @@ async function getYouTubeComments(url) {
  */
 function onButtonPress() {
   $('#submit-link-btn').click(async function() {
-    disableLoadingButton('submit-link-btn');
-    showLoadingGif();
-    const urlInput = document.getElementById('link-input').value;
-    updateUIWithVideoContext(urlInput);
-    await displayOverallResults(urlInput);
-    enableLoadingButton('submit-link-btn');
+    try {
+      disableLoadingButton('submit-link-btn');
+      document.getElementById('link-error-surfacer').display = 'none';
+      showLoadingGif(LINK_ID_PREFIX);
+      const urlInput = document.getElementById('link-input').value;
+      updateUIWithVideoContext(urlInput, LINK_ID_PREFIX);
+      await displayOverallResults(urlInput, LINK_ID_PREFIX);
+      enableLoadingButton('submit-link-btn');
+    } catch (err) {
+      displayError(err, LINK_ID_PREFIX);
+    }
   });
+}
+
+/**
+ * Sets error message to visible and gives details on specific error.
+ * @param {String} err the error to display and log.
+ * @param {String} idPrefix prefix of div id to be altered
+ */
+function displayError(err, idPrefix) {
+  hideLoadingGif(idPrefix);
+  document.getElementById(idPrefix + 'error-surfacer').style.display = 'block';
+  document.getElementById(idPrefix + 'error-details').innerHTML = err.message;
 }
 
 /**
  * Fetches data and adds to html
  * @param {String} url youtube url to retrieve comments
+ * @param {string} idPrefix prefix of div id to be altered
  */
-async function displayOverallResults(url) {
+async function displayOverallResults(url, idPrefix) {
   // Clear all analysis containers
-  const averageContainer = document.getElementById('average-score-container');
+  const averageContainer = document.getElementById(idPrefix +
+      'average-score-container');
   averageContainer.innerHTML = '';
   clearElement('chart-container');
   clearElement('word-cloud-container');
@@ -91,13 +117,15 @@ async function displayOverallResults(url) {
  * Create a bar chart of sentiment score interval, frequency
  * and high magnitude comments
  * @param {Array<sentimentBucket>} sentimentBucketList
+ * @param {string} idPrefix prefix of div id to be altered
  */
-function displaySentimentBucketChart(sentimentBucketList) {
+function displaySentimentBucketChart(sentimentBucketList, idPrefix) {
   const CommentSentimentTable = new google.visualization.DataTable();
   CommentSentimentTable.addColumn('string', 'Sentiment Range');
   CommentSentimentTable.addColumn('number', 'Comment Count');
   CommentSentimentTable.addColumn(
       {'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
+  CommentSentimentTable.addColumn({type: 'string', role: 'style'});
 
   for (i = 0; i < sentimentBucketList.length; i++) {
     currentSentimentBucket = sentimentBucketList[i];
@@ -107,7 +135,8 @@ function displaySentimentBucketChart(sentimentBucketList) {
 
     CommentSentimentTable.addRow([rangeAsString,
       currentSentimentBucket.frequency,
-      toTooltipString(highestMagnitudeComments)]);
+      toTooltipString(highestMagnitudeComments),
+      toColorStyle(i)]);
   }
 
   const options = {
@@ -116,19 +145,21 @@ function displaySentimentBucketChart(sentimentBucketList) {
     'height': CHART_HEIGHT,
     'bar': {groupWidth: '100'},
     'tooltip': {isHtml: true},
+    'animation': {'startup': true, 'duration': 1000},
   };
 
   const view = new google.visualization.DataView(CommentSentimentTable);
   const chart = new google.visualization.ColumnChart(
-      document.getElementById('chart-container'));
+      document.getElementById(idPrefix + 'chart-container'));
   chart.draw(view, options);
 }
 
 /**
  * Create a word cloud based on the number of appearance for each word
  * @param {Map} wordFrequencyMap that contains top words
+ * @param {string} idPrefix prefix of div id to be altered
  */
-function displayWordCloudChart(wordFrequencyMap) {
+function displayWordCloudChart(wordFrequencyMap, idPrefix) {
   const data = [];
   Object.keys(wordFrequencyMap).forEach((wordKey) =>
     data.push({'x': wordKey, 'value': wordFrequencyMap[wordKey]}));
@@ -138,7 +169,7 @@ function displayWordCloudChart(wordFrequencyMap) {
   chart.title('Most Common Words in Comments');
   // Set array of angles to 0, make all the words display horizontally
   chart.angles([0]);
-  chart.container('word-cloud-container');
+  chart.container(document.getElementById(idPrefix + 'word-cloud-container'));
   chart.draw();
 };
 
@@ -160,7 +191,7 @@ function toTooltipString(userComments) {
  */
 function userCommentAsString(comment) {
   commentMagnitude = comment.magnitudeScore;
-  return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude;
+  return comment.commentMsg + '<br> Magnitude Score: ' + commentMagnitude.toFixed(2);
 }
 
 /**
@@ -174,16 +205,32 @@ function convertRangeToString(range) {
 
 /**
  * Display loading image
+ * @param {string} idPrefix prefix of div id to be altered
  */
-function showLoadingGif() {
-  const loadImage = document.getElementById('video-results-loading-container');
-  loadImage.style.visibility = 'visible';
+function showLoadingGif(idPrefix) {
+  document.getElementById(idPrefix + 'loading-img').style.display = 'block';
 }
 
 /**
  * Hide loading image
+ * @param {string} idPrefix prefix of div id to be altered
  */
-function hideLoadingGif() {
-  const loadImage = document.getElementById('video-results-loading-container');
-  loadImage.style.visibility = 'hidden';
+function hideLoadingGif(idPrefix) {
+  document.getElementById(idPrefix + 'loading-img').style.display = 'none';
+}
+
+/**
+ * Hide analysis from search tab
+ */
+function hideSearchInfo() {
+  $('#search-analysis').hide();
+  $('#link-analysis').show();
+}
+
+/**
+ * Hide analysis from link tab
+ */
+function hideLinkInfo() {
+  $('#link-analysis').hide();
+  $('#search-analysis').show();
 }
