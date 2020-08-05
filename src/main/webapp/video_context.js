@@ -30,13 +30,23 @@ async function getVideoContext(urlInput) {
  * @param {string} idPrefix id of div to be altered
  */
 async function updateUIWithVideoContext(url, idPrefix) {
-  contextDiv = document.getElementById(idPrefix + 'video-context');
+  if (idPrefix == 'link-') {
+    contextStr = idPrefix + 'video-context';
+    document.getElementById(idPrefix + 'video-embed').innerHTML = '<iframe width="500" height="415"src=' + 'https://www.youtube.com/embed/'+ extractYouTubeUrl(url)+ '?controls=0;' +
+  '></iframe>';
+  } else {
+    contextStr = 'tab_list';
+  }
+  contextDiv = document.getElementById(contextStr);
   clearElement(idPrefix + 'video-context');
-  clearElement('video-embed');
+  clearElement(idPrefix +'video-embed');
+   console.log(contextDiv);
   try {
     videoContext = await getVideoContext(url);
+    console.log(videoContext);
     contextDiv.innerHTML = videoContextAsHTML(videoContext);
   } catch (err) {
+    console.log(err);
     throw new Error('Error updating video context');
   }
 }

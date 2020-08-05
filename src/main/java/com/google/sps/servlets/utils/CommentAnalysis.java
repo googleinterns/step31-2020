@@ -75,6 +75,9 @@ public class CommentAnalysis {
         youtubeResponse.parallelStream()
             .map(UserComment::new)
             .map(this::updateSentimentForComment)
+            .filter(
+                userComment ->
+                    (userComment.getScore() != null) || (userComment.getMagnitude() != null))
             .collect(Collectors.toList());
     return new Statistics(userCommentList, numTopComments);
   }

@@ -22,7 +22,8 @@ function getVideoResults() {
   disableLoadingButton('search-button');
   const tabResult = document.getElementById('tab_list');
   const contentResult = document.getElementById('info_list');
-
+  clearElement('tab_list');
+  clearElement('info_list');
   url = getRequestUrl();
   fetch(url).then((response) => response.json()).then((data) => {
     videos = data.items;
@@ -90,7 +91,7 @@ function addVideoInfo(video) {
     try {
       document.getElementById('search-error-surfacer').style.display = 'none';
       clearElement('tab_list');
-      clearElement('info_list');
+      // clearElement('info_list');
       showLoadingGif('search-');
       updateUIWithVideoContext(youtubeUrl, 'search-');
       await displayOverallResults(youtubeUrl, 'search-');
