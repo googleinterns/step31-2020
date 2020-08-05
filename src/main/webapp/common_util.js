@@ -44,3 +44,4 @@ function clearElement(elementId) {
     elem.removeChild(elem.lastChild);
   }
 }
+
