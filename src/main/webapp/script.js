@@ -97,20 +97,23 @@ async function displayOverallResults(url, idPrefix) {
   const averageContainer = document.getElementById(idPrefix +
       'average-score-container');
   averageContainer.innerHTML = '';
-  clearElement('chart-container');
-  clearElement('word-cloud-container');
+  clearElement(idPrefix + 'chart-container');
+  clearElement(idPrefix + 'word-cloud-container');
+  try {
+    commentStats = await getYouTubeComments(url);
+    sentimentBucketList = commentStats.sentimentBucketList;
+    wordFrequencyMap = commentStats.wordFrequencyMap;
+    displaySentimentBucketChart(sentimentBucketList, idPrefix);
+    displayWordCloudChart(wordFrequencyMap, idPrefix);
 
-  commentStats = await getYouTubeComments(url);
-  sentimentBucketList = commentStats.sentimentBucketList;
-  wordFrequencyMap = commentStats.wordFrequencyMap;
-  displaySentimentBucketChart(sentimentBucketList);
-  displayWordCloudChart(wordFrequencyMap);
+    hideLoadingGif(idPrefix);
 
-  hideLoadingGif();
-
-  averageScore = commentStats.averageScore;
-  averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore;
-  enableLoadingButton('submit-link-btn');
+    averageScore = commentStats.averageScore;
+    averageContainer.innerHTML = 'Average Sentiment Score: ' + averageScore.toFixed(2);
+  } catch (err) {
+    err.message = 'Error in overall display: ' + err.message;
+    displayError(err, idPrefix);
+  }
 }
 
 /**
