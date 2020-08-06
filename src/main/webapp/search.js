@@ -86,7 +86,7 @@ function addVideoInfo(video) {
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
   button.id = 'select-video-btn';
-  button.addEventListener('click', async () => {
+  button.addEventListener('click', () => {
     try {
       document.getElementById('search-error-surfacer').style.display = 'none';
       clearElement('tab_list');
