@@ -19,7 +19,7 @@ const SEARCH_ID_PREFIX = 'search-';
  * Retrieve the most relevant video results from youtube url
  */
 function getVideoResults() {
-  disableLoadingButton('search-button');
+  disableButtonDuringLoading('search-button');
   const tabResult = document.getElementById('tab_list');
   const contentResult = document.getElementById('info_list');
 
