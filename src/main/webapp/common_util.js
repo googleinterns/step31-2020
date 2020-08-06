@@ -55,8 +55,8 @@ function clearElement(elementId) {
  */
 function constructVideoIFrameHTML(frameId, width, height, videoId) {
   return '<iframe id="' + frameId + '" width="'+width +
-  '" height="' + height + '"src=' + 'https://www.youtube.com/embed/'+videoId+ '?controls=1&disablekb=1;' +
-  '></iframe>';
+  '" height="' + height + '"src=' + 'https://www.youtube.com/embed/' + videoId +
+        '?controls=1&disablekb=1;' + '></iframe>';
 }
 /** 
  * Disable the button for further click and search
