@@ -46,7 +46,7 @@ function clearElement(elementId) {
 }
 
 /**
- * Diable the button for further click and search.
+ * Diable the button for further click and search
  * @param {String} buttonName the name of element of button to disable
  */
 function disableButtonDuringLoading(buttonName) {
@@ -60,7 +60,8 @@ function disableButtonDuringLoading(buttonName) {
  * Enable the button for further click and search
  * @param {String} buttonName the name of element of button to enable
  */
-function enableLoadingButton(buttonName) {
+function enableButtonAfterLoading(buttonName) {
   document.getElementById(buttonName).innerHTML = 'Done!';
   document.getElementById(buttonName).disabled = false;
 }
+
