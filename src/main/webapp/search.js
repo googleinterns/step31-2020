@@ -15,6 +15,9 @@
 const URL_STRUCTURE = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=';
 var YOUTUBE_API_KEY;
 const SEARCH_ID_PREFIX = 'search-';
+const CARD_VIDEO_WIDTH = 480;
+const CARD_VIDEO_HEIGHT = 315;
+
 /**
  * Retrieve the most relevant video results from youtube url
  */
@@ -80,7 +83,7 @@ function addVideoInfo(video) {
   cardBodyDiv.innerHTML = '<p class="card-text">' +
     video.snippet.description + '</p';
   cardDiv.innerHTML = constructVideoIFrameHTML('search-video-frame',
-      480, 315, video.id.videoId);
+      CARD_VIDEO_WIDTH, CARD_VIDEO_HEIGHT, video.id.videoId);
 
   // Create button to select the video
   const button = document.createElement('INPUT');

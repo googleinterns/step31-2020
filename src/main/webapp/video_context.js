@@ -13,6 +13,8 @@
 // limitations under the License.
 
 const LINK_ID_PREFIX = 'link-';
+const CONTEXT_VIDEO_WIDTH = 500;
+const CONTEXT_VIDEO_HEIGHT = 415;
 
 /**
  * Retrieve the context of a Youtube video
@@ -37,7 +39,7 @@ async function updateUIWithVideoContext(url, idPrefix) {
     contextStr = idPrefix + 'video-context';
     document.getElementById(idPrefix + 'video-embed').innerHTML =
       constructVideoIFrameHTML('link-video-frame',
-          500, 415, extractYouTubeUrl(url));
+          CONTEXT_VIDEO_WIDTH, CONTEXT_VIDEO_HEIGHT, extractYouTubeUrl(url));
   } else {
     // For search keyword cases, use info-list division
     clearElement('select-video-btn');

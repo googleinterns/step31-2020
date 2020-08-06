@@ -14,6 +14,8 @@
 
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
+const VIDEO_WIDTH = 500;
+const VIDEO_HEIGHT = 300;
 const SLIDER_NAME = 'num-comments-input';
 
 google.charts.load('current', {'packages': ['corechart']});
@@ -69,7 +71,7 @@ function onButtonPress() {
       updateUIWithVideoContext(urlInput, LINK_ID_PREFIX);
       document.getElementById('link-video-embed').innerHTML =
         constructVideoIFrameHTML('link-video-frame',
-            500, 300, extractYouTubeUrl(urlInput));
+            VIDEO_WIDTH, VIDEO_HEIGHT, extractYouTubeUrl(urlInput));
       await displayOverallResults(urlInput, LINK_ID_PREFIX);
       enableButtonAfterLoading('submit-link-btn');
     } catch (err) {
