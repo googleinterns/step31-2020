@@ -46,7 +46,20 @@ function clearElement(elementId) {
 }
 
 /**
- * Diable the button for further click and search
+ * Construct the html code to embed video in
+ * @param {String} frameId id of the videoIFrame
+ * @param {String} width width of the video frame
+ * @param {String} height height of the video frame
+ * @param {String} videoId videoId to embed
+ * @return {String} HTML code to embed
+ */
+function constructVideoIFrameHTML(frameId, width, height, videoId) {
+  return '<iframe id="' + frameId + '" width="'+width +
+  '" height="' + height + '"src=' + 'https://www.youtube.com/embed/' + videoId +
+        '?controls=1&disablekb=1;' + '></iframe>';
+}
+/** 
+ * Disable the button for further click and search
  * @param {String} buttonName the name of element of button to disable
  */
 function disableButtonDuringLoading(buttonName) {
@@ -64,4 +77,3 @@ function enableButtonAfterLoading(buttonName) {
   document.getElementById(buttonName).innerHTML = 'Done!';
   document.getElementById(buttonName).disabled = false;
 }
-

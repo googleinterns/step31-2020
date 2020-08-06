@@ -15,6 +15,9 @@
 const URL_STRUCTURE = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=';
 var YOUTUBE_API_KEY;
 const SEARCH_ID_PREFIX = 'search-';
+const CARD_VIDEO_WIDTH = 480;
+const CARD_VIDEO_HEIGHT = 315;
+
 /**
  * Retrieve the most relevant video results from youtube url
  */
@@ -79,17 +82,17 @@ function addVideoInfo(video) {
   cardBodyDiv.className = 'card-body';
   cardBodyDiv.innerHTML = '<p class="card-text">' +
     video.snippet.description + '</p';
-  cardDiv.innerHTML = '<IMG class="card-img-top" src=' +
-    video.snippet.thumbnails.high.url + ' alt="Card image cap">';
+  cardDiv.innerHTML = constructVideoIFrameHTML('search-video-frame',
+      CARD_VIDEO_WIDTH, CARD_VIDEO_HEIGHT, video.id.videoId);
 
   // Create button to select the video
   const button = document.createElement('INPUT');
   const youtubeUrl = 'https://youtube.com/watch?v=' + video.id.videoId;
   button.setAttribute('type', 'button');
+  button.id = 'select-video-btn';
   button.addEventListener('click', async () => {
     document.getElementById('search-error-surfacer').style.display = 'none';
     clearElement('tab_list');
-    clearElement('info_list');
     showLoadingGif(SEARCH_ID_PREFIX);
     try {
       await updateUIWithVideoContext(youtubeUrl, SEARCH_ID_PREFIX);

@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const LINK_ID_PREFIX = 'link-';
+const CONTEXT_VIDEO_WIDTH = 500;
+const CONTEXT_VIDEO_HEIGHT = 415;
+
 /**
  * Retrieve the context of a Youtube video
  * @param {String} urlInput inputted url of video
@@ -27,11 +31,23 @@ async function getVideoContext(urlInput) {
 /**
  * Fetches data and adds to html
  * @param {string} url of the video being analyzed
- * @param {string} idPrefix prefix of div id to be altered
+ * @param {string} idPrefix id of div to be altered
  */
 async function updateUIWithVideoContext(url, idPrefix) {
-  contextDiv = document.getElementById(idPrefix + 'video-context');
+  // For link input cases,  embed the new video frame
+  if (idPrefix == LINK_ID_PREFIX) {
+    contextStr = idPrefix + 'video-context';
+    document.getElementById(idPrefix + 'video-embed').innerHTML =
+      constructVideoIFrameHTML('link-video-frame',
+          CONTEXT_VIDEO_WIDTH, CONTEXT_VIDEO_HEIGHT, extractYouTubeUrl(url));
+  } else {
+    // For search keyword cases, use info-list division
+    clearElement('select-video-btn');
+    contextStr = 'tab_list';
+  }
+  contextDiv = document.getElementById(contextStr);
   clearElement(idPrefix + 'video-context');
+  clearElement(idPrefix +'video-embed');
   try {
     videoContext = await getVideoContext(url);
     contextDiv.innerHTML = videoContextAsHTML(videoContext);
