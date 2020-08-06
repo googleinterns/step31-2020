@@ -92,7 +92,7 @@ function addVideoInfo(video) {
     clearElement('tab_list');
     showLoadingGif(SEARCH_ID_PREFIX);
     try {
-      updateUIWithVideoContext(youtubeUrl, SEARCH_ID_PREFIX);
+      await updateUIWithVideoContext(youtubeUrl, SEARCH_ID_PREFIX);
       await displayOverallResults(youtubeUrl, SEARCH_ID_PREFIX);
       enableButtonAfterLoading('search-button');
     } catch (err) {
