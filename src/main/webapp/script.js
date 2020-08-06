@@ -213,7 +213,8 @@ function convertRangeToString(range) {
  * @param {string} idPrefix prefix of div id to be altered
  */
 function showLoadingGif(idPrefix) {
-  document.getElementById(idPrefix + 'loading-img').style.display = 'block';
+  document.getElementById(idPrefix + 'video-results-loading-container').style.visibility = 'visible';
+  console.log(document.getElementById(idPrefix + 'video-results-loading-container').style.display);
 }
 
 /**
@@ -221,7 +222,8 @@ function showLoadingGif(idPrefix) {
  * @param {string} idPrefix prefix of div id to be altered
  */
 function hideLoadingGif(idPrefix) {
-  document.getElementById(idPrefix + 'loading-img').style.display = 'none';
+  document.getElementById(idPrefix + 'video-results-loading-container').style.visibility = 'hidden';
+  console.log(document.getElementById(idPrefix + 'video-results-loading-container').style.display);
 }
 
 /**
