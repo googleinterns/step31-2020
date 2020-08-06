@@ -76,10 +76,9 @@
       </div>
       <div id="search-analysis">
         <div id="search-video-context"></div>
-        <div class="d-flex justify-content-center" id="video-results-loading-container">
-          <div id="search-loading-img" class="spinner-border text-dark" role="status" style="display:none">
-            <span class="sr-only">Loading...</span>
-          </div>
+        <div class="d-flex flex-column align-items-center" id="link-video-results-loading-container" style="visibility:hidden">
+          <div id="search-loading-img" class="spinner-border text-dark" role="status"></div>
+          <p class="font-weight-light">Almost there!<br/> Loading Sentiment Analysis & Word Cloud...</p>
         </div>
         <div id="search-chart-container"></div>
         <div id="search-average-score-container"></div> 
@@ -91,10 +90,9 @@
       </div>
       <div id="link-analysis">
         <div id="link-video-context"></div>
-        <div class="d-flex justify-content-center" id="video-results-loading-container">
-          <div id="link-loading-img" class="spinner-border text-dark" role="status" style="display:none">
-            <span class="sr-only">Loading...</span>
-          </div>
+        <div class="d-flex justify-content-center" id="video-results-loading-container" style="visibility:hidden">
+          <div id="link-loading-img" class="spinner-border text-dark" role="status"></div>
+          <p class="font-weight-light">Almost there!<br/> Loading Sentiment Analysis & Word Cloud...</p>
         </div>
         <div id="link-chart-container"></div>
         <div id="link-average-score-container"></div> 
@@ -103,7 +101,6 @@
           <h4 id="link-error-display-text"> Something went wrong :(<br> Try another link? </h4>
           <h5 id="link-error-details"><h5>
         </div>
-      </div>
     </div>
   </body>
 </html>
