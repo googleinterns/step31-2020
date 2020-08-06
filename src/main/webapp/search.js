@@ -89,7 +89,6 @@ function addVideoInfo(video) {
   button.addEventListener('click', async () => {
     document.getElementById('search-error-surfacer').style.display = 'none';
     clearElement('tab_list');
-    clearElement('info_list');
     showLoadingGif(SEARCH_ID_PREFIX);
     try {
       await updateUIWithVideoContext(youtubeUrl, SEARCH_ID_PREFIX);
