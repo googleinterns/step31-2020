@@ -24,7 +24,9 @@ public class VideoInformation {
     VideoStatistics videoStats = video.getStatistics();
     this.videoName = videoSnippet.getTitle();
     this.videoAuthor = videoSnippet.getChannelTitle();
-    this.publishDateString = videoSnippet.getPublishedAt().toStringRfc3339();
+    // Remove the specific time of the day at the end of the dateString; Convert to yyyy-mm-dd
+    // format.
+    this.publishDateString = videoSnippet.getPublishedAt().toStringRfc3339().substring(0, 10);
     this.numLikes = videoStats.getLikeCount().intValue();
     this.numDislikes = videoStats.getDislikeCount().intValue();
   }
