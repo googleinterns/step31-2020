@@ -94,7 +94,7 @@ function addVideoInfo(video) {
       showLoadingGif(SEARCH_ID_PREFIX);
       updateUIWithVideoContext(youtubeUrl, SEARCH_ID_PREFIX);
       displayOverallResults(youtubeUrl, SEARCH_ID_PREFIX);
-      enableLoadingButton('search-button');
+      enableButtonAfterLoading('search-button');
     } catch (err) {
       displayError(err, SEARCH_ID_PREFIX);
     }

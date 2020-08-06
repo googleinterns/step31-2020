@@ -63,13 +63,13 @@ async function getYouTubeComments(url) {
 function onButtonPress() {
   $('#submit-link-btn').click(async function() {
     try {
-      disableLoadingButton('submit-link-btn');
+      disableButtonDuringLoading('submit-link-btn');
       document.getElementById('link-error-surfacer').display = 'none';
       showLoadingGif(LINK_ID_PREFIX);
       const urlInput = document.getElementById('link-input').value;
       updateUIWithVideoContext(urlInput, LINK_ID_PREFIX);
       await displayOverallResults(urlInput, LINK_ID_PREFIX);
-      enableLoadingButton('submit-link-btn');
+      enableButtonAfterLoading('submit-link-btn');
     } catch (err) {
       displayError(err, LINK_ID_PREFIX);
     }
