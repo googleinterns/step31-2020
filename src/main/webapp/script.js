@@ -15,7 +15,6 @@
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 400;
 const SLIDER_NAME = 'num-comments-input';
-const LINK_ID_PREFIX = 'link-';
 
 google.charts.load('current', {'packages': ['corechart']});
 google.setOnLoadCallback(onButtonPress);
@@ -68,8 +67,8 @@ function onButtonPress() {
       const urlInput = document.getElementById('link-input').value;
       updateUIWithVideoContext(urlInput, LINK_ID_PREFIX);
       document.getElementById('link-video-embed').innerHTML =
-      '<iframe width="500" height="300"src=https://www.youtube.com/embed/'+
-      extractYouTubeUrl(urlInput)+ '?controls=1&disablekb=1;' + '></iframe>';
+        constructVideoIFrameHTML('link-video-frame',
+            500, 300, extractYouTubeUrl(urlInput));
       displayOverallResults(urlInput, LINK_ID_PREFIX);
     } catch (err) {
       displayError(err, LINK_ID_PREFIX);

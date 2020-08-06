@@ -36,8 +36,8 @@ async function updateUIWithVideoContext(url, idPrefix) {
   if (idPrefix == LINK_ID_PREFIX) {
     contextStr = idPrefix + 'video-context';
     document.getElementById(idPrefix + 'video-embed').innerHTML =
-      '<iframe width="500" height="415"src=' + 'https://www.youtube.com/embed/'+ extractYouTubeUrl(url)+ '?controls=0;' +
-      '></iframe>';
+      constructVideoIFrameHTML('link-video-frame',
+          500, 415, extractYouTubeUrl(url));
   } else {
     // For search keyword cases, use info-list division
     clearElement('select-video-btn');

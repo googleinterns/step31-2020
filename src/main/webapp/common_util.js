@@ -45,3 +45,16 @@ function clearElement(elementId) {
   }
 }
 
+/**
+ * Construct the html code to embed video in
+ * @param {String} frameId id of the videoIFrame
+ * @param {String} width width of the video frame
+ * @param {String} height height of the video frame
+ * @param {String} videoId videoId to embed
+ * @return {String} HTML code to embed
+ */
+function constructVideoIFrameHTML(frameId, width, height, videoId) {
+  return '<iframe id="' + frameId + '" width="'+width +
+  '" height="' + height + '"src=' + 'https://www.youtube.com/embed/'+videoId+ '?controls=1&disablekb=1;' +
+  '></iframe>';
+}
